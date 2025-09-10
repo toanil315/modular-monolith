@@ -16,7 +16,7 @@ function buildEventsDataSourceOptions(): DataSourceOptions {
     username: process.env.POSTGRES_USER,
     password: process.env.POSTGRES_PASSWORD,
     database: process.env.POSTGRES_DATABASE,
-    entities: [__dirname + '/../events/**/*.entity.{ts,js}'],
+    entities: [__dirname + '/../**/*.entity.{ts,js}'],
     migrationsTableName: 'migrations',
     migrations: [__dirname + '/migrations/*.{ts,js}'],
     namingStrategy: new SnakeNamingStrategy(),

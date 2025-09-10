@@ -16,14 +16,15 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "typeorm": "npx typeorm-ts-node-commonjs",
-    "migration:generate:events": "npm run typeorm -- migration:generate ./src/modules/events/database/migrations/$npm_config_name -d ./src/modules/events/database/datasource.ts",
-    "migration:run:events": "npm run typeorm -- migration:run -d ./src/modules/events/database/datasource.ts",
-    "migration:revert:events": "npm run typeorm -- migration:revert -d ./src/modules/events/database/datasource.ts"
+    "migration:generate:events": "npm run typeorm -- migration:generate ./src/modules/events/infrastructure/database/migrations/$npm_config_name -d ./src/modules/events/infrastructure/database/datasource.ts",
+    "migration:run:events": "npm run typeorm -- migration:run -d ./src/modules/events/infrastructure/database/datasource.ts",
+    "migration:revert:events": "npm run typeorm -- migration:revert -d ./src/modules/events/infrastructure/database/datasource.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.1.6",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.1.6",
+    "@nestjs/cqrs": "^11.0.3",
     "@nestjs/platform-express": "^11.1.6",
     "@nestjs/swagger": "^11.2.0",
     "@nestjs/typeorm": "^11.0.0",

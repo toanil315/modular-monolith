@@ -8,7 +8,7 @@ import {
 import { EVENTS_SCHEMA } from '../database/datasource';
 
 @Entity({ schema: EVENTS_SCHEMA, name: 'events' })
-export class Event {
+export class EventTypeOrmEntity {
   @PrimaryColumn({ type: 'uuid' })
   id: string;
 
@@ -20,6 +20,9 @@ export class Event {
 
   @Column({ type: 'varchar', length: 255, nullable: false })
   location: string;
+
+  @Column({ type: 'int' })
+  status: number;
 
   @Column({ type: 'int' })
   startsAt: number;
