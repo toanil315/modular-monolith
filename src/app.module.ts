@@ -2,8 +2,9 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { EventsModule } from './modules/events/event.module';
 import { APP_FILTER, APP_PIPE } from '@nestjs/core';
-import { CustomZodValidationPipe } from './modules/common/exceptions/validation.pipe';
-import { BusinessExceptionFilter } from './modules/common/exceptions/global-exception.filter';
+import { BusinessExceptionFilter } from './modules/common/exceptions/business/business-exception.filter';
+import { ValidationPipe } from './modules/common/exceptions/validation/validation.pipe';
+import { ValidationExceptionFilter } from './modules/common/exceptions/validation/validation-exception.filter';
 
 @Module({
   imports: [
@@ -16,11 +17,15 @@ import { BusinessExceptionFilter } from './modules/common/exceptions/global-exce
   providers: [
     {
       provide: APP_PIPE,
-      useClass: CustomZodValidationPipe,
+      useClass: ValidationPipe,
     },
     {
       provide: APP_FILTER,
       useClass: BusinessExceptionFilter,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: ValidationExceptionFilter,
     },
   ],
 })

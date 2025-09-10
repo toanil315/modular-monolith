@@ -21,6 +21,7 @@ function buildEventsDataSourceOptions(): DataSourceOptions {
     migrations: [__dirname + '/migrations/*.{ts,js}'],
     namingStrategy: new SnakeNamingStrategy(),
     schema: EVENTS_SCHEMA,
+    migrationsRun: true,
   };
 }
 

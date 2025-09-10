@@ -1,5 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
-import { BusinessException } from 'src/modules/common/exceptions/business.exception';
+import { BusinessException } from 'src/modules/common/exceptions/business/business.exception';
 
 export class EventNotFoundException extends BusinessException {
   constructor(eventId: string) {

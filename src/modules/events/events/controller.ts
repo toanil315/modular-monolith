@@ -2,13 +2,7 @@ import { Body, Controller, Get, Post, Param } from '@nestjs/common';
 import { END_POINT_TAGS } from '../tags';
 import { EventsService } from './service';
 import { CreateEventDto, EventResponseDto, GetEventByIdDto } from './event.dto';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiBearerAuth,
-  ApiBody,
-  ApiOkResponse,
-} from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBody, ApiOkResponse } from '@nestjs/swagger';
 
 @ApiTags(END_POINT_TAGS.EVENTS)
 @Controller(END_POINT_TAGS.EVENTS)
@@ -28,7 +22,6 @@ export class EventsController {
   async createEvent(@Body() dto: CreateEventDto) {
     return this.eventsService.createEvent(dto);
   }
-
   @Get(':id')
   @ApiOperation({
     summary: 'Get Event By ID',
