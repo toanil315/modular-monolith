@@ -4,13 +4,22 @@ import {
   PrimaryColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 import { EVENTS_SCHEMA } from '../database/datasource';
+import { CategoryTypeOrmEntity } from '../categories/category.entity';
 
 @Entity({ schema: EVENTS_SCHEMA, name: 'events' })
 export class EventTypeOrmEntity {
   @PrimaryColumn({ type: 'uuid' })
   id: string;
+
+  @ManyToOne(() => CategoryTypeOrmEntity, {
+    createForeignKeyConstraints: false,
+  })
+  @JoinColumn({ name: 'category_id' })
+  categoryId: string;
 
   @Column({ type: 'varchar', length: 255, nullable: false })
   title: string;

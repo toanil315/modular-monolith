@@ -23,6 +23,7 @@ export class EventRepositoryImpl implements EventRepository {
       location: event.location,
       startsAt: event.startsAt,
       endsAt: event.endsAt,
+      categoryId: event.categoryId,
     });
 
     await this.ormRepo.save(newEvent);
@@ -39,6 +40,7 @@ export class EventRepositoryImpl implements EventRepository {
 
     return new Event(
       eventEntity.id,
+      eventEntity.categoryId,
       eventEntity.title,
       eventEntity.description,
       eventEntity.location,
@@ -46,6 +48,19 @@ export class EventRepositoryImpl implements EventRepository {
       eventEntity.startsAt,
       eventEntity.endsAt,
     );
+  }
+
+  async save(event: Event): Promise<void> {
+    await this.ormRepo.save({
+      id: event.id,
+      categoryId: event.categoryId,
+      title: event.title,
+      status: event.status,
+      description: event.description,
+      location: event.location,
+      startsAt: event.startsAt,
+      endsAt: event.endsAt,
+    });
   }
 }
 

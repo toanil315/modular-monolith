@@ -33,6 +33,7 @@ export class EventsController {
   async createEvent(@Body() dto: CreateEventDto) {
     const { id: eventId } = await this.commandBus.execute(
       new CreateEventCommand({
+        categoryId: dto.categoryId,
         title: dto.title,
         description: dto.description,
         location: dto.location,
@@ -69,6 +70,7 @@ export class EventsController {
         id: event.id,
         description: event.description,
         location: event.location,
+
         title: event.title,
         startsAt: event.startsAt,
         endsAt: event.endsAt,

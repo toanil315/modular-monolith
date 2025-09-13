@@ -5,6 +5,7 @@ export class CreateEventCommand extends Command<{
 }> {
   constructor(
     public readonly props: {
+      categoryId: string;
       title: string;
       description: string;
       location: string;

@@ -3,10 +3,12 @@ import { Entity } from '../abstractions/entity';
 import { EventStatus } from './event-status';
 import { EventExceptions } from './event.exception';
 import { EventDomainEvent } from './event.domain-event';
+import { Category } from '../categories/category';
 
 export class Event extends Entity {
   constructor(
     public id: string,
+    public categoryId: string,
     public title: string,
     public description: string,
     public location: string,
@@ -18,6 +20,7 @@ export class Event extends Entity {
   }
 
   static create(
+    category: Category,
     title: string,
     description: string,
     location: string,
@@ -26,6 +29,7 @@ export class Event extends Entity {
   ) {
     const event = new Event(
       uuidV4(),
+      category.id,
       title,
       description,
       location,

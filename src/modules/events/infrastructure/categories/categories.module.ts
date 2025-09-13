@@ -25,5 +25,6 @@ import { UpdateCategoryCommandHandler } from '../../application/categories/updat
     UpdateCategoryCommandHandler,
   ],
   controllers: [CategoriesController],
+  exports: [CategoryRepositoryProvider],
 })
 export class CategoriesModule {}

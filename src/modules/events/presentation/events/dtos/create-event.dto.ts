@@ -3,6 +3,7 @@ import { ApiSuccessResponseSchema } from 'src/modules/common/validations/common.
 import { z } from 'zod';
 
 const RequestSchema = z.object({
+  categoryId: z.uuid().nonempty(),
   title: z.string().max(255).nonempty(),
   description: z.string().max(500).nonempty(),
   location: z.string().max(255).nonempty(),

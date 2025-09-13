@@ -17,6 +17,8 @@ export class UpdateCategoryCommandHandler
   async execute({ props }: UpdateCategoryCommand): Promise<void> {
     const category = await this.categoryRepository.getById(props.id);
 
+    console.log(category);
+
     if (!category) {
       throw new CategoryExceptions.CategoryNotFoundException(props.id);
     }

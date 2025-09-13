@@ -6,10 +6,12 @@ import { EventRepositoryProvider } from './event.repository.impl';
 import { CreateEventCommandHandler } from '../../application/events/create-event/create-event.command.handler';
 import { GetEventQueryHandler } from '../../application/events/get-event/get-event.query.handler';
 import { EventsController } from '../../presentation/events/events.controller';
+import { CategoriesModule } from '../categories/categories.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([EventTypeOrmEntity], EVENTS_CONNECTION_NAME),
+    CategoriesModule,
   ],
   providers: [
     EventRepositoryProvider,
@@ -17,5 +19,6 @@ import { EventsController } from '../../presentation/events/events.controller';
     GetEventQueryHandler,
   ],
   controllers: [EventsController],
+  exports: [EventRepositoryProvider],
 })
 export class EventsModule {}
