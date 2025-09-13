@@ -4,6 +4,7 @@ import { EventStatus } from './event-status';
 import { EventExceptions } from './event.exception';
 import { EventDomainEvent } from './event.domain-event';
 import { Category } from '../categories/category';
+import { TicketType } from '../ticket-types/ticket-type';
 
 export class Event extends Entity {
   constructor(
@@ -15,6 +16,7 @@ export class Event extends Entity {
     public status: EventStatus,
     public startsAt: number,
     public endsAt: number,
+    public ticketTypes: TicketType[] = [],
   ) {
     super();
   }
@@ -57,6 +59,14 @@ export class Event extends Entity {
   reschedule(startsAt: number, endsAt: number) {
     if (this.startsAt == startsAt && this.endsAt == endsAt) {
       return;
+    }
+
+    if (startsAt < Date.now()) {
+      throw new EventExceptions.EventStartDateInPastException();
+    }
+
+    if (startsAt > endsAt) {
+      throw new EventExceptions.EventEndDatePrecedesStartDateException();
     }
 
     this.startsAt = startsAt;

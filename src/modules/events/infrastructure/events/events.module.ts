@@ -7,6 +7,10 @@ import { CreateEventCommandHandler } from '../../application/events/create-event
 import { GetEventQueryHandler } from '../../application/events/get-event/get-event.query.handler';
 import { EventsController } from '../../presentation/events/events.controller';
 import { CategoriesModule } from '../categories/categories.module';
+import { PublishEventCommandHandler } from '../../application/events/publish-event/publish-event.command-handler';
+import { RescheduleEventCommandHandler } from '../../application/events/reschedule-event/reschedule-event.command-handler';
+import { CancelCommandHandler } from '../../application/events/cancel-event/cancel-event.command-handler';
+import { SearchEventsQueryHandler } from '../../application/events/search-event/search-event.query-handler';
 
 @Module({
   imports: [
@@ -15,8 +19,14 @@ import { CategoriesModule } from '../categories/categories.module';
   ],
   providers: [
     EventRepositoryProvider,
+
     CreateEventCommandHandler,
+    PublishEventCommandHandler,
+    RescheduleEventCommandHandler,
+    CancelCommandHandler,
+
     GetEventQueryHandler,
+    SearchEventsQueryHandler,
   ],
   controllers: [EventsController],
   exports: [EventRepositoryProvider],

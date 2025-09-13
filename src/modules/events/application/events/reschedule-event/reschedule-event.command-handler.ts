@@ -1,26 +1,26 @@
-import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { EventRepository } from 'src/modules/events/domain/events/event.repository';
+import { Inject } from '@nestjs/common';
 import { EVENT_REPOSITORY_TOKEN } from 'src/modules/events/infrastructure/events/event.repository.impl';
-import { CancelEventCommand } from './cancel-event.command';
+import { EventRepository } from 'src/modules/events/domain/events/event.repository';
 import { EventExceptions } from 'src/modules/events/domain/events/event.exception';
+import { RescheduleEventCommand } from './reschedule-event.command';
 
-@CommandHandler(CancelEventCommand)
-export class CancelCommandHandler
-  implements ICommandHandler<CancelEventCommand>
+@CommandHandler(RescheduleEventCommand)
+export class RescheduleEventCommandHandler
+  implements ICommandHandler<RescheduleEventCommand>
 {
   constructor(
     @Inject(EVENT_REPOSITORY_TOKEN) private eventRepository: EventRepository,
   ) {}
 
-  async execute({ props }: CancelEventCommand) {
+  async execute({ props }: RescheduleEventCommand): Promise<void> {
     const event = await this.eventRepository.getById(props.id);
 
     if (!event) {
       throw new EventExceptions.EventNotFoundException(props.id);
     }
 
-    event.cancel();
+    event.reschedule(props.startsAt, props.endsAt);
     await this.eventRepository.save(event);
   }
 }

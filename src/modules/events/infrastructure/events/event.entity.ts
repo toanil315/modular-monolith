@@ -33,10 +33,10 @@ export class EventTypeOrmEntity {
   @Column({ type: 'int' })
   status: number;
 
-  @Column({ type: 'int' })
+  @Column({ type: 'bigint' })
   startsAt: number;
 
-  @Column({ type: 'int' })
+  @Column({ type: 'bigint' })
   endsAt: number;
 
   @CreateDateColumn()
