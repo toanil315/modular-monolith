@@ -1,17 +1,18 @@
 import { v4 as uuidV4 } from 'uuid';
 import { Entity } from '../abstractions/entity';
-import { EventCreatedDomainEvent } from './event-created.domain-event';
 import { EventStatus } from './event-status';
+import { EventExceptions } from './event.exception';
+import { EventDomainEvent } from './event.domain-event';
 
 export class Event extends Entity {
   constructor(
-    public readonly id: string,
-    public readonly title: string,
-    public readonly description: string,
-    public readonly location: string,
-    public readonly status: EventStatus,
-    public readonly startsAt: number,
-    public readonly endsAt: number,
+    public id: string,
+    public title: string,
+    public description: string,
+    public location: string,
+    public status: EventStatus,
+    public startsAt: number,
+    public endsAt: number,
   ) {
     super();
   }
@@ -33,8 +34,52 @@ export class Event extends Entity {
       endsAt,
     );
 
-    event.raise(new EventCreatedDomainEvent(event.id));
+    event.raise(new EventDomainEvent.EventCreatedDomainEvent(event.id));
 
     return event;
+  }
+
+  publish() {
+    if (this.status !== EventStatus.Draft) {
+      throw new EventExceptions.EventNotDraftException();
+    }
+
+    this.status = EventStatus.Published;
+
+    this.raise(new EventDomainEvent.EventPublishedDomainEvent(this.id));
+    return this;
+  }
+
+  reschedule(startsAt: number, endsAt: number) {
+    if (this.startsAt == startsAt && this.endsAt == endsAt) {
+      return;
+    }
+
+    this.startsAt = startsAt;
+    this.endsAt = endsAt;
+
+    this.raise(
+      new EventDomainEvent.EventRescheduledDomainEvent(
+        this.id,
+        this.startsAt,
+        this.endsAt,
+      ),
+    );
+    return this;
+  }
+
+  cancel() {
+    if (this.status === EventStatus.Canceled) {
+      throw new EventExceptions.EventAlreadyCanceledException();
+    }
+
+    if (this.startsAt < Date.now()) {
+      throw new EventExceptions.EventAlreadyStartedException();
+    }
+
+    this.status = EventStatus.Canceled;
+
+    this.raise(new EventDomainEvent.EventCanceledDomainEvent(this.id));
+    return this;
   }
 }

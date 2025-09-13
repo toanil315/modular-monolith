@@ -18,7 +18,8 @@
     "typeorm": "npx typeorm-ts-node-commonjs",
     "migration:generate:events": "npm run typeorm -- migration:generate ./src/modules/events/infrastructure/database/migrations/$npm_config_name -d ./src/modules/events/infrastructure/database/datasource.ts",
     "migration:run:events": "npm run typeorm -- migration:run -d ./src/modules/events/infrastructure/database/datasource.ts",
-    "migration:revert:events": "npm run typeorm -- migration:revert -d ./src/modules/events/infrastructure/database/datasource.ts"
+    "migration:revert:events": "npm run typeorm -- migration:revert -d ./src/modules/events/infrastructure/database/datasource.ts",
+    "migration:rollback:events": "npm run typeorm -- migration:revert -d ./src/modules/events/infrastructure/database/datasource.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.1.6",

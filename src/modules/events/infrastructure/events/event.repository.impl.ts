@@ -53,6 +53,7 @@ export const EVENT_REPOSITORY_TOKEN = 'EVENT_REPOSITORY_TOKEN';
 
 export const EventRepositoryProvider: Provider = {
   provide: 'EVENT_REPOSITORY_TOKEN',
-  useFactory: (dataSource: DataSource) => new EventRepositoryImpl(dataSource),
+  useFactory: (dataSource: DataSource): EventRepository =>
+    new EventRepositoryImpl(dataSource),
   inject: [getDataSourceToken(EVENTS_CONNECTION_NAME)],
 };
