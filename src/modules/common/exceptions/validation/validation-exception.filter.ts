@@ -5,7 +5,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { ResponseFormatter } from '../../formatters/response.formatter';
+import { ResponseFormatter } from '../../http/response.formatter';
 import { ValidationException } from './validation.exception';
 
 @Catch(ValidationException)

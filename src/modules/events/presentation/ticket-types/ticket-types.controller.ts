@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
-import { ApiBody, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { END_POINT_TAGS } from '../tags';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import {
@@ -7,7 +7,7 @@ import {
   CreateTicketTypeResponseDto,
 } from './dtos/create-ticket-type.dto';
 import { CreateTicketTypeCommand } from '../../application/ticket-types/create-ticket-type/create-ticket-type.command';
-import { ResponseFormatter } from 'src/modules/common/formatters/response.formatter';
+import { ResponseFormatter } from 'src/modules/common/http/response.formatter';
 import {
   GetTicketTypesDto,
   GetTicketTypesResponseDto,
@@ -24,6 +24,7 @@ import {
   UpdateTicketTypePriceResponseDto,
 } from './dtos/update-ticket-type-price.dto';
 import { UpdateTicketTypePriceCommand } from '../../application/ticket-types/update-ticket-type-price/update-ticket-type-price.command';
+import { ApiZodResponse } from 'src/modules/common/http/api-zod-response.decorator';
 
 @ApiTags(END_POINT_TAGS.TICKET_TYPES)
 @Controller(END_POINT_TAGS.TICKET_TYPES)
@@ -39,12 +40,12 @@ export class TicketTypesController {
     description: 'New ticket type creation entry',
   })
   @ApiBody({ type: CreateTicketTypeDto.Output })
-  @ApiOkResponse({
+  @ApiZodResponse({
     description: 'Create TicketType Successful',
-    type: CreateTicketTypeResponseDto.Output,
+    type: CreateTicketTypeResponseDto,
   })
   async createTicketType(@Body() dto: CreateTicketTypeDto) {
-    const { id: ticketTypeId } = await this.commandBus.execute(
+    const ticketTypeId = await this.commandBus.execute(
       new CreateTicketTypeCommand({
         eventId: dto.eventId,
         name: dto.name,
@@ -54,13 +55,7 @@ export class TicketTypesController {
       }),
     );
 
-    function toDto(ticketTypeId: string): CreateTicketTypeResponseDto {
-      return ResponseFormatter.success({
-        id: ticketTypeId,
-      });
-    }
-
-    return toDto(ticketTypeId);
+    return ticketTypeId;
   }
 
   @Get()
@@ -68,29 +63,16 @@ export class TicketTypesController {
     summary: 'Get Ticket Types',
     description: 'Get all ticket types',
   })
-  @ApiOkResponse({
+  @ApiZodResponse({
     description: 'Get TicketTypes Successful',
-    type: GetTicketTypesResponseDto.Output,
+    type: GetTicketTypesResponseDto,
   })
   async getTicketTypes(@Query() dto: GetTicketTypesDto) {
     const categories = await this.queryBus.execute(
       new GetTicketTypesQuery({ eventId: dto.eventId }),
     );
 
-    function toDto(ticketTypes: TicketType[]): GetTicketTypesResponseDto {
-      return ResponseFormatter.success(
-        ticketTypes.map((ticketType) => ({
-          id: ticketType.id,
-          eventId: ticketType.eventId,
-          name: ticketType.name,
-          price: ticketType.price,
-          currency: ticketType.currency,
-          quantity: ticketType.quantity,
-        })),
-      );
-    }
-
-    return toDto(categories);
+    return categories;
   }
 
   @Get(':id')
@@ -98,27 +80,16 @@ export class TicketTypesController {
     summary: 'Get Ticket Type By ID',
     description: 'Get specific ticket type by ID',
   })
-  @ApiOkResponse({
+  @ApiZodResponse({
     description: 'Get TicketType Successful',
-    type: GetTicketTypeResponseDto.Output,
+    type: GetTicketTypeResponseDto,
   })
   async getTicketType(@Param() dto: GetTicketTypeByIdDto) {
     const ticketType = await this.queryBus.execute(
       new GetTicketTypeQuery({ id: dto.id }),
     );
 
-    function toDto(ticketType: TicketType): GetTicketTypeResponseDto {
-      return ResponseFormatter.success({
-        id: ticketType.id,
-        eventId: ticketType.eventId,
-        name: ticketType.name,
-        price: ticketType.price,
-        currency: ticketType.currency,
-        quantity: ticketType.quantity,
-      });
-    }
-
-    return toDto(ticketType);
+    return ticketType;
   }
 
   @Put('update-price')
@@ -127,9 +98,9 @@ export class TicketTypesController {
     description: 'Update price of ticket type',
   })
   @ApiBody({ type: UpdateTicketTypePriceDto.Output })
-  @ApiOkResponse({
+  @ApiZodResponse({
     description: 'Update TicketType Successful',
-    type: UpdateTicketTypePriceResponseDto.Output,
+    type: UpdateTicketTypePriceResponseDto,
   })
   async updateTicketType(@Body() dto: UpdateTicketTypePriceDto) {
     await this.commandBus.execute(
@@ -138,7 +109,5 @@ export class TicketTypesController {
         price: dto.price,
       }),
     );
-
-    return ResponseFormatter.success(null);
   }
 }

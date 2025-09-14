@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post, Param, Put, Query } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBody, ApiOkResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
 import { END_POINT_TAGS } from '../tags';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import {
@@ -9,8 +9,7 @@ import {
 import { CreateEventCommand } from '../../application/events/create-event/create-event.command';
 import { GetEventByIdDto, GetEventResponseDto } from './dtos/get-event.dto';
 import { GetEventQuery } from '../../application/events/get-event/get-event.query';
-import { ResponseFormatter } from 'src/modules/common/formatters/response.formatter';
-import { Event } from '../../domain/events/event';
+import { ResponseFormatter } from 'src/modules/common/http/response.formatter';
 import {
   CancelEventDto,
   CancelEventResponseDto,
@@ -34,6 +33,7 @@ import {
   SearchEventReturn,
   SearchEventsQuery,
 } from '../../application/events/search-event/search-event.query';
+import { ApiZodResponse } from 'src/modules/common/http/api-zod-response.decorator';
 
 @ApiTags(END_POINT_TAGS.EVENTS)
 @Controller(END_POINT_TAGS.EVENTS)
@@ -49,12 +49,12 @@ export class EventsController {
     description: 'New event creation entry',
   })
   @ApiBody({ type: CreateEventDto.Output })
-  @ApiOkResponse({
+  @ApiZodResponse({
     description: 'Create Event Successful',
-    type: CreateEventResponseDto.Output,
+    type: CreateEventResponseDto,
   })
   async createEvent(@Body() dto: CreateEventDto) {
-    const { id: eventId } = await this.commandBus.execute(
+    const eventId = await this.commandBus.execute(
       new CreateEventCommand({
         categoryId: dto.categoryId,
         title: dto.title,
@@ -65,13 +65,7 @@ export class EventsController {
       }),
     );
 
-    function toDto(eventId: string): CreateEventResponseDto {
-      return ResponseFormatter.success({
-        id: eventId,
-      });
-    }
-
-    return toDto(eventId);
+    return eventId;
   }
 
   @Get('search')
@@ -79,9 +73,9 @@ export class EventsController {
     summary: 'Search Events',
     description: 'Search Published Events',
   })
-  @ApiOkResponse({
+  @ApiZodResponse({
     description: 'Search Published Event Successfully',
-    type: SearchEventsResponseDto.Output,
+    type: SearchEventsResponseDto,
   })
   async searchPublishedEvent(@Query() dto: SearchEventsDto) {
     const searchResult = await this.queryBus.execute(
@@ -94,26 +88,7 @@ export class EventsController {
       }),
     );
 
-    function toDto(searchResult: SearchEventReturn): SearchEventsResponseDto {
-      return ResponseFormatter.success({
-        page: searchResult.page,
-        size: searchResult.size,
-        totalCount: searchResult.totalCount,
-        records: searchResult.records.map((record) => ({
-          id: record.id,
-          categoryId: record.categoryId,
-          description: record.description,
-          status: record.status,
-          location: record.location,
-
-          title: record.title,
-          startsAt: record.startsAt,
-          endsAt: record.endsAt,
-        })),
-      });
-    }
-
-    return toDto(searchResult);
+    return searchResult;
   }
 
   @Get(':id')
@@ -121,38 +96,16 @@ export class EventsController {
     summary: 'Get Event By ID',
     description: 'Get specific event by ID',
   })
-  @ApiOkResponse({
+  @ApiZodResponse({
     description: 'Get Event Successful',
-    type: GetEventResponseDto.Output,
+    type: GetEventResponseDto,
   })
   async getEvent(@Param() { id }: GetEventByIdDto) {
     const event = await this.queryBus.execute(
       new GetEventQuery({ eventId: id }),
     );
 
-    function toDto(event: Event): GetEventResponseDto {
-      return ResponseFormatter.success({
-        id: event.id,
-        categoryId: event.categoryId,
-        description: event.description,
-        location: event.location,
-
-        title: event.title,
-        startsAt: event.startsAt,
-        endsAt: event.endsAt,
-
-        ticketTypes: event.ticketTypes.map((ticketType) => ({
-          id: ticketType.id,
-          eventId: ticketType.eventId,
-          name: ticketType.name,
-          price: ticketType.price,
-          currency: ticketType.currency,
-          quantity: ticketType.quantity,
-        })),
-      });
-    }
-
-    return toDto(event);
+    return event;
   }
 
   @Put('publish')
@@ -161,9 +114,9 @@ export class EventsController {
     description: 'Publish specific event',
   })
   @ApiBody({ type: PublishEventDto.Output })
-  @ApiOkResponse({
+  @ApiZodResponse({
     description: 'Publish Event Successful',
-    type: PublishEventResponseDto.Output,
+    type: PublishEventResponseDto,
   })
   async publishEvent(@Body() dto: PublishEventDto) {
     await this.commandBus.execute(
@@ -171,8 +124,6 @@ export class EventsController {
         id: dto.id,
       }),
     );
-
-    return ResponseFormatter.success(null);
   }
 
   @Put('cancel')
@@ -181,9 +132,9 @@ export class EventsController {
     description: 'Cancel specific event',
   })
   @ApiBody({ type: CancelEventDto.Output })
-  @ApiOkResponse({
+  @ApiZodResponse({
     description: 'Cancel Event Successful',
-    type: CancelEventResponseDto.Output,
+    type: CancelEventResponseDto,
   })
   async cancelEvent(@Body() dto: CancelEventDto) {
     await this.commandBus.execute(
@@ -191,8 +142,6 @@ export class EventsController {
         id: dto.id,
       }),
     );
-
-    return ResponseFormatter.success(null);
   }
 
   @Put('reschedule')
@@ -201,9 +150,9 @@ export class EventsController {
     description: 'Reschedule specific event',
   })
   @ApiBody({ type: RescheduleEventDto.Output })
-  @ApiOkResponse({
+  @ApiZodResponse({
     description: 'Reschedule Event Successful',
-    type: RescheduleEventResponseDto.Output,
+    type: RescheduleEventResponseDto,
   })
   async rescheduleEvent(@Body() dto: RescheduleEventDto) {
     await this.commandBus.execute(
@@ -213,7 +162,5 @@ export class EventsController {
         endsAt: dto.endsAt,
       }),
     );
-
-    return ResponseFormatter.success(null);
   }
 }

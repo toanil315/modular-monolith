@@ -4,10 +4,10 @@ import z from 'zod';
 
 const RequestSchema = z.object({
   categoryId: z.uuid().optional(),
-  startsAt: z.number().nonnegative().optional(),
-  endsAt: z.number().nonnegative().optional(),
-  page: z.number().min(1),
-  size: z.number().min(1).max(100),
+  startsAt: z.coerce.number().nonnegative().optional(),
+  endsAt: z.coerce.number().nonnegative().optional(),
+  page: z.coerce.number().min(1),
+  size: z.coerce.number().min(1).max(100),
 });
 
 export const ResponseSchema = z.object({

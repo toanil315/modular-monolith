@@ -5,6 +5,7 @@ import { ValidationPipe } from './modules/common/exceptions/validation/validatio
 import { ValidationExceptionFilter } from './modules/common/exceptions/validation/validation-exception.filter';
 import { CqrsModule } from '@nestjs/cqrs';
 import { RootEventsModule } from './modules/events/infrastructure/root.module';
+import { ServerExceptionsFilter } from './modules/common/exceptions/server/server-exception.filter';
 
 @Module({
   imports: [
@@ -22,6 +23,10 @@ import { RootEventsModule } from './modules/events/infrastructure/root.module';
     {
       provide: APP_FILTER,
       useClass: ValidationExceptionFilter,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: ServerExceptionsFilter,
     },
   ],
 })

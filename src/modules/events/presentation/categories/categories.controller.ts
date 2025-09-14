@@ -1,8 +1,8 @@
 import { Body, Controller, Get, Post, Param, Put } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBody, ApiOkResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
 import { END_POINT_TAGS } from '../tags';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { ResponseFormatter } from 'src/modules/common/formatters/response.formatter';
+import { ResponseFormatter } from 'src/modules/common/http/response.formatter';
 import { CreateCategoryCommand } from '../../application/categories/create-category/create-category.command';
 import {
   CreateCategoryDto,
@@ -27,6 +27,7 @@ import {
   GetCategoryByIdDto,
   GetCategoryResponseDto,
 } from './dtos/get-category.dto';
+import { ApiZodResponse } from 'src/modules/common/http/api-zod-response.decorator';
 
 @ApiTags(END_POINT_TAGS.CATEGORIES)
 @Controller(END_POINT_TAGS.CATEGORIES)
@@ -42,24 +43,18 @@ export class CategoriesController {
     description: 'New category creation entry',
   })
   @ApiBody({ type: CreateCategoryDto.Output })
-  @ApiOkResponse({
+  @ApiZodResponse({
     description: 'Create Category Successful',
-    type: CreateCategoryResponseDto.Output,
+    type: CreateCategoryResponseDto,
   })
   async createCategory(@Body() dto: CreateCategoryDto) {
-    const { id: categoryId } = await this.commandBus.execute(
+    const categoryId = await this.commandBus.execute(
       new CreateCategoryCommand({
         name: dto.name,
       }),
     );
 
-    function toDto(categoryId: string): CreateCategoryResponseDto {
-      return ResponseFormatter.success({
-        id: categoryId,
-      });
-    }
-
-    return toDto(categoryId);
+    return categoryId;
   }
 
   @Get()
@@ -67,24 +62,13 @@ export class CategoriesController {
     summary: 'Get Categories',
     description: 'Get all categories',
   })
-  @ApiOkResponse({
+  @ApiZodResponse({
     description: 'Get Categories Successful',
-    type: GetCategoriesResponseDto.Output,
+    type: GetCategoriesResponseDto,
   })
   async getCategories() {
     const categories = await this.queryBus.execute(new GetCategoriesQuery());
-
-    function toDto(categories: Category[]): GetCategoriesResponseDto {
-      return ResponseFormatter.success(
-        categories.map((category) => ({
-          id: category.id,
-          name: category.name,
-          isArchived: category.isArchived,
-        })),
-      );
-    }
-
-    return toDto(categories);
+    return categories;
   }
 
   @Get(':id')
@@ -92,24 +76,16 @@ export class CategoriesController {
     summary: 'Get Category By ID',
     description: 'Get specific category by ID',
   })
-  @ApiOkResponse({
+  @ApiZodResponse({
     description: 'Get Category Successful',
-    type: GetCategoryResponseDto.Output,
+    type: GetCategoryResponseDto,
   })
   async getCategory(@Param() { id }: GetCategoryByIdDto) {
     const category = await this.queryBus.execute(
       new GetCategoryQuery({ categoryId: id }),
     );
 
-    function toDto(category: Category): GetCategoryResponseDto {
-      return ResponseFormatter.success({
-        id: category.id,
-        name: category.name,
-        isArchived: category.isArchived,
-      });
-    }
-
-    return toDto(category);
+    return category;
   }
 
   @Put('update')
@@ -118,9 +94,9 @@ export class CategoriesController {
     description: 'Update name of category',
   })
   @ApiBody({ type: UpdateCategoryDto.Output })
-  @ApiOkResponse({
+  @ApiZodResponse({
     description: 'Update Category Successful',
-    type: UpdateCategoryResponseDto.Output,
+    type: UpdateCategoryResponseDto,
   })
   async updateCategory(@Body() dto: UpdateCategoryDto) {
     await this.commandBus.execute(
@@ -129,8 +105,6 @@ export class CategoriesController {
         name: dto.name,
       }),
     );
-
-    return ResponseFormatter.success(null);
   }
 
   @Put('archive')
@@ -139,9 +113,9 @@ export class CategoriesController {
     description: 'Archive specific category',
   })
   @ApiBody({ type: ArchiveCategoryDto.Output })
-  @ApiOkResponse({
+  @ApiZodResponse({
     description: 'Archive Category Successful',
-    type: ArchiveCategoryResponseDto.Output,
+    type: ArchiveCategoryResponseDto,
   })
   async archiveCategory(@Body() dto: ArchiveCategoryDto) {
     await this.commandBus.execute(
@@ -149,7 +123,5 @@ export class CategoriesController {
         id: dto.id,
       }),
     );
-
-    return ResponseFormatter.success(null);
   }
 }

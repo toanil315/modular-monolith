@@ -1,7 +1,5 @@
 import { Inject } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
-import { EventRepository } from 'src/modules/events/domain/events/event.repository';
-import { EVENT_REPOSITORY_TOKEN } from 'src/modules/events/infrastructure/events/event.repository.impl';
 import { GetEventQuery } from './get-event.query';
 import { EventExceptions } from 'src/modules/events/domain/events/event.exception';
 import { getDataSourceToken } from '@nestjs/typeorm';
@@ -26,11 +24,11 @@ export class GetEventQueryHandler implements IQueryHandler<GetEventQuery> {
         description: string;
         status: number;
         location: string;
-        startsAt: number;
-        endsAt: number;
+        startsAt: string;
+        endsAt: string;
         ticketTypeId: string;
         name: string;
-        price: number;
+        price: string;
         currency: string;
         quantity: number;
       }[]
@@ -71,7 +69,7 @@ export class GetEventQueryHandler implements IQueryHandler<GetEventQuery> {
               entity.ticketTypeId,
               entity.id,
               entity.name,
-              entity.price,
+              parseFloat(entity.price),
               entity.currency,
               entity.quantity,
             ),
@@ -86,14 +84,14 @@ export class GetEventQueryHandler implements IQueryHandler<GetEventQuery> {
             entity.description,
             entity.location,
             entity.status,
-            entity.startsAt,
-            entity.endsAt,
+            Number(entity.startsAt),
+            Number(entity.endsAt),
             [
               new TicketType(
                 entity.ticketTypeId,
                 entity.id,
                 entity.name,
-                entity.price,
+                parseFloat(entity.price),
                 entity.currency,
                 entity.quantity,
               ),

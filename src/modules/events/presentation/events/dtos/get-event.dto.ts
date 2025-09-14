@@ -21,6 +21,7 @@ const ResponseSchema = z.object({
   description: z.string().max(500).nonempty(),
   categoryId: z.uuid().nonempty(),
   location: z.string().max(255).nonempty(),
+  status: z.number().nonoptional(),
   startsAt: z.number().nonnegative(),
   endsAt: z.number().nonnegative(),
   ticketTypes: z.array(TicketTypeSchema),

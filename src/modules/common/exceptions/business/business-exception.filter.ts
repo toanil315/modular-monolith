@@ -6,7 +6,7 @@ import {
   Catch,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { ResponseFormatter } from '../../formatters/response.formatter';
+import { ResponseFormatter } from '../../http/response.formatter';
 import { BusinessException } from './business.exception';
 
 @Catch(BusinessException)

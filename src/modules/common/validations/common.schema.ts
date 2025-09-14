@@ -5,7 +5,7 @@ export const ApiSuccessResponseSchema = <T extends z.ZodTypeAny>(
 ) =>
   z.object({
     success: z.literal(true),
-    data: dataSchema.nullable(),
+    data: dataSchema.nullish(),
     message: z.string().optional(),
   });
 
