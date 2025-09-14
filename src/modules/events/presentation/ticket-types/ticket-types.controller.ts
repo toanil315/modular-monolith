@@ -7,7 +7,7 @@ import {
   CreateTicketTypeResponseDto,
 } from './dtos/create-ticket-type.dto';
 import { CreateTicketTypeCommand } from '../../application/ticket-types/create-ticket-type/create-ticket-type.command';
-import { ResponseFormatter } from 'src/modules/common/http/response.formatter';
+import { ResponseFormatter } from 'src/modules/common/presentation/http/response.formatter';
 import {
   GetTicketTypesDto,
   GetTicketTypesResponseDto,
@@ -24,7 +24,7 @@ import {
   UpdateTicketTypePriceResponseDto,
 } from './dtos/update-ticket-type-price.dto';
 import { UpdateTicketTypePriceCommand } from '../../application/ticket-types/update-ticket-type-price/update-ticket-type-price.command';
-import { ApiZodResponse } from 'src/modules/common/http/api-zod-response.decorator';
+import { ApiZodResponse } from 'src/modules/common/presentation/http/api-zod-response.decorator';
 
 @ApiTags(END_POINT_TAGS.TICKET_TYPES)
 @Controller(END_POINT_TAGS.TICKET_TYPES)

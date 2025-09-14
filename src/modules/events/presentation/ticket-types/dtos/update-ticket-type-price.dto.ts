@@ -1,5 +1,5 @@
 import { createZodDto } from 'nestjs-zod';
-import { ApiSuccessResponseSchema } from 'src/modules/common/validations/common.schema';
+import { ApiSuccessResponseSchema } from 'src/modules/common/presentation/validations/common.schema';
 import { z } from 'zod';
 
 const RequestSchema = z.object({

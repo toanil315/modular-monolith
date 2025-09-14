@@ -1,5 +1,5 @@
 import { DataSource, DataSourceOptions } from 'typeorm';
-import { SnakeNamingStrategy } from './naming-strategy';
+import { SnakeNamingStrategy } from '../../../common/infrastructure/database/naming-strategy';
 import { configDotenv } from 'dotenv';
 
 configDotenv();

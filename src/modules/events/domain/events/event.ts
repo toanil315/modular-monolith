@@ -1,5 +1,5 @@
 import { v4 as uuidV4 } from 'uuid';
-import { Entity } from '../abstractions/entity';
+import { Entity } from '../../../common/domain/entity';
 import { EventStatus } from './event-status';
 import { EventExceptions } from './event.exception';
 import { EventDomainEvent } from './event.domain-event';

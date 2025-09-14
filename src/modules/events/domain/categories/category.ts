@@ -1,5 +1,5 @@
 import { v4 as uuidV4 } from 'uuid';
-import { Entity } from '../abstractions/entity';
+import { Entity } from '../../../common/domain/entity';
 import { CategoryDomainEvent } from './category.domain-event';
 
 export class Category extends Entity {

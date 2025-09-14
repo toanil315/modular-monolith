@@ -9,7 +9,7 @@ import {
 import { CreateEventCommand } from '../../application/events/create-event/create-event.command';
 import { GetEventByIdDto, GetEventResponseDto } from './dtos/get-event.dto';
 import { GetEventQuery } from '../../application/events/get-event/get-event.query';
-import { ResponseFormatter } from 'src/modules/common/http/response.formatter';
+import { ResponseFormatter } from 'src/modules/common/presentation/http/response.formatter';
 import {
   CancelEventDto,
   CancelEventResponseDto,
@@ -33,7 +33,7 @@ import {
   SearchEventReturn,
   SearchEventsQuery,
 } from '../../application/events/search-event/search-event.query';
-import { ApiZodResponse } from 'src/modules/common/http/api-zod-response.decorator';
+import { ApiZodResponse } from 'src/modules/common/presentation/http/api-zod-response.decorator';
 
 @ApiTags(END_POINT_TAGS.EVENTS)
 @Controller(END_POINT_TAGS.EVENTS)

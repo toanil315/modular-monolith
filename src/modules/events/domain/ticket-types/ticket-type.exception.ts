@@ -1,4 +1,4 @@
-import { BusinessException } from 'src/modules/common/exceptions/business/business.exception';
+import { BusinessException } from 'src/modules/common/infrastructure/exceptions/business/business.exception';
 
 export namespace TicketTypeExceptions {
   export class TicketTypeNotFoundException extends BusinessException {

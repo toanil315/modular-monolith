@@ -1,4 +1,4 @@
-import { DomainEvent } from '../abstractions/domain-event';
+import { DomainEvent } from '../../../common/domain/domain-event';
 
 export namespace CategoryDomainEvent {
   export class CategoryCreatedDomainEvent extends DomainEvent {
