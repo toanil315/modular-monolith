@@ -5,6 +5,7 @@ import { getDataSourceToken } from '@nestjs/typeorm';
 import { EVENTS_CONNECTION_NAME } from 'src/modules/events/infrastructure/database/datasource';
 import { DataSource } from 'typeorm';
 import { Category } from 'src/modules/events/domain/categories/category';
+import { Result } from 'src/modules/common/domain/result';
 
 @QueryHandler(GetCategoriesQuery)
 export class GetCategoriesQueryHandler
@@ -15,7 +16,7 @@ export class GetCategoriesQueryHandler
     private readonly dataSource: DataSource,
   ) {}
 
-  async execute(query: GetCategoriesQuery): Promise<Category[]> {
+  async execute(query: GetCategoriesQuery) {
     const rawEntities = await this.dataSource.query<
       { id: string; name: string; isArchived: boolean }[]
     >(`
@@ -26,8 +27,10 @@ export class GetCategoriesQueryHandler
         FROM events.categories
     `);
 
-    return rawEntities.map(
-      (record) => new Category(record.id, record.name, record.isArchived),
+    return Result.success(
+      rawEntities.map(
+        (record) => new Category(record.id, record.name, record.isArchived),
+      ),
     );
   }
 }

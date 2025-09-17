@@ -31,9 +31,7 @@ export class Event extends Entity {
     endsAt: number,
   ) {
     if (endsAt < startsAt) {
-      return Result.failure<Event>(
-        new EventErrors.EventEndDatePrecedesStartDateError(),
-      );
+      return Result.failure(EventErrors.EventEndDatePrecedesStartDateError);
     }
 
     const event = new Event(
@@ -54,7 +52,7 @@ export class Event extends Entity {
 
   publish() {
     if (this.status !== EventStatus.Draft) {
-      return Result.failure<Event>(new EventErrors.EventNotDraftError());
+      return Result.failure(EventErrors.EventNotDraftError);
     }
 
     this.status = EventStatus.Published;
@@ -65,19 +63,15 @@ export class Event extends Entity {
 
   reschedule(startsAt: number, endsAt: number) {
     if (this.startsAt == startsAt && this.endsAt == endsAt) {
-      return Result.failure<Event>(
-        new EventErrors.EventScheduleIsSameAsPreviousError(),
-      );
+      return Result.failure(EventErrors.EventScheduleIsSameAsPreviousError);
     }
 
     if (startsAt < Date.now()) {
-      return Result.failure<Event>(new EventErrors.EventStartDateInPastError());
+      return Result.failure(EventErrors.EventStartDateInPastError);
     }
 
     if (startsAt > endsAt) {
-      return Result.failure<Event>(
-        new EventErrors.EventEndDatePrecedesStartDateError(),
-      );
+      return Result.failure(EventErrors.EventEndDatePrecedesStartDateError);
     }
 
     this.startsAt = startsAt;
@@ -95,11 +89,11 @@ export class Event extends Entity {
 
   cancel() {
     if (this.status === EventStatus.Canceled) {
-      return Result.failure<Event>(new EventErrors.EventAlreadyCanceledError());
+      return Result.failure(EventErrors.EventAlreadyCanceledError);
     }
 
     if (this.startsAt < Date.now()) {
-      return Result.failure<Event>(new EventErrors.EventAlreadyStartedError());
+      return Result.failure(EventErrors.EventAlreadyStartedError);
     }
 
     this.status = EventStatus.Canceled;

@@ -5,7 +5,7 @@ import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConne
 configDotenv();
 
 export class DatabaseConfiguration {
-  static get(): PostgresConnectionOptions {
+  static get(moduleDirName: string): PostgresConnectionOptions {
     return {
       type: 'postgres',
       host: process.env.POSTGRES_HOST,
@@ -13,9 +13,9 @@ export class DatabaseConfiguration {
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DATABASE,
-      entities: [__dirname + '/../**/*.entity.{ts,js}'],
+      entities: [moduleDirName + '/../**/*.entity.{ts,js}'],
       migrationsTableName: 'migrations',
-      migrations: [__dirname + '/migrations/*.{ts,js}'],
+      migrations: [moduleDirName + '/migrations/*.{ts,js}'],
       namingStrategy: new SnakeNamingStrategy(),
       migrationsRun: true,
     };

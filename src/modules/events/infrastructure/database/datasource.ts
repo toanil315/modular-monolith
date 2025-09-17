@@ -5,7 +5,7 @@ export const EVENTS_CONNECTION_NAME = 'eventsConnection';
 export const EVENTS_SCHEMA = 'events';
 
 const eventsDataSource = new DataSource({
-  ...DatabaseConfiguration.get(),
+  ...DatabaseConfiguration.get(__dirname),
   name: EVENTS_CONNECTION_NAME,
   schema: EVENTS_SCHEMA,
 });

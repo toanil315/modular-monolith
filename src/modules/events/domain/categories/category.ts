@@ -1,6 +1,7 @@
 import { v4 as uuidV4 } from 'uuid';
 import { Entity } from '../../../common/domain/entity';
 import { CategoryDomainEvent } from './category.domain-event';
+import { Result } from 'src/modules/common/domain/result';
 
 export class Category extends Entity {
   constructor(
@@ -11,28 +12,28 @@ export class Category extends Entity {
     super();
   }
 
-  static create(name: string): Category {
+  static create(name: string) {
     const category = new Category(uuidV4(), name, false);
 
     category.raise(
       new CategoryDomainEvent.CategoryCreatedDomainEvent(category.id),
     );
 
-    return category;
+    return Result.success(category);
   }
 
   archive() {
-    if (this.isArchived) return this;
+    if (this.isArchived) return Result.success(this);
 
     this.isArchived = true;
 
     this.raise(new CategoryDomainEvent.CategoryArchivedDomainEvent(this.id));
-    return this;
+    return Result.success(this);
   }
 
   changeName(name: string) {
     if (this.name === name) {
-      return this;
+      return Result.success(this);
     }
 
     this.name = name;
@@ -43,6 +44,6 @@ export class Category extends Entity {
         this.name,
       ),
     );
-    return this;
+    return Result.success(this);
   }
 }

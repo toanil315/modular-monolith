@@ -7,6 +7,7 @@ import { EVENTS_CONNECTION_NAME } from 'src/modules/events/infrastructure/databa
 import { DataSource } from 'typeorm';
 import { Event } from 'src/modules/events/domain/events/event';
 import { TicketType } from 'src/modules/events/domain/ticket-types/ticket-type';
+import { Result } from 'src/modules/common/domain/result';
 
 @QueryHandler(GetEventQuery)
 export class GetEventQueryHandler implements IQueryHandler<GetEventQuery> {
@@ -56,7 +57,7 @@ export class GetEventQueryHandler implements IQueryHandler<GetEventQuery> {
     );
 
     if (!rawEntities.length) {
-      throw new EventErrors.EventNotFoundError(props.eventId);
+      return Result.failure(EventErrors.EventNotFoundError(props.eventId));
     }
 
     const eventMap = new Map<string, Event>();
@@ -101,6 +102,6 @@ export class GetEventQueryHandler implements IQueryHandler<GetEventQuery> {
       }
     });
 
-    return eventMap.get(props.eventId)!;
+    return Result.success(eventMap.get(props.eventId)!);
   }
 }

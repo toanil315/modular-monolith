@@ -22,11 +22,11 @@ import { ServerExceptionsFilter } from './modules/common/infrastructure/exceptio
     },
     {
       provide: APP_FILTER,
-      useClass: ValidationExceptionFilter,
+      useClass: ServerExceptionsFilter,
     },
     {
       provide: APP_FILTER,
-      useClass: ServerExceptionsFilter,
+      useClass: ValidationExceptionFilter,
     },
   ],
 })

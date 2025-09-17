@@ -4,6 +4,7 @@ import { EventRepository } from 'src/modules/events/domain/events/event.reposito
 import { EVENT_REPOSITORY_TOKEN } from 'src/modules/events/infrastructure/events/event.repository.impl';
 import { CancelEventCommand } from './cancel-event.command';
 import { EventErrors } from 'src/modules/events/domain/events/event.exception';
+import { Result } from 'src/modules/common/domain/result';
 
 @CommandHandler(CancelEventCommand)
 export class CancelCommandHandler
@@ -17,10 +18,16 @@ export class CancelCommandHandler
     const event = await this.eventRepository.getById(props.id);
 
     if (!event) {
-      throw new EventErrors.EventNotFoundError(props.id);
+      return Result.failure(EventErrors.EventNotFoundError(props.id));
     }
 
-    event.cancel();
-    await this.eventRepository.save(event);
+    const result = event.cancel();
+
+    if (!result.isSuccess) {
+      return result;
+    }
+
+    await this.eventRepository.save(result.value);
+    return result;
   }
 }

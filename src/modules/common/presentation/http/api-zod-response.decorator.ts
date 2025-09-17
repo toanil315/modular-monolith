@@ -1,8 +1,8 @@
 import { applyDecorators, UseInterceptors } from '@nestjs/common';
 import { ApiOkResponse } from '@nestjs/swagger';
 import { createZodDto } from 'nestjs-zod';
-import { ResponseTransformInterceptor } from './response.formatter.interceptor';
 import z from 'zod';
+import { ResultTransformInterceptor } from './result-transform.interceptor';
 
 export function ApiZodResponse({
   type,
@@ -16,6 +16,6 @@ export function ApiZodResponse({
       description,
       type: type.Output,
     }),
-    UseInterceptors(new ResponseTransformInterceptor(type.schema as z.ZodAny)),
+    UseInterceptors(new ResultTransformInterceptor(type.schema as z.ZodAny)),
   );
 }

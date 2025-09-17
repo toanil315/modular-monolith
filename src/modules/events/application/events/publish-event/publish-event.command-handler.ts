@@ -4,6 +4,7 @@ import { Inject } from '@nestjs/common';
 import { EVENT_REPOSITORY_TOKEN } from 'src/modules/events/infrastructure/events/event.repository.impl';
 import { EventRepository } from 'src/modules/events/domain/events/event.repository';
 import { EventErrors } from 'src/modules/events/domain/events/event.exception';
+import { Result } from 'src/modules/common/domain/result';
 
 @CommandHandler(PublishEventCommand)
 export class PublishEventCommandHandler
@@ -13,14 +14,20 @@ export class PublishEventCommandHandler
     @Inject(EVENT_REPOSITORY_TOKEN) private eventRepository: EventRepository,
   ) {}
 
-  async execute({ props }: PublishEventCommand): Promise<void> {
+  async execute({ props }: PublishEventCommand) {
     const event = await this.eventRepository.getById(props.id);
 
     if (!event) {
-      throw new EventErrors.EventNotFoundError(props.id);
+      return Result.failure(EventErrors.EventNotFoundError(props.id));
     }
 
-    event.publish();
-    await this.eventRepository.save(event);
+    const result = event.publish();
+
+    if (!result.isSuccess) {
+      return result;
+    }
+
+    await this.eventRepository.save(result.value);
+    return result;
   }
 }

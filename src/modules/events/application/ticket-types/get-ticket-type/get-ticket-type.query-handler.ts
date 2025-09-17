@@ -3,7 +3,8 @@ import { GetTicketTypeQuery } from './get-ticket-type.query';
 import { Inject } from '@nestjs/common';
 import { TICKET_TYPE_REPOSITORY_TOKEN } from 'src/modules/events/infrastructure/ticket-types/ticket-type.repository.impl';
 import { TicketTypeRepository } from 'src/modules/events/domain/ticket-types/ticket-type.repository';
-import { TicketTypeExceptions } from 'src/modules/events/domain/ticket-types/ticket-type.exception';
+import { Result } from 'src/modules/common/domain/result';
+import { TicketTypeErrors } from 'src/modules/events/domain/ticket-types/ticket-type.exception';
 
 @QueryHandler(GetTicketTypeQuery)
 export class GetTicketTypeQueryHandler
@@ -18,9 +19,9 @@ export class GetTicketTypeQueryHandler
     const ticketType = await this.ticketTypeRepository.getById(props.id);
 
     if (!ticketType) {
-      throw new TicketTypeExceptions.TicketTypeNotFoundException(props.id);
+      return Result.failure(TicketTypeErrors.TicketTypeNotFoundError(props.id));
     }
 
-    return ticketType;
+    return Result.success(ticketType);
   }
 }

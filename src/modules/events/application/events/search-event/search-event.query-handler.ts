@@ -7,6 +7,7 @@ import { EVENTS_CONNECTION_NAME } from 'src/modules/events/infrastructure/databa
 import { EventStatus } from 'src/modules/events/domain/events/event-status';
 import { Event } from 'src/modules/events/domain/events/event';
 import { SearchEventsQuery } from './search-event.query';
+import { Result } from 'src/modules/common/domain/result';
 
 interface EventResponse {
   id: string;
@@ -40,7 +41,7 @@ export class SearchEventsQueryHandler
     const events = await this.getEvents(parameters);
     const totalCount = await this.countEvents(parameters);
 
-    return {
+    return Result.success({
       page: props.page,
       size: props.size,
       totalCount,
@@ -58,7 +59,7 @@ export class SearchEventsQueryHandler
             [],
           ),
       ),
-    };
+    });
   }
 
   private async getEvents(parameters: {

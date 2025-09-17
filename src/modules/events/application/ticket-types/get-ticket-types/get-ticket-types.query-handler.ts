@@ -5,6 +5,7 @@ import { getDataSourceToken } from '@nestjs/typeorm';
 import { EVENTS_CONNECTION_NAME } from 'src/modules/events/infrastructure/database/datasource';
 import { DataSource } from 'typeorm';
 import { TicketType } from 'src/modules/events/domain/ticket-types/ticket-type';
+import { Result } from 'src/modules/common/domain/result';
 
 @QueryHandler(GetTicketTypesQuery)
 export class GetTicketTypesQueryHandler
@@ -15,7 +16,7 @@ export class GetTicketTypesQueryHandler
     private readonly dataSource: DataSource,
   ) {}
 
-  async execute({ props }: GetTicketTypesQuery): Promise<TicketType[]> {
+  async execute({ props }: GetTicketTypesQuery) {
     const rawEntities = await this.dataSource.query<
       {
         id: string;
@@ -40,16 +41,18 @@ export class GetTicketTypesQueryHandler
       [props.eventId],
     );
 
-    return rawEntities.map(
-      (record) =>
-        new TicketType(
-          record.id,
-          record.eventId,
-          record.name,
-          record.price,
-          record.currency,
-          record.quantity,
-        ),
+    return Result.success(
+      rawEntities.map(
+        (record) =>
+          new TicketType(
+            record.id,
+            record.eventId,
+            record.name,
+            record.price,
+            record.currency,
+            record.quantity,
+          ),
+      ),
     );
   }
 }

@@ -2,7 +2,6 @@ import { Body, Controller, Get, Post, Param, Put } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
 import { END_POINT_TAGS } from '../tags';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { ResponseFormatter } from 'src/modules/common/presentation/http/response.formatter';
 import { CreateCategoryCommand } from '../../application/categories/create-category/create-category.command';
 import {
   CreateCategoryDto,
@@ -10,7 +9,6 @@ import {
 } from './dtos/create-category.dto';
 
 import { GetCategoryQuery } from '../../application/categories/get-category/get-category.query';
-import { Category } from '../../domain/categories/category';
 import { GetCategoriesResponseDto } from './dtos/get-categories.dto';
 import { GetCategoriesQuery } from '../../application/categories/get-categories/get-categories.query';
 import {

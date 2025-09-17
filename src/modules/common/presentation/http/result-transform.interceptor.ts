@@ -4,7 +4,7 @@ import {
   ExecutionContext,
   CallHandler,
   InternalServerErrorException,
-  BadRequestException,
+  HttpStatus,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -12,40 +12,65 @@ import z from 'zod';
 import { ResponseFormatter } from './response.formatter';
 import { ApiSuccessResponse } from '../validations/common.schema';
 import { Result } from '../../domain/result';
-import { BusinessError } from '../../domain/error';
+import { ErrorType } from '../../domain/error';
+import { Response } from 'express';
 
 @Injectable()
 export class ResultTransformInterceptor<T>
-  implements NestInterceptor<Result<T>, ApiSuccessResponse<T>>
+  implements NestInterceptor<Result<T>, ApiSuccessResponse<T> | undefined>
 {
   constructor(private readonly schema: z.ZodAny) {}
 
   intercept(
     context: ExecutionContext,
     next: CallHandler,
-  ): Observable<ApiSuccessResponse<T>> {
-    const toDto = (result: Result<T>) => {
-      // Handle failures from the domain
-      if (!result.isSuccess) {
-        const error = result.businessError!;
-        const response = context.switchToHttp().getResponse()
+  ): Observable<ApiSuccessResponse<T> | undefined> {
+    return next
+      .handle()
+      .pipe(map((result) => this.fromResultToDto(result, context)));
+  }
 
-   
-        }
+  private fromResultToDto(result: Result<T>, context: ExecutionContext) {
+    if (!result.isSuccess) {
+      const error = result.businessError!;
+      const response: Response = context.switchToHttp().getResponse();
+      response
+        .status(this.fromErrorTypeToStatusCode(error.type))
+        .json(
+          ResponseFormatter.error(error.code, error.message, error.details),
+        );
+
+      return;
+    }
+
+    const { success, data } = this.schema.safeParse(
+      ResponseFormatter.success(result.value),
+    );
+
+    if (!success) {
+      throw new InternalServerErrorException('Response validation failed');
+    }
+
+    return data as ApiSuccessResponse<T>;
+  }
+
+  private fromErrorTypeToStatusCode(type: ErrorType) {
+    switch (type) {
+      case ErrorType.Problem: {
+        return HttpStatus.BAD_REQUEST;
       }
 
-      // Handle success
-      const { success, data } = this.schema.safeParse(
-        ResponseFormatter.success(result.value),
-      );
-
-      if (!success) {
-        throw new InternalServerErrorException('Response validation failed');
+      case ErrorType.NotFound: {
+        return HttpStatus.NOT_FOUND;
       }
 
-      return data as ApiSuccessResponse<T>;
-    };
+      case ErrorType.Conflict: {
+        return HttpStatus.CONFLICT;
+      }
 
-    return next.handle().pipe(map(toDto));
+      default: {
+        return HttpStatus.INTERNAL_SERVER_ERROR;
+      }
+    }
   }
 }

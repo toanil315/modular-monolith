@@ -3,7 +3,8 @@ import { UpdateCategoryCommand } from './update-category.command';
 import { Inject } from '@nestjs/common';
 import { CATEGORY_REPOSITORY_TOKEN } from 'src/modules/events/infrastructure/categories/category.repository.impl';
 import { CategoryRepository } from 'src/modules/events/domain/categories/category.repository';
-import { CategoryExceptions } from 'src/modules/events/domain/categories/category.exception';
+import { CategoryErrors } from 'src/modules/events/domain/categories/category.exception';
+import { Result } from 'src/modules/common/domain/result';
 
 @CommandHandler(UpdateCategoryCommand)
 export class UpdateCategoryCommandHandler
@@ -14,16 +15,16 @@ export class UpdateCategoryCommandHandler
     private categoryRepository: CategoryRepository,
   ) {}
 
-  async execute({ props }: UpdateCategoryCommand): Promise<void> {
+  async execute({ props }: UpdateCategoryCommand) {
     const category = await this.categoryRepository.getById(props.id);
 
-    console.log(category);
-
     if (!category) {
-      throw new CategoryExceptions.CategoryNotFoundException(props.id);
+      return Result.failure(CategoryErrors.CategoryNotFoundError(props.id));
     }
 
-    category.changeName(props.name);
-    await this.categoryRepository.save(category);
+    const result = category.changeName(props.name);
+    await this.categoryRepository.save(result.value);
+
+    return result;
   }
 }

@@ -4,6 +4,7 @@ import { EVENT_REPOSITORY_TOKEN } from 'src/modules/events/infrastructure/events
 import { EventRepository } from 'src/modules/events/domain/events/event.repository';
 import { EventErrors } from 'src/modules/events/domain/events/event.exception';
 import { RescheduleEventCommand } from './reschedule-event.command';
+import { Result } from 'src/modules/common/domain/result';
 
 @CommandHandler(RescheduleEventCommand)
 export class RescheduleEventCommandHandler
@@ -13,14 +14,20 @@ export class RescheduleEventCommandHandler
     @Inject(EVENT_REPOSITORY_TOKEN) private eventRepository: EventRepository,
   ) {}
 
-  async execute({ props }: RescheduleEventCommand): Promise<void> {
+  async execute({ props }: RescheduleEventCommand) {
     const event = await this.eventRepository.getById(props.id);
 
     if (!event) {
-      throw new EventErrors.EventNotFoundError(props.id);
+      return Result.failure(EventErrors.EventNotFoundError(props.id));
     }
 
-    event.reschedule(props.startsAt, props.endsAt);
-    await this.eventRepository.save(event);
+    const result = event.reschedule(props.startsAt, props.endsAt);
+
+    if (!result.isSuccess) {
+      return result;
+    }
+
+    await this.eventRepository.save(result.value);
+    return result;
   }
 }

@@ -2,6 +2,7 @@ import { v4 as uuidV4 } from 'uuid';
 import { Entity } from '../../../common/domain/entity';
 import { TicketTypeDomainEvent } from './ticket-type.domain-event';
 import { Event } from '../events/event';
+import { Result } from 'src/modules/common/domain/result';
 
 export class TicketType extends Entity {
   constructor(
@@ -21,7 +22,7 @@ export class TicketType extends Entity {
     price: number,
     currency: string,
     quantity: number,
-  ): TicketType {
+  ) {
     const ticketType = new TicketType(
       uuidV4(),
       event.id,
@@ -35,11 +36,11 @@ export class TicketType extends Entity {
       new TicketTypeDomainEvent.TicketTypeCreatedDomainEvent(ticketType.id),
     );
 
-    return ticketType;
+    return Result.success(ticketType);
   }
 
-  updatePrice(price: number): this {
-    if (this.price === price) return this;
+  updatePrice(price: number) {
+    if (this.price === price) return Result.success(this);
 
     this.price = price;
 
@@ -50,6 +51,6 @@ export class TicketType extends Entity {
       ),
     );
 
-    return this;
+    return Result.success(this);
   }
 }

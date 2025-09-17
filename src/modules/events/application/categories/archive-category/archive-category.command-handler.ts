@@ -3,7 +3,8 @@ import { ArchiveCategoryCommand } from './archive-category.command';
 import { Inject } from '@nestjs/common';
 import { CATEGORY_REPOSITORY_TOKEN } from 'src/modules/events/infrastructure/categories/category.repository.impl';
 import { CategoryRepository } from 'src/modules/events/domain/categories/category.repository';
-import { CategoryExceptions } from 'src/modules/events/domain/categories/category.exception';
+import { CategoryErrors } from 'src/modules/events/domain/categories/category.exception';
+import { Result } from 'src/modules/common/domain/result';
 
 @CommandHandler(ArchiveCategoryCommand)
 export class ArchiveCategoryCommandHandler
@@ -14,14 +15,16 @@ export class ArchiveCategoryCommandHandler
     private categoryRepository: CategoryRepository,
   ) {}
 
-  async execute({ props }: ArchiveCategoryCommand): Promise<void> {
+  async execute({ props }: ArchiveCategoryCommand) {
     const category = await this.categoryRepository.getById(props.id);
 
     if (!category) {
-      throw new CategoryExceptions.CategoryNotFoundException(props.id);
+      return Result.failure(CategoryErrors.CategoryNotFoundError(props.id));
     }
 
-    category.archive();
-    await this.categoryRepository.save(category);
+    const result = category.archive();
+    await this.categoryRepository.save(result.value);
+
+    return result;
   }
 }

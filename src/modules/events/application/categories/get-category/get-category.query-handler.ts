@@ -3,7 +3,8 @@ import { GetCategoryQuery } from './get-category.query';
 import { Inject } from '@nestjs/common';
 import { CATEGORY_REPOSITORY_TOKEN } from 'src/modules/events/infrastructure/categories/category.repository.impl';
 import { CategoryRepository } from 'src/modules/events/domain/categories/category.repository';
-import { CategoryExceptions } from 'src/modules/events/domain/categories/category.exception';
+import { CategoryErrors } from 'src/modules/events/domain/categories/category.exception';
+import { Result } from 'src/modules/common/domain/result';
 
 @QueryHandler(GetCategoryQuery)
 export class GetCategoryQueryHandler
@@ -18,9 +19,11 @@ export class GetCategoryQueryHandler
     const category = await this.categoryRepository.getById(props.categoryId);
 
     if (!category) {
-      throw new CategoryExceptions.CategoryNotFoundException(props.categoryId);
+      return Result.failure(
+        CategoryErrors.CategoryNotFoundError(props.categoryId),
+      );
     }
 
-    return category;
+    return Result.success(category);
   }
 }

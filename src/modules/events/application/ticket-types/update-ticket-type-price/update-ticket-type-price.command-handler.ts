@@ -3,7 +3,8 @@ import { UpdateTicketTypePriceCommand } from './update-ticket-type-price.command
 import { Inject } from '@nestjs/common';
 import { TICKET_TYPE_REPOSITORY_TOKEN } from 'src/modules/events/infrastructure/ticket-types/ticket-type.repository.impl';
 import { TicketTypeRepository } from 'src/modules/events/domain/ticket-types/ticket-type.repository';
-import { TicketTypeExceptions } from 'src/modules/events/domain/ticket-types/ticket-type.exception';
+import { Result } from 'src/modules/common/domain/result';
+import { TicketTypeErrors } from 'src/modules/events/domain/ticket-types/ticket-type.exception';
 
 @CommandHandler(UpdateTicketTypePriceCommand)
 export class UpdateTicketTypePriceCommandHandler
@@ -14,14 +15,16 @@ export class UpdateTicketTypePriceCommandHandler
     private ticketTypeRepository: TicketTypeRepository,
   ) {}
 
-  async execute({ props }: UpdateTicketTypePriceCommand): Promise<void> {
+  async execute({ props }: UpdateTicketTypePriceCommand) {
     const ticketType = await this.ticketTypeRepository.getById(props.id);
 
     if (!ticketType) {
-      throw new TicketTypeExceptions.TicketTypeNotFoundException(props.id);
+      return Result.failure(TicketTypeErrors.TicketTypeNotFoundError(props.id));
     }
 
-    ticketType.updatePrice(props.price);
-    await this.ticketTypeRepository.save(ticketType);
+    const result = ticketType.updatePrice(props.price);
+    await this.ticketTypeRepository.save(result.value);
+
+    return result;
   }
 }

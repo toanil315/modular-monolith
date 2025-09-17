@@ -1,4 +1,5 @@
 import { Query } from '@nestjs/cqrs';
+import { Result } from 'src/modules/common/domain/result';
 import { Event } from 'src/modules/events/domain/events/event';
 
 export interface SearchEventReturn {
@@ -8,7 +9,7 @@ export interface SearchEventReturn {
   records: Event[];
 }
 
-export class SearchEventsQuery extends Query<SearchEventReturn> {
+export class SearchEventsQuery extends Query<Result<SearchEventReturn>> {
   constructor(
     public readonly props: {
       categoryId?: string;
