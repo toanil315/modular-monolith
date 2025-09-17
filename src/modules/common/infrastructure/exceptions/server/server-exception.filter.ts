@@ -1,12 +1,12 @@
 import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
-import { BusinessException } from '../business/business.exception';
 import { ValidationException } from '../validation/validation.exception';
 import { Response } from 'express';
+import { BusinessError } from 'src/modules/common/domain/error';
 
 @Catch()
 export class ServerExceptionsFilter implements ExceptionFilter {
   catch(exception: unknown, host: ArgumentsHost) {
-    if (exception instanceof BusinessException) {
+    if (exception instanceof BusinessError) {
       throw exception;
     }
 

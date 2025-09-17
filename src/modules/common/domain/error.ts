@@ -1,14 +1,14 @@
-export interface BusinessExceptionOptions {
+export interface BusinessErrorOptions {
   code: string;
   message: string;
   details?: unknown;
 }
 
-export class BusinessException extends Error {
+export class BusinessError extends Error {
   public readonly code: string;
   public readonly details?: unknown;
 
-  constructor({ code, message, details }: BusinessExceptionOptions) {
+  constructor({ code, message, details }: BusinessErrorOptions) {
     super(message);
     this.code = code;
     this.details = details;

@@ -1,7 +1,7 @@
-import { BusinessException } from 'src/modules/common/infrastructure/exceptions/business/business.exception';
+import { BusinessError } from 'src/modules/common/domain/error';
 
 export namespace TicketTypeExceptions {
-  export class TicketTypeNotFoundException extends BusinessException {
+  export class TicketTypeNotFoundException extends BusinessError {
     constructor(ticketTypeId: string) {
       super({
         code: 'TICKET_TYPES.NOT_FOUND',

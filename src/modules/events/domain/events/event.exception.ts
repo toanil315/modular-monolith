@@ -1,7 +1,7 @@
-import { BusinessException } from 'src/modules/common/infrastructure/exceptions/business/business.exception';
+import { BusinessError } from 'src/modules/common/domain/error';
 
-export namespace EventExceptions {
-  export class EventNotFoundException extends BusinessException {
+export namespace EventErrors {
+  export class EventNotFoundError extends BusinessError {
     constructor(eventId: string) {
       super({
         code: 'EVENTS.NOT_FOUND',
@@ -10,7 +10,7 @@ export namespace EventExceptions {
     }
   }
 
-  export class EventStartDateInPastException extends BusinessException {
+  export class EventStartDateInPastError extends BusinessError {
     constructor() {
       super({
         code: 'EVENTS.START_DATE_IN_PAST',
@@ -19,7 +19,7 @@ export namespace EventExceptions {
     }
   }
 
-  export class EventEndDatePrecedesStartDateException extends BusinessException {
+  export class EventEndDatePrecedesStartDateError extends BusinessError {
     constructor() {
       super({
         code: 'EVENTS.END_DATE_PRECEDES_START_DATE',
@@ -28,7 +28,7 @@ export namespace EventExceptions {
     }
   }
 
-  export class EventNoTicketsFoundException extends BusinessException {
+  export class EventNoTicketsFoundError extends BusinessError {
     constructor() {
       super({
         code: 'EVENTS.NO_TICKETS_FOUND',
@@ -37,7 +37,7 @@ export namespace EventExceptions {
     }
   }
 
-  export class EventNotDraftException extends BusinessException {
+  export class EventNotDraftError extends BusinessError {
     constructor() {
       super({
         code: 'EVENTS.NOT_DRAFT',
@@ -46,7 +46,7 @@ export namespace EventExceptions {
     }
   }
 
-  export class EventAlreadyCanceledException extends BusinessException {
+  export class EventAlreadyCanceledError extends BusinessError {
     constructor() {
       super({
         code: 'EVENTS.ALREADY_CANCELED',
@@ -55,11 +55,20 @@ export namespace EventExceptions {
     }
   }
 
-  export class EventAlreadyStartedException extends BusinessException {
+  export class EventAlreadyStartedError extends BusinessError {
     constructor() {
       super({
         code: 'EVENTS.ALREADY_STARTED',
         message: 'The event has already started',
+      });
+    }
+  }
+
+  export class EventScheduleIsSameAsPreviousError extends BusinessError {
+    constructor() {
+      super({
+        code: 'EVENTS.SAME_SCHEDULE_AS_PREVIOUS',
+        message: "The event's schedule is same as previous",
       });
     }
   }

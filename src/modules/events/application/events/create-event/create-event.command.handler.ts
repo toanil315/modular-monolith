@@ -7,7 +7,8 @@ import { Event } from 'src/modules/events/domain/events/event';
 import { CATEGORY_REPOSITORY_TOKEN } from 'src/modules/events/infrastructure/categories/category.repository.impl';
 import { CategoryRepository } from 'src/modules/events/domain/categories/category.repository';
 import { CategoryExceptions } from 'src/modules/events/domain/categories/category.exception';
-import { EventExceptions } from 'src/modules/events/domain/events/event.exception';
+import { EventErrors } from 'src/modules/events/domain/events/event.exception';
+import { Result } from 'src/modules/common/domain/result';
 
 @CommandHandler(CreateEventCommand)
 export class CreateEventCommandHandler
@@ -21,16 +22,18 @@ export class CreateEventCommandHandler
 
   async execute({ props }: CreateEventCommand) {
     if (props.startsAt < Date.now()) {
-      throw new EventExceptions.EventStartDateInPastException();
+      return Result.failure(new EventErrors.EventStartDateInPastError());
     }
 
     const category = await this.categoryToken.getById(props.categoryId);
 
     if (!category) {
-      throw new CategoryExceptions.CategoryNotFoundException(props.categoryId);
+      return Result.failure(
+        new CategoryExceptions.CategoryNotFoundException(props.categoryId),
+      );
     }
 
-    const newEvent = Event.create(
+    const result = Event.create(
       category,
       props.title,
       props.description,
@@ -38,8 +41,13 @@ export class CreateEventCommandHandler
       props.startsAt,
       props.endsAt,
     );
-    await this.eventRepository.insert(newEvent);
 
-    return { id: newEvent.id };
+    if (!result.isSuccess) {
+      return result;
+    }
+
+    await this.eventRepository.insert(result.value);
+
+    return result;
   }
 }

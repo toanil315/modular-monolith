@@ -9,7 +9,6 @@ import {
 import { CreateEventCommand } from '../../application/events/create-event/create-event.command';
 import { GetEventByIdDto, GetEventResponseDto } from './dtos/get-event.dto';
 import { GetEventQuery } from '../../application/events/get-event/get-event.query';
-import { ResponseFormatter } from 'src/modules/common/presentation/http/response.formatter';
 import {
   CancelEventDto,
   CancelEventResponseDto,
@@ -29,10 +28,7 @@ import {
   SearchEventsDto,
   SearchEventsResponseDto,
 } from './dtos/search-event.dto';
-import {
-  SearchEventReturn,
-  SearchEventsQuery,
-} from '../../application/events/search-event/search-event.query';
+import { SearchEventsQuery } from '../../application/events/search-event/search-event.query';
 import { ApiZodResponse } from 'src/modules/common/presentation/http/api-zod-response.decorator';
 
 @ApiTags(END_POINT_TAGS.EVENTS)
@@ -54,7 +50,7 @@ export class EventsController {
     type: CreateEventResponseDto,
   })
   async createEvent(@Body() dto: CreateEventDto) {
-    const eventId = await this.commandBus.execute(
+    return this.commandBus.execute(
       new CreateEventCommand({
         categoryId: dto.categoryId,
         title: dto.title,
@@ -64,8 +60,6 @@ export class EventsController {
         endsAt: dto.endsAt,
       }),
     );
-
-    return eventId;
   }
 
   @Get('search')

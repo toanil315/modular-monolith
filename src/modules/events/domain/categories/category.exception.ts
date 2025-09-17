@@ -1,7 +1,7 @@
-import { BusinessException } from 'src/modules/common/infrastructure/exceptions/business/business.exception';
+import { BusinessError } from 'src/modules/common/domain/error';
 
 export namespace CategoryExceptions {
-  export class CategoryNotFoundException extends BusinessException {
+  export class CategoryNotFoundException extends BusinessError {
     constructor(categoryId: string) {
       super({
         code: 'CATEGORIES.NOT_FOUND',

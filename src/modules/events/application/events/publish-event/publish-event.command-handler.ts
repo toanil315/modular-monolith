@@ -3,7 +3,7 @@ import { PublishEventCommand } from './publish-event.command';
 import { Inject } from '@nestjs/common';
 import { EVENT_REPOSITORY_TOKEN } from 'src/modules/events/infrastructure/events/event.repository.impl';
 import { EventRepository } from 'src/modules/events/domain/events/event.repository';
-import { EventExceptions } from 'src/modules/events/domain/events/event.exception';
+import { EventErrors } from 'src/modules/events/domain/events/event.exception';
 
 @CommandHandler(PublishEventCommand)
 export class PublishEventCommandHandler
@@ -17,7 +17,7 @@ export class PublishEventCommandHandler
     const event = await this.eventRepository.getById(props.id);
 
     if (!event) {
-      throw new EventExceptions.EventNotFoundException(props.id);
+      throw new EventErrors.EventNotFoundError(props.id);
     }
 
     event.publish();

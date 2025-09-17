@@ -7,16 +7,16 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 import { ResponseFormatter } from '../../../presentation/http/response.formatter';
-import { BusinessException } from './business.exception';
+import { BusinessError } from 'src/modules/common/domain/error';
 
-@Catch(BusinessException)
-export class BusinessExceptionFilter implements ExceptionFilter {
+@Catch(BusinessError)
+export class BusinessErrorFilter implements ExceptionFilter {
   constructor(
     @Inject('EXCEPTION_REGISTRY')
     private readonly registry: Map<Function, number>,
   ) {}
 
-  catch(exception: BusinessException, host: ArgumentsHost) {
+  catch(exception: BusinessError, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
 
@@ -33,7 +33,7 @@ export class BusinessExceptionFilter implements ExceptionFilter {
       );
   }
 
-  private fromExceptionToHttpStatus(exception: BusinessException): number {
+  private fromExceptionToHttpStatus(exception: BusinessError): number {
     const status = this.registry.get(exception.constructor);
     if (status) return status;
     return HttpStatus.BAD_REQUEST;

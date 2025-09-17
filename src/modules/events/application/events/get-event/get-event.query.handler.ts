@@ -1,7 +1,7 @@
 import { Inject } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { GetEventQuery } from './get-event.query';
-import { EventExceptions } from 'src/modules/events/domain/events/event.exception';
+import { EventErrors } from 'src/modules/events/domain/events/event.exception';
 import { getDataSourceToken } from '@nestjs/typeorm';
 import { EVENTS_CONNECTION_NAME } from 'src/modules/events/infrastructure/database/datasource';
 import { DataSource } from 'typeorm';
@@ -56,7 +56,7 @@ export class GetEventQueryHandler implements IQueryHandler<GetEventQuery> {
     );
 
     if (!rawEntities.length) {
-      throw new EventExceptions.EventNotFoundException(props.eventId);
+      throw new EventErrors.EventNotFoundError(props.eventId);
     }
 
     const eventMap = new Map<string, Event>();

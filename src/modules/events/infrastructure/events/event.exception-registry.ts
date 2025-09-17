@@ -1,9 +1,9 @@
 import { HttpStatus } from '@nestjs/common';
-import { EventExceptions } from '../../domain/events/event.exception';
+import { EventErrors } from '../../domain/events/event.exception';
 
 export const EventExceptionRegistry = new Map<Function, number>([
-  [EventExceptions.EventNotFoundException, HttpStatus.NOT_FOUND],
-  [EventExceptions.EventAlreadyCanceledException, HttpStatus.CONFLICT],
-  [EventExceptions.EventAlreadyStartedException, HttpStatus.CONFLICT],
-  [EventExceptions.EventNotDraftException, HttpStatus.CONFLICT],
+  [EventErrors.EventNotFoundError, HttpStatus.NOT_FOUND],
+  [EventErrors.EventAlreadyCanceledError, HttpStatus.CONFLICT],
+  [EventErrors.EventAlreadyStartedError, HttpStatus.CONFLICT],
+  [EventErrors.EventNotDraftError, HttpStatus.CONFLICT],
 ]);

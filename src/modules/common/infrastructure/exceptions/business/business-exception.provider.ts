@@ -1,9 +1,9 @@
 import { Provider } from '@nestjs/common';
 import { EXCEPTION_REGISTRY } from './exception-registry.token';
 import { APP_FILTER } from '@nestjs/core';
-import { BusinessExceptionFilter } from './business-exception.filter';
+import { BusinessErrorFilter } from './business-exception.filter';
 
-export class BusinessExceptionProvider {
+export class BusinessErrorProvider {
   static get(exceptionRegistry: Map<Function, number>): Provider[] {
     return [
       {
@@ -12,7 +12,7 @@ export class BusinessExceptionProvider {
       },
       {
         provide: APP_FILTER,
-        useClass: BusinessExceptionFilter,
+        useClass: BusinessErrorFilter,
       },
     ];
   }

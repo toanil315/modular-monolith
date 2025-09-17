@@ -2,7 +2,7 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { Inject } from '@nestjs/common';
 import { EVENT_REPOSITORY_TOKEN } from 'src/modules/events/infrastructure/events/event.repository.impl';
 import { EventRepository } from 'src/modules/events/domain/events/event.repository';
-import { EventExceptions } from 'src/modules/events/domain/events/event.exception';
+import { EventErrors } from 'src/modules/events/domain/events/event.exception';
 import { RescheduleEventCommand } from './reschedule-event.command';
 
 @CommandHandler(RescheduleEventCommand)
@@ -17,7 +17,7 @@ export class RescheduleEventCommandHandler
     const event = await this.eventRepository.getById(props.id);
 
     if (!event) {
-      throw new EventExceptions.EventNotFoundException(props.id);
+      throw new EventErrors.EventNotFoundError(props.id);
     }
 
     event.reschedule(props.startsAt, props.endsAt);

@@ -1,10 +1,11 @@
 import { v4 as uuidV4 } from 'uuid';
 import { Entity } from '../../../common/domain/entity';
 import { EventStatus } from './event-status';
-import { EventExceptions } from './event.exception';
+import { EventErrors } from './event.exception';
 import { EventDomainEvent } from './event.domain-event';
 import { Category } from '../categories/category';
 import { TicketType } from '../ticket-types/ticket-type';
+import { Result } from 'src/modules/common/domain/result';
 
 export class Event extends Entity {
   constructor(
@@ -29,6 +30,12 @@ export class Event extends Entity {
     startsAt: number,
     endsAt: number,
   ) {
+    if (endsAt < startsAt) {
+      return Result.failure<Event>(
+        new EventErrors.EventEndDatePrecedesStartDateError(),
+      );
+    }
+
     const event = new Event(
       uuidV4(),
       category.id,
@@ -42,31 +49,35 @@ export class Event extends Entity {
 
     event.raise(new EventDomainEvent.EventCreatedDomainEvent(event.id));
 
-    return event;
+    return Result.success(event);
   }
 
   publish() {
     if (this.status !== EventStatus.Draft) {
-      throw new EventExceptions.EventNotDraftException();
+      return Result.failure<Event>(new EventErrors.EventNotDraftError());
     }
 
     this.status = EventStatus.Published;
 
     this.raise(new EventDomainEvent.EventPublishedDomainEvent(this.id));
-    return this;
+    return Result.success(this);
   }
 
   reschedule(startsAt: number, endsAt: number) {
     if (this.startsAt == startsAt && this.endsAt == endsAt) {
-      return;
+      return Result.failure<Event>(
+        new EventErrors.EventScheduleIsSameAsPreviousError(),
+      );
     }
 
     if (startsAt < Date.now()) {
-      throw new EventExceptions.EventStartDateInPastException();
+      return Result.failure<Event>(new EventErrors.EventStartDateInPastError());
     }
 
     if (startsAt > endsAt) {
-      throw new EventExceptions.EventEndDatePrecedesStartDateException();
+      return Result.failure<Event>(
+        new EventErrors.EventEndDatePrecedesStartDateError(),
+      );
     }
 
     this.startsAt = startsAt;
@@ -79,21 +90,21 @@ export class Event extends Entity {
         this.endsAt,
       ),
     );
-    return this;
+    return Result.success(this);
   }
 
   cancel() {
     if (this.status === EventStatus.Canceled) {
-      throw new EventExceptions.EventAlreadyCanceledException();
+      return Result.failure<Event>(new EventErrors.EventAlreadyCanceledError());
     }
 
     if (this.startsAt < Date.now()) {
-      throw new EventExceptions.EventAlreadyStartedException();
+      return Result.failure<Event>(new EventErrors.EventAlreadyStartedError());
     }
 
     this.status = EventStatus.Canceled;
 
     this.raise(new EventDomainEvent.EventCanceledDomainEvent(this.id));
-    return this;
+    return Result.success(this);
   }
 }

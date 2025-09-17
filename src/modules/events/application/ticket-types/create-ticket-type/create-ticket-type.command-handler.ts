@@ -5,7 +5,7 @@ import { TICKET_TYPE_REPOSITORY_TOKEN } from 'src/modules/events/infrastructure/
 import { TicketTypeRepository } from 'src/modules/events/domain/ticket-types/ticket-type.repository';
 import { EVENT_REPOSITORY_TOKEN } from 'src/modules/events/infrastructure/events/event.repository.impl';
 import { EventRepository } from 'src/modules/events/domain/events/event.repository';
-import { EventExceptions } from 'src/modules/events/domain/events/event.exception';
+import { EventErrors } from 'src/modules/events/domain/events/event.exception';
 import { TicketType } from 'src/modules/events/domain/ticket-types/ticket-type';
 
 @CommandHandler(CreateTicketTypeCommand)
@@ -24,7 +24,7 @@ export class CreateTicketTypeCommandHandler
     const event = await this.eventRepository.getById(props.eventId);
 
     if (!event) {
-      throw new EventExceptions.EventNotFoundException(props.eventId);
+      throw new EventErrors.EventNotFoundError(props.eventId);
     }
 
     const ticketType = TicketType.create(

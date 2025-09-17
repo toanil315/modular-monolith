@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export interface BusinessExceptionOptions {
+export interface BusinessErrorOptions {
   code: string;
   message: string;
   details?: unknown;

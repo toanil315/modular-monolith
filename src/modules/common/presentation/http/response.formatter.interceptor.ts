@@ -18,7 +18,7 @@ export class ResponseTransformInterceptor<T>
   constructor(private readonly schema: z.ZodAny) {}
 
   intercept(
-    _: ExecutionContext,
+    context: ExecutionContext,
     next: CallHandler,
   ): Observable<ApiSuccessResponse<T>> {
     const toDto = (data: T) => {
