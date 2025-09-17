@@ -11,6 +11,8 @@ export class Result<T> {
     ) {
       throw new Error('Invalid Result state');
     }
+
+    Object.setPrototypeOf(this, new.target.prototype);
   }
 
   static success<T>(value: T): Result<T> {
