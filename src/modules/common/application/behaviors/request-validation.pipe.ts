@@ -1,8 +1,8 @@
 import { createZodValidationPipe } from 'nestjs-zod';
 import { ZodError } from 'zod';
-import { ValidationException } from './validation.exception';
+import { ValidationException } from '../exceptions/validation.exception';
 
-export const ValidationPipe: ReturnType<typeof createZodValidationPipe> =
+export const RequestValidationPipe: ReturnType<typeof createZodValidationPipe> =
   createZodValidationPipe({
     createValidationException: (error: ZodError) =>
       new ValidationException(error),

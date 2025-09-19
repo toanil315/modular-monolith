@@ -5,8 +5,8 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { ResponseFormatter } from '../../../presentation/http/response.formatter';
-import { ValidationException } from './validation.exception';
+import { ResponseFormatter } from '../http/response.formatter';
+import { ValidationException } from '../../application/exceptions/validation.exception';
 
 @Catch(ValidationException)
 export class ValidationExceptionFilter implements ExceptionFilter {

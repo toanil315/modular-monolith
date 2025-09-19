@@ -5,6 +5,12 @@ import { CATEGORY_REPOSITORY_TOKEN } from 'src/modules/events/infrastructure/cat
 import { CategoryRepository } from 'src/modules/events/domain/categories/category.repository';
 import { CategoryErrors } from 'src/modules/events/domain/categories/category.exception';
 import { Result } from 'src/modules/common/domain/result';
+import {
+  CACHING_SERVICE_TOKEN,
+  CachingService,
+} from 'src/modules/common/application/caching/caching.service';
+import { CategoryCachingKey } from '../caching/caching.key';
+import { Category } from 'src/modules/events/domain/categories/category';
 
 @QueryHandler(GetCategoryQuery)
 export class GetCategoryQueryHandler
@@ -13,9 +19,18 @@ export class GetCategoryQueryHandler
   constructor(
     @Inject(CATEGORY_REPOSITORY_TOKEN)
     private categoryRepository: CategoryRepository,
+    @Inject(CACHING_SERVICE_TOKEN) private cachingService: CachingService,
   ) {}
 
   async execute({ props }: GetCategoryQuery) {
+    const cachedCategory = await this.cachingService.get<Category>(
+      CategoryCachingKey.CATEGORY(props.categoryId),
+    );
+
+    if (cachedCategory) {
+      return Result.success<Category>(cachedCategory);
+    }
+
     const category = await this.categoryRepository.getById(props.categoryId);
 
     if (!category) {
@@ -23,6 +38,11 @@ export class GetCategoryQueryHandler
         CategoryErrors.CategoryNotFoundError(props.categoryId),
       );
     }
+
+    this.cachingService.set(
+      CategoryCachingKey.CATEGORY(props.categoryId),
+      category,
+    );
 
     return Result.success(category);
   }

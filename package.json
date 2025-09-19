@@ -22,6 +22,8 @@
     "migration:rollback:events": "npm run typeorm -- migration:revert -d ./src/modules/events/infrastructure/database/datasource.ts"
   },
   "dependencies": {
+    "@keyv/redis": "^5.1.2",
+    "@nestjs/cache-manager": "^3.0.1",
     "@nestjs/common": "^11.1.6",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.1.6",
@@ -29,6 +31,7 @@
     "@nestjs/platform-express": "^11.1.6",
     "@nestjs/swagger": "^11.2.0",
     "@nestjs/typeorm": "^11.0.0",
+    "cache-manager": "^7.2.0",
     "dotenv": "^17.2.2",
     "nestjs-zod": "^5.0.1",
     "pg": "^8.16.3",

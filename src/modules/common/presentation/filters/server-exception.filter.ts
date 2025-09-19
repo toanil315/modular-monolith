@@ -1,5 +1,5 @@
 import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
-import { ValidationException } from '../validation/validation.exception';
+import { ValidationException } from '../../application/exceptions/validation.exception';
 import { Response } from 'express';
 import { BusinessError } from 'src/modules/common/domain/error';
 
