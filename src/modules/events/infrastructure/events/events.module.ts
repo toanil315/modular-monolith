@@ -11,6 +11,7 @@ import { PublishEventCommandHandler } from '../../application/events/publish-eve
 import { RescheduleEventCommandHandler } from '../../application/events/reschedule-event/reschedule-event.command-handler';
 import { CancelCommandHandler } from '../../application/events/cancel-event/cancel-event.command-handler';
 import { SearchEventsQueryHandler } from '../../application/events/search-event/search-event.query-handler';
+import { EventRescheduledDomainEventHandler } from '../../application/events/reschedule-event/event-rescheduled.domain-event.handler';
 
 @Module({
   imports: [
@@ -27,6 +28,8 @@ import { SearchEventsQueryHandler } from '../../application/events/search-event/
 
     GetEventQueryHandler,
     SearchEventsQueryHandler,
+
+    EventRescheduledDomainEventHandler,
   ],
   controllers: [EventsController],
   exports: [EventRepositoryProvider],

@@ -96,8 +96,8 @@ export class CategoriesController {
     description: 'Update Category Successful',
     type: UpdateCategoryResponseDto,
   })
-  async updateCategory(@Body() dto: UpdateCategoryDto) {
-    await this.commandBus.execute(
+  updateCategory(@Body() dto: UpdateCategoryDto) {
+    return this.commandBus.execute(
       new UpdateCategoryCommand({
         id: dto.id,
         name: dto.name,
@@ -115,8 +115,8 @@ export class CategoriesController {
     description: 'Archive Category Successful',
     type: ArchiveCategoryResponseDto,
   })
-  async archiveCategory(@Body() dto: ArchiveCategoryDto) {
-    await this.commandBus.execute(
+  archiveCategory(@Body() dto: ArchiveCategoryDto) {
+    return this.commandBus.execute(
       new ArchiveCategoryCommand({
         id: dto.id,
       }),

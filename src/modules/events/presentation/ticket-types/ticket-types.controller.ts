@@ -102,8 +102,8 @@ export class TicketTypesController {
     description: 'Update TicketType Successful',
     type: UpdateTicketTypePriceResponseDto,
   })
-  async updateTicketType(@Body() dto: UpdateTicketTypePriceDto) {
-    await this.commandBus.execute(
+  updateTicketType(@Body() dto: UpdateTicketTypePriceDto) {
+    return this.commandBus.execute(
       new UpdateTicketTypePriceCommand({
         id: dto.id,
         price: dto.price,

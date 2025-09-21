@@ -8,6 +8,11 @@ import { CacheModule } from '@nestjs/cache-manager';
 import KeyvRedis from '@keyv/redis';
 import { CachingServiceProvider } from './caching/caching.service.impl';
 import { RequestValidationPipe } from '../application/behaviors/request-validation.pipe';
+import { TerminusModule } from '@nestjs/terminus';
+import { DatabaseHealthIndicatorProvider } from './healths/database.health-indicator.impl';
+import { CacheHealthIndicatorProvider } from './healths/cache.health-indicator.impl';
+import { HealthController } from '../presentation/healths/health.controller';
+import { DomainEventPublisher } from './domain-event/domain-event.publisher';
 
 @Global()
 @Module({
@@ -24,6 +29,7 @@ import { RequestValidationPipe } from '../application/behaviors/request-validati
         };
       },
     }),
+    TerminusModule,
   ],
   providers: [
     {
@@ -39,7 +45,11 @@ import { RequestValidationPipe } from '../application/behaviors/request-validati
       useClass: ValidationExceptionFilter,
     },
     CachingServiceProvider,
+    DatabaseHealthIndicatorProvider,
+    CacheHealthIndicatorProvider,
+    DomainEventPublisher,
   ],
-  exports: [CachingServiceProvider],
+  exports: [CachingServiceProvider, DomainEventPublisher],
+  controllers: [HealthController],
 })
 export class CommonModule {}

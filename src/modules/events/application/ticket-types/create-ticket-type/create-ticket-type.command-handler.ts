@@ -36,7 +36,7 @@ export class CreateTicketTypeCommandHandler
       props.quantity,
     );
 
-    await this.ticketTypeRepository.insert(result.value);
+    await this.ticketTypeRepository.save(result.value);
     return result;
   }
 }

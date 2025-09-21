@@ -9,5 +9,7 @@ export class DomainEvent {
     this.id = uuidV4();
     this.occurredOn = Date.now();
     this.type = type;
+
+    Object.setPrototypeOf(this, new.target.prototype);
   }
 }

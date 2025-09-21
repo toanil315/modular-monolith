@@ -16,7 +16,7 @@ export class CreateCategoryCommandHandler
 
   async execute({ props }: CreateCategoryCommand) {
     const result = Category.create(props.name);
-    await this.categoryRepository.insert(result.value);
+    await this.categoryRepository.save(result.value);
     return result;
   }
 }

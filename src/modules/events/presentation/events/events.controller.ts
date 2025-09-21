@@ -112,8 +112,8 @@ export class EventsController {
     description: 'Publish Event Successful',
     type: PublishEventResponseDto,
   })
-  async publishEvent(@Body() dto: PublishEventDto) {
-    await this.commandBus.execute(
+  publishEvent(@Body() dto: PublishEventDto) {
+    return this.commandBus.execute(
       new PublishEventCommand({
         id: dto.id,
       }),
@@ -130,8 +130,8 @@ export class EventsController {
     description: 'Cancel Event Successful',
     type: CancelEventResponseDto,
   })
-  async cancelEvent(@Body() dto: CancelEventDto) {
-    await this.commandBus.execute(
+  cancelEvent(@Body() dto: CancelEventDto) {
+    return this.commandBus.execute(
       new CancelEventCommand({
         id: dto.id,
       }),
@@ -148,8 +148,8 @@ export class EventsController {
     description: 'Reschedule Event Successful',
     type: RescheduleEventResponseDto,
   })
-  async rescheduleEvent(@Body() dto: RescheduleEventDto) {
-    await this.commandBus.execute(
+  rescheduleEvent(@Body() dto: RescheduleEventDto) {
+    return this.commandBus.execute(
       new RescheduleEventCommand({
         id: dto.id,
         startsAt: dto.startsAt,

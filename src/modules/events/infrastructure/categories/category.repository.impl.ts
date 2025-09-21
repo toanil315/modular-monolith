@@ -5,23 +5,19 @@ import { Category } from '../../domain/categories/category';
 import { CategoryRepository } from '../../domain/categories/category.repository';
 import { getDataSourceToken } from '@nestjs/typeorm';
 import { EVENTS_CONNECTION_NAME } from '../database/datasource';
+import { DomainEventPublisher } from 'src/modules/common/infrastructure/domain-event/domain-event.publisher';
+import { BaseRepository } from 'src/modules/common/infrastructure/database/base-repository.impl';
 
 @Injectable()
-export class CategoryRepositoryImpl implements CategoryRepository {
-  private readonly ormRepo: Repository<CategoryTypeOrmEntity>;
-
-  constructor(dataSource: DataSource) {
-    this.ormRepo = dataSource.getRepository(CategoryTypeOrmEntity);
-  }
-
-  async insert(category: Category): Promise<void> {
-    const newCategory = this.ormRepo.create({
-      id: category.id,
-      name: category.name,
-      isArchived: category.isArchived,
-    });
-
-    await this.ormRepo.save(newCategory);
+export class CategoryRepositoryImpl
+  extends BaseRepository<Category, CategoryTypeOrmEntity>
+  implements CategoryRepository
+{
+  constructor(
+    dataSource: DataSource,
+    domainEventPublisher: DomainEventPublisher,
+  ) {
+    super(dataSource, CategoryTypeOrmEntity, domainEventPublisher);
   }
 
   async getById(categoryId: string): Promise<Category | null> {
@@ -41,7 +37,7 @@ export class CategoryRepositoryImpl implements CategoryRepository {
   }
 
   async save(category: Category): Promise<void> {
-    await this.ormRepo.save({
+    await this.persist(category, {
       id: category.id,
       name: category.name,
       isArchived: category.isArchived,
@@ -53,7 +49,10 @@ export const CATEGORY_REPOSITORY_TOKEN = 'CATEGORY_REPOSITORY_TOKEN';
 
 export const CategoryRepositoryProvider: Provider = {
   provide: CATEGORY_REPOSITORY_TOKEN,
-  useFactory: (dataSource: DataSource): CategoryRepository =>
-    new CategoryRepositoryImpl(dataSource),
-  inject: [getDataSourceToken(EVENTS_CONNECTION_NAME)],
+  useFactory: (
+    dataSource: DataSource,
+    domainEventPublisher: DomainEventPublisher,
+  ): CategoryRepository =>
+    new CategoryRepositoryImpl(dataSource, domainEventPublisher),
+  inject: [getDataSourceToken(EVENTS_CONNECTION_NAME), DomainEventPublisher],
 };

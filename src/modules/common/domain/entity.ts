@@ -1,7 +1,7 @@
 import { DomainEvent } from './domain-event';
 
 export class Entity {
-  private domainEvents: DomainEvent[] = [];
+  domainEvents: DomainEvent[] = [];
 
   constructor() {
     this.domainEvents = [];

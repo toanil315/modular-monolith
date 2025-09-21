@@ -46,7 +46,7 @@ export class CreateEventCommandHandler
       return result;
     }
 
-    await this.eventRepository.insert(result.value);
+    await this.eventRepository.save(result.value);
 
     return result;
   }
