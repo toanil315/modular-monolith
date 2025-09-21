@@ -1,19 +1,17 @@
 import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { END_POINT_TAGS } from '../tags';
+import { EVENTS_END_POINT_TAGS } from '../tags';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import {
   CreateTicketTypeDto,
   CreateTicketTypeResponseDto,
 } from './dtos/create-ticket-type.dto';
 import { CreateTicketTypeCommand } from '../../application/ticket-types/create-ticket-type/create-ticket-type.command';
-import { ResponseFormatter } from 'src/modules/common/presentation/http/response.formatter';
 import {
   GetTicketTypesDto,
   GetTicketTypesResponseDto,
 } from './dtos/get-ticket-types.dto';
 import { GetTicketTypesQuery } from '../../application/ticket-types/get-ticket-types/get-ticket-types.query';
-import { TicketType } from '../../domain/ticket-types/ticket-type';
 import {
   GetTicketTypeByIdDto,
   GetTicketTypeResponseDto,
@@ -26,8 +24,8 @@ import {
 import { UpdateTicketTypePriceCommand } from '../../application/ticket-types/update-ticket-type-price/update-ticket-type-price.command';
 import { ApiZodResponse } from 'src/modules/common/presentation/http/api-zod-response.decorator';
 
-@ApiTags(END_POINT_TAGS.TICKET_TYPES)
-@Controller(END_POINT_TAGS.TICKET_TYPES)
+@ApiTags(EVENTS_END_POINT_TAGS.TICKET_TYPES)
+@Controller(EVENTS_END_POINT_TAGS.TICKET_TYPES)
 export class TicketTypesController {
   constructor(
     private commandBus: CommandBus,

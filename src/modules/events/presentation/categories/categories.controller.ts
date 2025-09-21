@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post, Param, Put } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
-import { END_POINT_TAGS } from '../tags';
+import { EVENTS_END_POINT_TAGS } from '../tags';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { CreateCategoryCommand } from '../../application/categories/create-category/create-category.command';
 import {
@@ -27,8 +27,8 @@ import {
 } from './dtos/get-category.dto';
 import { ApiZodResponse } from 'src/modules/common/presentation/http/api-zod-response.decorator';
 
-@ApiTags(END_POINT_TAGS.CATEGORIES)
-@Controller(END_POINT_TAGS.CATEGORIES)
+@ApiTags(EVENTS_END_POINT_TAGS.CATEGORIES)
+@Controller(EVENTS_END_POINT_TAGS.CATEGORIES)
 export class CategoriesController {
   constructor(
     private commandBus: CommandBus,

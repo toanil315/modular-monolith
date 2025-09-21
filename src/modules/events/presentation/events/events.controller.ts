@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post, Param, Put, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
-import { END_POINT_TAGS } from '../tags';
+import { EVENTS_END_POINT_TAGS } from '../tags';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import {
   CreateEventDto,
@@ -31,8 +31,8 @@ import {
 import { SearchEventsQuery } from '../../application/events/search-event/search-event.query';
 import { ApiZodResponse } from 'src/modules/common/presentation/http/api-zod-response.decorator';
 
-@ApiTags(END_POINT_TAGS.EVENTS)
-@Controller(END_POINT_TAGS.EVENTS)
+@ApiTags(EVENTS_END_POINT_TAGS.EVENTS)
+@Controller(EVENTS_END_POINT_TAGS.EVENTS)
 export class EventsController {
   constructor(
     private commandBus: CommandBus,
