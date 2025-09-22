@@ -13,6 +13,8 @@ import { DatabaseHealthIndicatorProvider } from './healths/database.health-indic
 import { CacheHealthIndicatorProvider } from './healths/cache.health-indicator.impl';
 import { HealthController } from '../presentation/healths/health.controller';
 import { DomainEventPublisher } from './domain-event/domain-event.publisher';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { DatabaseConfiguration } from './database/database-configuration';
 
 @Global()
 @Module({
@@ -30,6 +32,7 @@ import { DomainEventPublisher } from './domain-event/domain-event.publisher';
       },
     }),
     TerminusModule,
+    TypeOrmModule.forRoot(DatabaseConfiguration.get()),
   ],
   providers: [
     {

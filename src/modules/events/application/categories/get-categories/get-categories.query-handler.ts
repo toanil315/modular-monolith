@@ -1,8 +1,5 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { GetCategoriesQuery } from './get-categories.query';
-import { Inject } from '@nestjs/common';
-import { getDataSourceToken } from '@nestjs/typeorm';
-import { EVENTS_CONNECTION_NAME } from 'src/modules/events/infrastructure/database/datasource';
 import { DataSource } from 'typeorm';
 import { Category } from 'src/modules/events/domain/categories/category';
 import { Result } from 'src/modules/common/domain/result';
@@ -11,10 +8,7 @@ import { Result } from 'src/modules/common/domain/result';
 export class GetCategoriesQueryHandler
   implements IQueryHandler<GetCategoriesQuery>
 {
-  constructor(
-    @Inject(getDataSourceToken(EVENTS_CONNECTION_NAME))
-    private readonly dataSource: DataSource,
-  ) {}
+  constructor(private readonly dataSource: DataSource) {}
 
   async execute(query: GetCategoriesQuery) {
     const rawEntities = await this.dataSource.query<

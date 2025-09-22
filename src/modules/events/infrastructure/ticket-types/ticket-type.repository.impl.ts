@@ -1,12 +1,11 @@
 import { Injectable, Provider } from '@nestjs/common';
-import { DataSource, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { TicketTypeOrmEntity } from './ticket-type.entity';
 import { TicketType } from '../../domain/ticket-types/ticket-type';
 import { TicketTypeRepository } from '../../domain/ticket-types/ticket-type.repository';
-import { getDataSourceToken } from '@nestjs/typeorm';
-import { EVENTS_CONNECTION_NAME } from '../database/datasource';
 import { BaseRepository } from 'src/modules/common/infrastructure/database/base-repository.impl';
 import { DomainEventPublisher } from 'src/modules/common/infrastructure/domain-event/domain-event.publisher';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class TicketTypeRepositoryImpl
@@ -14,10 +13,11 @@ export class TicketTypeRepositoryImpl
   implements TicketTypeRepository
 {
   constructor(
-    dataSource: DataSource,
+    @InjectRepository(TicketTypeOrmEntity)
+    ormRepo: Repository<TicketTypeOrmEntity>,
     domainEventPublisher: DomainEventPublisher,
   ) {
-    super(dataSource, TicketTypeOrmEntity, domainEventPublisher);
+    super(ormRepo, domainEventPublisher);
   }
 
   async getById(ticketTypeId: string): Promise<TicketType | null> {
@@ -55,10 +55,5 @@ export const TICKET_TYPE_REPOSITORY_TOKEN = 'TICKET_TYPE_REPOSITORY_TOKEN';
 
 export const TicketTypeRepositoryProvider: Provider = {
   provide: TICKET_TYPE_REPOSITORY_TOKEN,
-  useFactory: (
-    dataSource: DataSource,
-    domainEventPublisher: DomainEventPublisher,
-  ): TicketTypeRepository =>
-    new TicketTypeRepositoryImpl(dataSource, domainEventPublisher),
-  inject: [getDataSourceToken(EVENTS_CONNECTION_NAME), DomainEventPublisher],
+  useClass: TicketTypeRepositoryImpl,
 };

@@ -19,13 +19,13 @@
     
     "migration:generate:events": "npm run typeorm -- migration:generate ./src/modules/events/infrastructure/database/migrations/$npm_config_name -d ./src/modules/events/infrastructure/database/datasource.ts",
     "migration:run:events": "npm run typeorm -- migration:run -d ./src/modules/events/infrastructure/database/datasource.ts",
-    "migration:revert:events": "npm run typeorm -- migration:revert -d ./src/modules/events/infrastructure/database/datasource.ts",
     "migration:rollback:events": "npm run typeorm -- migration:revert -d ./src/modules/events/infrastructure/database/datasource.ts",
     
     "migration:generate:users": "npm run typeorm -- migration:generate ./src/modules/users/infrastructure/database/migrations/$npm_config_name -d ./src/modules/users/infrastructure/database/datasource.ts",
     "migration:run:users": "npm run typeorm -- migration:run -d ./src/modules/users/infrastructure/database/datasource.ts",
-    "migration:revert:users": "npm run typeorm -- migration:revert -d ./src/modules/users/infrastructure/database/datasource.ts",
-    "migration:rollback:users": "npm run typeorm -- migration:revert -d ./src/modules/users/infrastructure/database/datasource.ts"
+    "migration:rollback:users": "npm run typeorm -- migration:revert -d ./src/modules/users/infrastructure/database/datasource.ts",
+
+    "migration:run:all": "npm run migration:run:events && npm run migration:run:users"
   },
   "dependencies": {
     "@keyv/redis": "^5.1.2",

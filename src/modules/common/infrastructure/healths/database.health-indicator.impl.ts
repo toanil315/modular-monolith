@@ -1,5 +1,5 @@
 import { Injectable, Provider } from '@nestjs/common';
-import { DataSource } from 'typeorm';
+import { DataSource, DataSourceOptions } from 'typeorm';
 import {
   DATABASE_HEALTH_INDICATOR_TOKEN,
   DatabaseHealthIndicator,
@@ -18,7 +18,9 @@ export class DatabaseHealthIndicatorImpl implements DatabaseHealthIndicator {
     const indicator = this.healthIndicatorService.check('database');
 
     try {
-      dataSource = new DataSource(DatabaseConfiguration.get(__dirname));
+      dataSource = new DataSource(
+        DatabaseConfiguration.get() as DataSourceOptions,
+      );
       await dataSource.initialize();
 
       await dataSource.query('SELECT 1');

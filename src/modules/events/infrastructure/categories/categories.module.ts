@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { EVENTS_CONNECTION_NAME } from '../database/datasource';
 import { CategoryTypeOrmEntity } from './category.entity';
 import { CategoryRepositoryProvider } from './category.repository.impl';
 import { CategoriesController } from '../../presentation/categories/categories.controller';
@@ -11,9 +10,7 @@ import { ArchiveCategoryCommandHandler } from '../../application/categories/arch
 import { UpdateCategoryCommandHandler } from '../../application/categories/update-category/update-category.command-handler';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([CategoryTypeOrmEntity], EVENTS_CONNECTION_NAME),
-  ],
+  imports: [TypeOrmModule.forFeature([CategoryTypeOrmEntity], 'default')],
   providers: [
     CategoryRepositoryProvider,
 

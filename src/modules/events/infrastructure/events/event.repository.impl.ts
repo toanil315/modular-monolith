@@ -1,12 +1,11 @@
 import { Injectable, Provider } from '@nestjs/common';
-import { DataSource, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { EventTypeOrmEntity } from './event.entity';
 import { Event } from '../../domain/events/event';
 import { EventRepository } from '../../domain/events/event.repository';
-import { getDataSourceToken } from '@nestjs/typeorm';
-import { EVENTS_CONNECTION_NAME } from '../database/datasource';
 import { BaseRepository } from 'src/modules/common/infrastructure/database/base-repository.impl';
 import { DomainEventPublisher } from 'src/modules/common/infrastructure/domain-event/domain-event.publisher';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class EventRepositoryImpl
@@ -14,10 +13,11 @@ export class EventRepositoryImpl
   implements EventRepository
 {
   constructor(
-    dataSource: DataSource,
+    @InjectRepository(EventTypeOrmEntity)
+    ormRepo: Repository<EventTypeOrmEntity>,
     domainEventPublisher: DomainEventPublisher,
   ) {
-    super(dataSource, EventTypeOrmEntity, domainEventPublisher);
+    super(ormRepo, domainEventPublisher);
   }
 
   async getById(eventId: string): Promise<Event | null> {
@@ -59,10 +59,5 @@ export const EVENT_REPOSITORY_TOKEN = 'EVENT_REPOSITORY_TOKEN';
 
 export const EventRepositoryProvider: Provider = {
   provide: 'EVENT_REPOSITORY_TOKEN',
-  useFactory: (
-    dataSource: DataSource,
-    domainEventPublisher: DomainEventPublisher,
-  ): EventRepository =>
-    new EventRepositoryImpl(dataSource, domainEventPublisher),
-  inject: [getDataSourceToken(EVENTS_CONNECTION_NAME), DomainEventPublisher],
+  useClass: EventRepositoryImpl,
 };

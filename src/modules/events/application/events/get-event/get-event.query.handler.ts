@@ -1,9 +1,6 @@
-import { Inject } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { GetEventQuery } from './get-event.query';
 import { EventErrors } from 'src/modules/events/domain/events/event.exception';
-import { getDataSourceToken } from '@nestjs/typeorm';
-import { EVENTS_CONNECTION_NAME } from 'src/modules/events/infrastructure/database/datasource';
 import { DataSource } from 'typeorm';
 import { Event } from 'src/modules/events/domain/events/event';
 import { TicketType } from 'src/modules/events/domain/ticket-types/ticket-type';
@@ -11,10 +8,7 @@ import { Result } from 'src/modules/common/domain/result';
 
 @QueryHandler(GetEventQuery)
 export class GetEventQueryHandler implements IQueryHandler<GetEventQuery> {
-  constructor(
-    @Inject(getDataSourceToken(EVENTS_CONNECTION_NAME))
-    private readonly dataSource: DataSource,
-  ) {}
+  constructor(private readonly dataSource: DataSource) {}
 
   async execute({ props }: GetEventQuery) {
     const rawEntities = await this.dataSource.query<

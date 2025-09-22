@@ -1,9 +1,6 @@
-import { Inject } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { DataSource } from 'typeorm';
-import { getDataSourceToken } from '@nestjs/typeorm';
 
-import { EVENTS_CONNECTION_NAME } from 'src/modules/events/infrastructure/database/datasource';
 import { EventStatus } from 'src/modules/events/domain/events/event-status';
 import { Event } from 'src/modules/events/domain/events/event';
 import { SearchEventsQuery } from './search-event.query';
@@ -23,10 +20,7 @@ interface EventResponse {
 export class SearchEventsQueryHandler
   implements IQueryHandler<SearchEventsQuery>
 {
-  constructor(
-    @Inject(getDataSourceToken(EVENTS_CONNECTION_NAME))
-    private readonly dataSource: DataSource,
-  ) {}
+  constructor(private readonly dataSource: DataSource) {}
 
   async execute({ props }: SearchEventsQuery) {
     const parameters = {

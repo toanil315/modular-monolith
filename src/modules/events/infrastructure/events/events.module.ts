@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EventTypeOrmEntity } from './event.entity';
-import { EVENTS_CONNECTION_NAME } from '../database/datasource';
 import { EventRepositoryProvider } from './event.repository.impl';
 import { CreateEventCommandHandler } from '../../application/events/create-event/create-event.command.handler';
 import { GetEventQueryHandler } from '../../application/events/get-event/get-event.query.handler';
@@ -14,10 +13,7 @@ import { SearchEventsQueryHandler } from '../../application/events/search-event/
 import { EventRescheduledDomainEventHandler } from '../../application/events/reschedule-event/event-rescheduled.domain-event.handler';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([EventTypeOrmEntity], EVENTS_CONNECTION_NAME),
-    CategoriesModule,
-  ],
+  imports: [TypeOrmModule.forFeature([EventTypeOrmEntity]), CategoriesModule],
   providers: [
     EventRepositoryProvider,
 

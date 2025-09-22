@@ -3,10 +3,9 @@ import { UserTypeOrmEntity } from './user.entity';
 import { User } from '../../domain/users/user';
 import { UserRepository } from '../../domain/users/user.repository';
 import { BaseRepository } from 'src/modules/common/infrastructure/database/base-repository.impl';
-import { DataSource } from 'typeorm';
+import { Repository } from 'typeorm';
 import { DomainEventPublisher } from 'src/modules/common/infrastructure/domain-event/domain-event.publisher';
-import { getDataSourceToken } from '@nestjs/typeorm';
-import { USERS_CONNECTION_NAME } from '../database/datasource';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class UserRepositoryImpl
@@ -14,10 +13,11 @@ export class UserRepositoryImpl
   implements UserRepository
 {
   constructor(
-    dataSource: DataSource,
+    @InjectRepository(UserTypeOrmEntity)
+    ormRepo: Repository<UserTypeOrmEntity>,
     domainEventPublisher: DomainEventPublisher,
   ) {
-    super(dataSource, UserTypeOrmEntity, domainEventPublisher);
+    super(ormRepo, domainEventPublisher);
   }
 
   async getById(userId: string): Promise<User | null> {
@@ -51,9 +51,5 @@ export const USER_REPOSITORY_TOKEN = 'USER_REPOSITORY_TOKEN';
 
 export const UserRepositoryProvider: Provider = {
   provide: USER_REPOSITORY_TOKEN,
-  useFactory: (
-    dataSource: DataSource,
-    domainEventPublisher: DomainEventPublisher,
-  ): UserRepository => new UserRepositoryImpl(dataSource, domainEventPublisher),
-  inject: [getDataSourceToken(USERS_CONNECTION_NAME), DomainEventPublisher],
+  useClass: UserRepositoryImpl,
 };
