@@ -11,6 +11,7 @@ import { RescheduleEventCommandHandler } from '../../application/events/reschedu
 import { CancelCommandHandler } from '../../application/events/cancel-event/cancel-event.command-handler';
 import { SearchEventsQueryHandler } from '../../application/events/search-event/search-event.query-handler';
 import { EventRescheduledDomainEventHandler } from '../../application/events/reschedule-event/event-rescheduled.domain-event.handler';
+import { EventsPublicApisProvider } from '../public/apis.impl';
 
 @Module({
   imports: [TypeOrmModule.forFeature([EventTypeOrmEntity]), CategoriesModule],
