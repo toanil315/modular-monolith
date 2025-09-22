@@ -1,6 +1,6 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { GetEventQuery } from './get-event.query';
-import { EventErrors } from 'src/modules/events/domain/events/event.exception';
+import { EventErrors } from 'src/modules/events/domain/events/event.error';
 import { DataSource } from 'typeorm';
 import { Event } from 'src/modules/events/domain/events/event';
 import { TicketType } from 'src/modules/events/domain/ticket-types/ticket-type';

@@ -4,7 +4,7 @@ import { Inject } from '@nestjs/common';
 import { TICKET_TYPE_REPOSITORY_TOKEN } from 'src/modules/events/infrastructure/ticket-types/ticket-type.repository.impl';
 import { TicketTypeRepository } from 'src/modules/events/domain/ticket-types/ticket-type.repository';
 import { Result } from 'src/modules/common/domain/result';
-import { TicketTypeErrors } from 'src/modules/events/domain/ticket-types/ticket-type.exception';
+import { TicketTypeErrors } from 'src/modules/events/domain/ticket-types/ticket-type.error';
 
 @QueryHandler(GetTicketTypeQuery)
 export class GetTicketTypeQueryHandler

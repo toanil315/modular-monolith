@@ -1,7 +1,7 @@
 import { v4 as uuidV4 } from 'uuid';
 import { Entity } from '../../../common/domain/entity';
 import { EventStatus } from './event-status';
-import { EventErrors } from './event.exception';
+import { EventErrors } from './event.error';
 import { EventDomainEvent } from './event.domain-event';
 import { Category } from '../categories/category';
 import { TicketType } from '../ticket-types/ticket-type';

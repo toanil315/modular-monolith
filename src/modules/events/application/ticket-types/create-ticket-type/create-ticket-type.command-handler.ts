@@ -5,7 +5,7 @@ import { TICKET_TYPE_REPOSITORY_TOKEN } from 'src/modules/events/infrastructure/
 import { TicketTypeRepository } from 'src/modules/events/domain/ticket-types/ticket-type.repository';
 import { EVENT_REPOSITORY_TOKEN } from 'src/modules/events/infrastructure/events/event.repository.impl';
 import { EventRepository } from 'src/modules/events/domain/events/event.repository';
-import { EventErrors } from 'src/modules/events/domain/events/event.exception';
+import { EventErrors } from 'src/modules/events/domain/events/event.error';
 import { TicketType } from 'src/modules/events/domain/ticket-types/ticket-type';
 import { Result } from 'src/modules/common/domain/result';
 

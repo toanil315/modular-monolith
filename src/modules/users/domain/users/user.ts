@@ -2,7 +2,7 @@ import { Entity } from 'src/modules/common/domain/entity';
 import { v4 as uuidV4 } from 'uuid';
 import { UserDomainEvent } from './user.domain-event';
 import { Result } from 'src/modules/common/domain/result';
-import { UserErrors } from './user.exception';
+import { UserErrors } from './user.error';
 
 export class User extends Entity {
   constructor(
