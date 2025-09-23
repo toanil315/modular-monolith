@@ -25,7 +25,11 @@
     "migration:run:users": "npm run typeorm -- migration:run -d ./src/modules/users/infrastructure/database/datasource.ts",
     "migration:rollback:users": "npm run typeorm -- migration:revert -d ./src/modules/users/infrastructure/database/datasource.ts",
 
-    "migration:run:all": "npm run migration:run:events && npm run migration:run:users"
+    "migration:generate:ticketing": "npm run typeorm -- migration:generate ./src/modules/ticketing/infrastructure/database/migrations/$npm_config_name -d ./src/modules/ticketing/infrastructure/database/datasource.ts",
+    "migration:run:ticketing": "npm run typeorm -- migration:run -d ./src/modules/ticketing/infrastructure/database/datasource.ts",
+    "migration:rollback:ticketing": "npm run typeorm -- migration:revert -d ./src/modules/ticketing/infrastructure/database/datasource.ts",
+
+    "migration:run:all": "npm run migration:run:events && npm run migration:run:users && npm run migration:run:ticketing"
   },
   "dependencies": {
     "@keyv/redis": "^5.1.2",

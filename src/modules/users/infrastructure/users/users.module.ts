@@ -6,9 +6,11 @@ import { GetUserQueryHandler } from '../../application/users/get-user/get-user.q
 import { RegisterUserCommandHandler } from '../../application/users/register-user/register-user.command-handler';
 import { UpdateUserProfileCommandHandler } from '../../application/users/update-user-profile/update-user-profile.command-handler';
 import { UsersController } from '../../presentation/users/users.controller';
+import { UserRegisteredDomainEventHandler } from '../../application/users/register-user/user-registered.domain-event-handler';
+import { UsersIntegrationModule } from '../integration/integration.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserTypeOrmEntity])],
+  imports: [TypeOrmModule.forFeature([UserTypeOrmEntity]), UsersIntegrationModule],
   providers: [
     UserRepositoryProvider,
 
@@ -16,6 +18,8 @@ import { UsersController } from '../../presentation/users/users.controller';
 
     RegisterUserCommandHandler,
     UpdateUserProfileCommandHandler,
+
+    UserRegisteredDomainEventHandler,
   ],
   controllers: [UsersController],
 })
