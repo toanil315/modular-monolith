@@ -1,7 +1,7 @@
 import { Injectable, Provider } from '@nestjs/common';
 import { GetUserByIdResponse, USERS_PUBLIC_APIS_TOKEN, UsersPublicApis } from '../../public/apis';
 import { QueryBus } from '@nestjs/cqrs';
-import { GetUserQuery } from '../../application/users/get-user/get-user.query';
+import { GetUserQuery } from '../users/get-user/get-user.query';
 
 @Injectable()
 export class UsersPublicApisImpl implements UsersPublicApis {

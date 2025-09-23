@@ -5,7 +5,7 @@ import {
   GetTicketTypeByIdResponse,
 } from '../../public/apis';
 import { QueryBus } from '@nestjs/cqrs';
-import { GetTicketTypeQuery } from '../../application/ticket-types/get-ticket-type/get-ticket-type.query';
+import { GetTicketTypeQuery } from '../ticket-types/get-ticket-type/get-ticket-type.query';
 
 @Injectable()
 export class EventsPublicApisImpl implements EventsPublicApis {

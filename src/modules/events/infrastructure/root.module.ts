@@ -1,5 +1,5 @@
 import { Module, Provider } from '@nestjs/common';
-import { EventsPublicApisProvider } from './public/apis.impl';
+import { EventsPublicApisProvider } from '../application/public/apis.impl';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CategoryTypeOrmEntity } from './categories/category.entity';
 import { EventTypeOrmEntity } from './events/event.entity';

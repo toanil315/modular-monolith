@@ -1,5 +1,5 @@
 import { Module, Provider } from '@nestjs/common';
-import { UsersPublicApisProvider } from './public/apis.impl';
+import { UsersPublicApisProvider } from '../application/public/apis.impl';
 import { IntegrationEventsPublisherProvider } from '../integration/publishers/integration-event.publisher.impl';
 import { UsersController } from '../presentation/users/users.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';

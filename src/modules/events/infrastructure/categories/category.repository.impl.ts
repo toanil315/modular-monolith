@@ -29,11 +29,7 @@ export class CategoryRepositoryImpl
       return null;
     }
 
-    return new Category(
-      categoryEntity.id,
-      categoryEntity.name,
-      categoryEntity.isArchived,
-    );
+    return new Category(categoryEntity.id, categoryEntity.name, categoryEntity.isArchived);
   }
 
   async save(category: Category): Promise<void> {
