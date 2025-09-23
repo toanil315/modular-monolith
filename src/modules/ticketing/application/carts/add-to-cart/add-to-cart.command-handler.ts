@@ -8,17 +8,21 @@ import { CustomerErrors } from 'src/modules/ticketing/domain/customers/customer.
 import { TicketTypeErrors } from 'src/modules/ticketing/domain/ticket-types/ticket-type.error';
 import { CartItem } from 'src/modules/ticketing/domain/carts/cart-item';
 import { CartService } from '../cart.service';
+import {
+  CUSTOMER_REPOSITORY_TOKEN,
+  CustomerRepository,
+} from 'src/modules/ticketing/domain/customers/customer.repository';
 
 @CommandHandler(AddToCartCommand)
 export class AddToCartCommandHandler implements ICommandHandler<AddToCartCommand> {
   constructor(
     @Inject(EVENTS_PUBLIC_APIS_TOKEN) private readonly eventsPublicApis: EventsPublicApis,
-    @Inject(USERS_PUBLIC_APIS_TOKEN) private readonly usersPublicApis: UsersPublicApis,
+    @Inject(CUSTOMER_REPOSITORY_TOKEN) private readonly customerRepository: CustomerRepository,
     private readonly cartService: CartService,
   ) {}
 
   async execute({ props }: AddToCartCommand) {
-    const customer = await this.usersPublicApis.getUserById(props.customerId);
+    const customer = await this.customerRepository.getById(props.customerId);
 
     if (!customer) {
       return Result.failure(CustomerErrors.CustomerNotFoundError(props.customerId));

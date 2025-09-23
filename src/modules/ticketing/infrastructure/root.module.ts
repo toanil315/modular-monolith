@@ -1,15 +1,22 @@
 import { Module } from '@nestjs/common';
 import { RootEventsModule } from 'src/modules/events/infrastructure/root.module';
 import { RootUsersModule } from 'src/modules/users/infrastructure/root.module';
-import { AddToCartCommandHandler } from '../application/carts/add-to-cart/add-to-cart.command-handler';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { CustomerTypeOrmEntity } from './customers/customer.entity';
 import { CartService } from '../application/carts/cart.service';
+import { AddToCartCommandHandler } from '../application/carts/add-to-cart/add-to-cart.command-handler';
+import { CustomerRepositoryProvider } from './customers/customer.repository.impl';
+import { CreateCustomerCommandHandler } from '../application/customers/create-customer/create-customer.command-handler';
 import { CartsController } from '../presentation/carts/carts.controller';
-import { CustomersModule } from './customer/customers.module';
-import { TicketingIntegrationModule } from './integration/integration.module';
 
 @Module({
-  imports: [RootUsersModule, RootEventsModule, CustomersModule, TicketingIntegrationModule],
-  providers: [CartService, AddToCartCommandHandler],
+  imports: [TypeOrmModule.forFeature([CustomerTypeOrmEntity]), RootUsersModule, RootEventsModule],
+  providers: [
+    CartService,
+    AddToCartCommandHandler,
+    CustomerRepositoryProvider,
+    CreateCustomerCommandHandler,
+  ],
   controllers: [CartsController],
 })
 export class RootTicketingModule {}
