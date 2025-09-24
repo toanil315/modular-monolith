@@ -62,7 +62,7 @@ export class CartService {
     );
 
     if (existingCartItemIndex === -1) {
-      return;
+      return cart;
     }
 
     cart.items.splice(existingCartItemIndex, 1);
