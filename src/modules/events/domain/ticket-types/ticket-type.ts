@@ -16,25 +16,10 @@ export class TicketType extends Entity {
     super();
   }
 
-  static create(
-    event: Event,
-    name: string,
-    price: number,
-    currency: string,
-    quantity: number,
-  ) {
-    const ticketType = new TicketType(
-      uuidV4(),
-      event.id,
-      name,
-      price,
-      currency,
-      quantity,
-    );
+  static create(event: Event, name: string, price: number, currency: string, quantity: number) {
+    const ticketType = new TicketType(uuidV4(), event.id, name, price, currency, quantity);
 
-    ticketType.raise(
-      new TicketTypeDomainEvent.TicketTypeCreatedDomainEvent(ticketType.id),
-    );
+    ticketType.raise(new TicketTypeDomainEvent.TicketTypeCreatedDomainEvent(ticketType.id));
 
     return Result.success(ticketType);
   }
@@ -44,12 +29,7 @@ export class TicketType extends Entity {
 
     this.price = price;
 
-    this.raise(
-      new TicketTypeDomainEvent.TicketTypePriceChangedDomainEvent(
-        this.id,
-        this.price,
-      ),
-    );
+    this.raise(new TicketTypeDomainEvent.TicketTypePriceChangedDomainEvent(this.id, this.price));
 
     return Result.success(this);
   }

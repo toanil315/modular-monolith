@@ -1,11 +1,14 @@
-import { Injectable, Provider } from '@nestjs/common';
+import { Inject, Injectable, Provider } from '@nestjs/common';
 import { UserTypeOrmEntity } from './user.entity';
 import { User } from '../../domain/users/user';
 import { UserRepository } from '../../domain/users/user.repository';
 import { BaseRepository } from 'src/modules/common/infrastructure/database/base-repository.impl';
 import { Repository } from 'typeorm';
-import { DomainEventPublisher } from 'src/modules/common/infrastructure/domain-event/domain-event.publisher';
 import { InjectRepository } from '@nestjs/typeorm';
+import {
+  DOMAIN_EVENT_PUBLISHER_TOKEN,
+  DomainEventPublisher,
+} from 'src/modules/common/application/domain-event/domain-event.publisher';
 
 @Injectable()
 export class UserRepositoryImpl
@@ -15,6 +18,7 @@ export class UserRepositoryImpl
   constructor(
     @InjectRepository(UserTypeOrmEntity)
     ormRepo: Repository<UserTypeOrmEntity>,
+    @Inject(DOMAIN_EVENT_PUBLISHER_TOKEN)
     domainEventPublisher: DomainEventPublisher,
   ) {
     super(ormRepo, domainEventPublisher);
@@ -29,12 +33,7 @@ export class UserRepositoryImpl
       return null;
     }
 
-    return new User(
-      userEntity.id,
-      userEntity.firstName,
-      userEntity.lastName,
-      userEntity.email,
-    );
+    return new User(userEntity.id, userEntity.firstName, userEntity.lastName, userEntity.email);
   }
 
   async save(user: User): Promise<void> {

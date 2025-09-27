@@ -1,11 +1,14 @@
-import { Injectable, Provider } from '@nestjs/common';
+import { Inject, Injectable, Provider } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { EventTypeOrmEntity } from './event.entity';
 import { Event } from '../../domain/events/event';
 import { EventRepository } from '../../domain/events/event.repository';
 import { BaseRepository } from 'src/modules/common/infrastructure/database/base-repository.impl';
-import { DomainEventPublisher } from 'src/modules/common/infrastructure/domain-event/domain-event.publisher';
 import { InjectRepository } from '@nestjs/typeorm';
+import {
+  DOMAIN_EVENT_PUBLISHER_TOKEN,
+  DomainEventPublisher,
+} from 'src/modules/common/application/domain-event/domain-event.publisher';
 
 @Injectable()
 export class EventRepositoryImpl
@@ -15,6 +18,7 @@ export class EventRepositoryImpl
   constructor(
     @InjectRepository(EventTypeOrmEntity)
     ormRepo: Repository<EventTypeOrmEntity>,
+    @Inject(DOMAIN_EVENT_PUBLISHER_TOKEN)
     domainEventPublisher: DomainEventPublisher,
   ) {
     super(ormRepo, domainEventPublisher);

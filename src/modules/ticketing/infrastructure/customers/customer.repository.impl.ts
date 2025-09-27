@@ -1,4 +1,4 @@
-import { Injectable, Provider } from '@nestjs/common';
+import { Inject, Injectable, Provider } from '@nestjs/common';
 import { Customer } from '../../domain/customers/customer';
 import {
   CUSTOMER_REPOSITORY_TOKEN,
@@ -6,9 +6,12 @@ import {
 } from '../../domain/customers/customer.repository';
 import { BaseRepository } from 'src/modules/common/infrastructure/database/base-repository.impl';
 import { Repository } from 'typeorm';
-import { DomainEventPublisher } from 'src/modules/common/infrastructure/domain-event/domain-event.publisher';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CustomerTypeOrmEntity } from './customer.entity';
+import {
+  DOMAIN_EVENT_PUBLISHER_TOKEN,
+  DomainEventPublisher,
+} from 'src/modules/common/application/domain-event/domain-event.publisher';
 
 @Injectable()
 export class CustomerRepositoryImpl
@@ -18,6 +21,7 @@ export class CustomerRepositoryImpl
   constructor(
     @InjectRepository(CustomerTypeOrmEntity)
     ormRepo: Repository<CustomerTypeOrmEntity>,
+    @Inject(DOMAIN_EVENT_PUBLISHER_TOKEN)
     domainEventPublisher: DomainEventPublisher,
   ) {
     super(ormRepo, domainEventPublisher);

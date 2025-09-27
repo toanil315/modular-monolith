@@ -4,7 +4,7 @@ import { Result } from '../../../common/domain/result';
 import { OrderDomainEvent } from './order.domain-event';
 import { OrderItem } from './order-item';
 import { Customer } from '../customers/customer';
-import { TicketType } from '../ticket-types/ticket-type';
+import { TicketType } from '../events/ticket-type';
 import { OrderErrors } from './order.error';
 
 enum OrderStatus {

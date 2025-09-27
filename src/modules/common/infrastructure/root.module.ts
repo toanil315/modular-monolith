@@ -12,9 +12,9 @@ import { TerminusModule } from '@nestjs/terminus';
 import { DatabaseHealthIndicatorProvider } from './healths/database.health-indicator.impl';
 import { CacheHealthIndicatorProvider } from './healths/cache.health-indicator.impl';
 import { HealthController } from '../presentation/healths/health.controller';
-import { DomainEventPublisher } from './domain-event/domain-event.publisher';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DatabaseConfiguration } from './database/database-configuration';
+import { DomainEventPublisherProvider } from './domain-event/domain-event.publisher.impl';
 
 @Global()
 @Module({
@@ -50,9 +50,9 @@ import { DatabaseConfiguration } from './database/database-configuration';
     CachingServiceProvider,
     DatabaseHealthIndicatorProvider,
     CacheHealthIndicatorProvider,
-    DomainEventPublisher,
+    DomainEventPublisherProvider,
   ],
-  exports: [CachingServiceProvider, DomainEventPublisher],
+  exports: [CachingServiceProvider, DomainEventPublisherProvider],
   controllers: [HealthController],
 })
 export class CommonModule {}

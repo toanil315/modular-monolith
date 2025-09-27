@@ -9,7 +9,7 @@ import {
 import { CartService } from '../cart.service';
 import { Result } from 'src/modules/common/domain/result';
 import { CustomerErrors } from 'src/modules/ticketing/domain/customers/customer.error';
-import { TicketTypeErrors } from 'src/modules/ticketing/domain/ticket-types/ticket-type.error';
+import { TicketTypeErrors } from 'src/modules/ticketing/domain/events/ticket-type.error';
 
 @CommandHandler(RemoveItemFromCartCommand)
 export class RemoveItemFromCartCommandHandler
