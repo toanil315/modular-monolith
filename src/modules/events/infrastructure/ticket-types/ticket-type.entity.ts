@@ -15,10 +15,7 @@ export class TicketTypeOrmEntity {
   @PrimaryColumn({ type: 'uuid' })
   id: string;
 
-  @ManyToOne(() => EventTypeOrmEntity, {
-    createForeignKeyConstraints: false,
-  })
-  @JoinColumn({ name: 'event_id' })
+  @Column({ type: 'uuid' })
   eventId: string;
 
   @Column({ type: 'varchar', length: 255, nullable: false })

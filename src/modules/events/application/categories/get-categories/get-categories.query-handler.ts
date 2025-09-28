@@ -8,7 +8,7 @@ import { Result } from 'src/modules/common/domain/result';
 export class GetCategoriesQueryHandler implements IQueryHandler<GetCategoriesQuery> {
   constructor(private readonly dataSource: DataSource) {}
 
-  async execute(_: GetCategoriesQuery) {
+  async execute() {
     const rawEntities = await this.dataSource.query<
       { id: string; name: string; isArchived: boolean }[]
     >(`

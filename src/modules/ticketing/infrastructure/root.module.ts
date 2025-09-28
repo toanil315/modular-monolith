@@ -1,6 +1,4 @@
 import { Module, Provider } from '@nestjs/common';
-import { RootEventsModule } from 'src/modules/events/infrastructure/root.module';
-import { RootUsersModule } from 'src/modules/users/infrastructure/root.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CustomerTypeOrmEntity } from './customers/customer.entity';
 import { CartService } from '../application/carts/cart.service';
@@ -20,6 +18,8 @@ import { TicketTypeRepositoryProvider } from './ticket-types/ticket-type.reposit
 import { TicketRepositoryProvider } from './tickets/ticket.repository.impl';
 import { CreateTicketTypeCommandHandler } from '../application/ticket-types/create-ticket-type.command-handler';
 import { TicketTypeCreatedIntegrationEventHandler } from '../integration/handlers/ticket-type-created.integration-event-handler';
+import { RootEventsModule } from 'src/modules/events/public/modules';
+import { RootUsersModule } from 'src/modules/users/public/modules';
 
 const cartsProviders: Provider[] = [CartService, AddToCartCommandHandler];
 const customersProviders: Provider[] = [CustomerRepositoryProvider, CreateCustomerCommandHandler];
@@ -28,10 +28,12 @@ const paymentsProviders: Provider[] = [PaymentRepositoryProvider];
 const ticketTypesProviders: Provider[] = [
   TicketTypeRepositoryProvider,
   CreateTicketTypeCommandHandler,
-  TicketTypeCreatedIntegrationEventHandler,
 ];
 const ticketsProviders: Provider[] = [TicketRepositoryProvider];
-const integrationProviders: Provider[] = [UserRegisteredIntegrationEventHandler];
+const integrationProviders: Provider[] = [
+  UserRegisteredIntegrationEventHandler,
+  TicketTypeCreatedIntegrationEventHandler,
+];
 
 @Module({
   imports: [

@@ -27,6 +27,7 @@ import { GetTicketTypeQueryHandler } from '../application/ticket-types/get-ticke
 import { GetTicketTypesQueryHandler } from '../application/ticket-types/get-ticket-types/get-ticket-types.query-handler';
 import { TicketTypesController } from '../presentation/ticket-types/ticket-types.controller';
 import { EventsIntegrationEventPublisherProvider } from '../integration/publishers/integration-event.publisher.impl';
+import { TicketTypeCreatedDomainEventHandler } from '../application/ticket-types/create-ticket-type/ticket-type-created.domain-event-handler';
 
 const categoriesProviders: Provider[] = [
   CategoryRepositoryProvider,
@@ -61,6 +62,8 @@ const ticketTypesProviders: Provider[] = [
 
   GetTicketTypeQueryHandler,
   GetTicketTypesQueryHandler,
+
+  TicketTypeCreatedDomainEventHandler,
 ];
 
 @Module({

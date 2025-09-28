@@ -4,6 +4,7 @@ const tsParser = require('@typescript-eslint/parser');
 const typescriptEslintEslintPlugin = require('@typescript-eslint/eslint-plugin');
 const globals = require('globals');
 const js = require('@eslint/js');
+const boundaries = require('eslint-plugin-boundaries');
 
 const { FlatCompat } = require('@eslint/eslintrc');
 
@@ -32,9 +33,55 @@ module.exports = defineConfig([
 
     plugins: {
       '@typescript-eslint': typescriptEslintEslintPlugin,
+      boundaries,
     },
 
     extends: compat.extends('plugin:@typescript-eslint/recommended', 'plugin:prettier/recommended'),
+
+    settings: {
+      'boundaries/elements': [
+        {
+          type: 'common',
+          mode: 'full',
+          pattern: 'src/modules/common/**',
+        },
+        {
+          type: 'events-public',
+          mode: 'full',
+          pattern: 'src/modules/events/public/**',
+        },
+        {
+          type: 'events',
+          mode: 'full',
+          pattern: 'src/modules/events/**',
+        },
+        {
+          type: 'ticketing-public',
+          mode: 'full',
+          pattern: 'src/modules/ticketing/public/**',
+        },
+        {
+          type: 'ticketing',
+          mode: 'full',
+          pattern: 'src/modules/ticketing/**',
+        },
+        {
+          type: 'users-public',
+          mode: 'full',
+          pattern: 'src/modules/users/public/**',
+        },
+        {
+          type: 'users',
+          mode: 'full',
+          pattern: 'src/modules/users/**',
+        },
+      ],
+      'import/resolver': {
+        typescript: {
+          alwaysTryTypes: true,
+        },
+      },
+    },
 
     rules: {
       '@typescript-eslint/no-namespace': 'off',
@@ -42,14 +89,28 @@ module.exports = defineConfig([
       '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/explicit-module-boundary-types': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
-
-      '@typescript-eslint/no-restricted-imports': [
+      'boundaries/element-types': [
         'error',
         {
-          patterns: [
+          default: 'allow',
+          rules: [
             {
-              group: ['modules/users/**', '!modules/users/public/**'],
-              message: "Only allow imports from another module's public/ folder",
+              from: 'ticketing',
+              disallow: ['events', 'users'],
+              allow: ['events-public', 'users-public'],
+              message: 'Ticketing may only import from <module>/public',
+            },
+            {
+              from: 'events',
+              disallow: ['ticketing', 'users'],
+              allow: ['ticketing-public', 'users-public'],
+              message: 'Events may only import from <module>/public',
+            },
+            {
+              from: 'users',
+              disallow: ['ticketing', 'events'],
+              allow: ['ticketing-public', 'events-public'],
+              message: 'Users may only import from <module>/public',
             },
           ],
         },

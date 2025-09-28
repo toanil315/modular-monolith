@@ -18,7 +18,7 @@ export class TicketTypeCreatedIntegrationEventHandler
         eventId: event.eventId,
         name: event.name,
         price: event.price,
-        quantity: event.price,
+        quantity: event.quantity,
       }),
     );
 
