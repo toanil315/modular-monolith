@@ -4,8 +4,8 @@ import { Result } from 'src/modules/common/domain/result';
 import { TicketDomainEvent } from './ticket.domain-event';
 import { ulid } from 'ulid';
 import { Order } from '../orders/order';
-import { TicketType } from '../events/ticket-type';
 import { TicketErrors } from './ticket.error';
+import { TicketType } from '../ticket-types/ticket-type';
 
 export class Ticket extends Entity {
   constructor(

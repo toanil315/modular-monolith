@@ -9,7 +9,7 @@ import {
 import { CartService } from '../cart.service';
 import { Result } from 'src/modules/common/domain/result';
 import { CustomerErrors } from 'src/modules/ticketing/domain/customers/customer.error';
-import { TicketTypeErrors } from 'src/modules/ticketing/domain/events/ticket-type.error';
+import { TicketTypeError } from 'src/modules/ticketing/domain/ticket-types/ticket-type.error';
 
 @CommandHandler(RemoveItemFromCartCommand)
 export class RemoveItemFromCartCommandHandler
@@ -31,7 +31,7 @@ export class RemoveItemFromCartCommandHandler
     const ticketType = await this.eventsPublicApi.getTicketTypeById(props.ticketTypeId);
 
     if (!ticketType) {
-      return Result.failure(TicketTypeErrors.TicketTypeNotFoundError(props.ticketTypeId));
+      return Result.failure(TicketTypeError.TicketTypeNotFoundError(props.ticketTypeId));
     }
 
     const cart = await this.cartService.removeItem(props.customerId, props.ticketTypeId);

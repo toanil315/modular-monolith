@@ -12,18 +12,18 @@ import { UserRegisteredIntegrationEventHandler } from '../integration/handlers/u
 import { OrderItemTypeOrmEntity } from './orders/order-item.entity';
 import { OrderTypeOrmEntity } from './orders/order.entity';
 import { PaymentTypeOrmEntity } from './payments/payment.entity';
-import { TicketInventoryTypeOrmEntity } from './ticket-inventories/ticket-inventory.entity';
+import { TicketTypeTypeOrmEntity } from './ticket-types/ticket-type.entity';
 import { TicketTypeOrmEntity } from './tickets/ticket.entity';
 import { OrderRepositoryProvider } from './orders/order.repository.impl';
 import { PaymentRepositoryProvider } from './payments/payment.repository.impl';
-import { TicketInventoryRepositoryProvider } from './ticket-inventories/ticket-inventory.repository.impl';
+import { TicketTypeRepositoryProvider } from './ticket-types/ticket-type.repository.impl';
 import { TicketRepositoryProvider } from './tickets/ticket.repository.impl';
 
 const cartsProviders: Provider[] = [CartService, AddToCartCommandHandler];
 const customersProviders: Provider[] = [CustomerRepositoryProvider, CreateCustomerCommandHandler];
 const ordersProviders: Provider[] = [OrderRepositoryProvider];
 const paymentsProviders: Provider[] = [PaymentRepositoryProvider];
-const ticketInventoriesProviders: Provider[] = [TicketInventoryRepositoryProvider];
+const ticketInventoriesProviders: Provider[] = [TicketTypeRepositoryProvider];
 const ticketsProviders: Provider[] = [TicketRepositoryProvider];
 const integrationProviders: Provider[] = [UserRegisteredIntegrationEventHandler];
 
@@ -34,7 +34,7 @@ const integrationProviders: Provider[] = [UserRegisteredIntegrationEventHandler]
       OrderItemTypeOrmEntity,
       OrderTypeOrmEntity,
       PaymentTypeOrmEntity,
-      TicketInventoryTypeOrmEntity,
+      TicketTypeTypeOrmEntity,
       TicketTypeOrmEntity,
     ]),
     RootUsersModule,

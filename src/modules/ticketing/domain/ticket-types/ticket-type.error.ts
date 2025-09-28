@@ -1,6 +1,6 @@
 import { BusinessError } from 'src/modules/common/domain/error';
 
-export namespace TicketTypeErrors {
+export namespace TicketTypeError {
   export const TicketTypeNotFoundError = (ticketTypeId: string) =>
     BusinessError.NotFound(
       'TICKET_TYPES.NOT_FOUND',

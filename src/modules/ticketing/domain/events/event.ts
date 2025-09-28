@@ -3,8 +3,8 @@ import { Entity } from '../../../common/domain/entity';
 
 import { Result } from 'src/modules/common/domain/result';
 import { EventStatus } from './event-status';
-import { TicketType } from './ticket-type';
 import { EventDomainEvent } from './event.domain-event';
+import { TicketType } from '../ticket-types/ticket-type';
 
 export class Event extends Entity {
   constructor(

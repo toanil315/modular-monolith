@@ -4,13 +4,13 @@ import { Inject } from '@nestjs/common';
 import { EVENTS_PUBLIC_APIS_TOKEN, EventsPublicApis } from 'src/modules/events/public/apis';
 import { Result } from 'src/modules/common/domain/result';
 import { CustomerErrors } from 'src/modules/ticketing/domain/customers/customer.error';
-import { TicketTypeErrors } from 'src/modules/ticketing/domain/events/ticket-type.error';
 import { CartItem } from 'src/modules/ticketing/domain/carts/cart-item';
 import { CartService } from '../cart.service';
 import {
   CUSTOMER_REPOSITORY_TOKEN,
   CustomerRepository,
 } from 'src/modules/ticketing/domain/customers/customer.repository';
+import { TicketTypeError } from 'src/modules/ticketing/domain/ticket-types/ticket-type.error';
 
 @CommandHandler(AddToCartCommand)
 export class AddToCartCommandHandler implements ICommandHandler<AddToCartCommand> {
@@ -30,7 +30,7 @@ export class AddToCartCommandHandler implements ICommandHandler<AddToCartCommand
     const ticketType = await this.eventsPublicApis.getTicketTypeById(props.ticketTypeId);
 
     if (!ticketType) {
-      return Result.failure(TicketTypeErrors.TicketTypeNotFoundError(props.ticketTypeId));
+      return Result.failure(TicketTypeError.TicketTypeNotFoundError(props.ticketTypeId));
     }
 
     const cartItem = new CartItem(props.ticketTypeId, props.quantity);
