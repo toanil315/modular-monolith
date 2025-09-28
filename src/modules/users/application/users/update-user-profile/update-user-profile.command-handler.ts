@@ -7,9 +7,7 @@ import { Result } from 'src/modules/common/domain/result';
 import { UserErrors } from 'src/modules/users/domain/users/user.error';
 
 @CommandHandler(UpdateUserProfileCommand)
-export class UpdateUserProfileCommandHandler
-  implements ICommandHandler<UpdateUserProfileCommand>
-{
+export class UpdateUserProfileCommandHandler implements ICommandHandler<UpdateUserProfileCommand> {
   constructor(
     @Inject(USER_REPOSITORY_TOKEN)
     private readonly userRepository: UserRepository,

@@ -2,20 +2,11 @@ import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { EVENTS_END_POINT_TAGS } from '../tags';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import {
-  CreateTicketTypeDto,
-  CreateTicketTypeResponseDto,
-} from './dtos/create-ticket-type.dto';
+import { CreateTicketTypeDto, CreateTicketTypeResponseDto } from './dtos/create-ticket-type.dto';
 import { CreateTicketTypeCommand } from '../../application/ticket-types/create-ticket-type/create-ticket-type.command';
-import {
-  GetTicketTypesDto,
-  GetTicketTypesResponseDto,
-} from './dtos/get-ticket-types.dto';
+import { GetTicketTypesDto, GetTicketTypesResponseDto } from './dtos/get-ticket-types.dto';
 import { GetTicketTypesQuery } from '../../application/ticket-types/get-ticket-types/get-ticket-types.query';
-import {
-  GetTicketTypeByIdDto,
-  GetTicketTypeResponseDto,
-} from './dtos/get-ticket-type.dto';
+import { GetTicketTypeByIdDto, GetTicketTypeResponseDto } from './dtos/get-ticket-type.dto';
 import { GetTicketTypeQuery } from '../../application/ticket-types/get-ticket-type/get-ticket-type.query';
 import {
   UpdateTicketTypePriceDto,
@@ -83,9 +74,7 @@ export class TicketTypesController {
     type: GetTicketTypeResponseDto,
   })
   async getTicketType(@Param() dto: GetTicketTypeByIdDto) {
-    const ticketType = await this.queryBus.execute(
-      new GetTicketTypeQuery({ id: dto.id }),
-    );
+    const ticketType = await this.queryBus.execute(new GetTicketTypeQuery({ id: dto.id }));
 
     return ticketType;
   }

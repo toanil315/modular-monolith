@@ -5,9 +5,7 @@ import { TicketType } from 'src/modules/events/domain/ticket-types/ticket-type';
 import { Result } from 'src/modules/common/domain/result';
 
 @QueryHandler(GetTicketTypesQuery)
-export class GetTicketTypesQueryHandler
-  implements IQueryHandler<GetTicketTypesQuery>
-{
+export class GetTicketTypesQueryHandler implements IQueryHandler<GetTicketTypesQuery> {
   constructor(private readonly dataSource: DataSource) {}
 
   async execute({ props }: GetTicketTypesQuery) {

@@ -1,9 +1,6 @@
 import { Injectable, Inject, Provider } from '@nestjs/common';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
-import {
-  CACHING_SERVICE_TOKEN,
-  CachingService,
-} from '../../application/caching/caching.service';
+import { CACHING_SERVICE_TOKEN, CachingService } from '../../application/caching/caching.service';
 
 @Injectable()
 class CachingServiceImpl implements CachingService {
@@ -14,11 +11,7 @@ class CachingServiceImpl implements CachingService {
     return data ?? null;
   }
 
-  async set<T>(
-    key: string,
-    value: T,
-    expiration: number = 2000,
-  ): Promise<void> {
+  async set<T>(key: string, value: T, expiration: number = 2000): Promise<void> {
     await this.cacheManager.set(key, value, expiration);
   }
 

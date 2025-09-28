@@ -18,12 +18,18 @@ import { OrderRepositoryProvider } from './orders/order.repository.impl';
 import { PaymentRepositoryProvider } from './payments/payment.repository.impl';
 import { TicketTypeRepositoryProvider } from './ticket-types/ticket-type.repository.impl';
 import { TicketRepositoryProvider } from './tickets/ticket.repository.impl';
+import { CreateTicketTypeCommandHandler } from '../application/ticket-types/create-ticket-type.command-handler';
+import { TicketTypeCreatedIntegrationEventHandler } from '../integration/handlers/ticket-type-created.integration-event-handler';
 
 const cartsProviders: Provider[] = [CartService, AddToCartCommandHandler];
 const customersProviders: Provider[] = [CustomerRepositoryProvider, CreateCustomerCommandHandler];
 const ordersProviders: Provider[] = [OrderRepositoryProvider];
 const paymentsProviders: Provider[] = [PaymentRepositoryProvider];
-const ticketInventoriesProviders: Provider[] = [TicketTypeRepositoryProvider];
+const ticketTypesProviders: Provider[] = [
+  TicketTypeRepositoryProvider,
+  CreateTicketTypeCommandHandler,
+  TicketTypeCreatedIntegrationEventHandler,
+];
 const ticketsProviders: Provider[] = [TicketRepositoryProvider];
 const integrationProviders: Provider[] = [UserRegisteredIntegrationEventHandler];
 
@@ -46,7 +52,7 @@ const integrationProviders: Provider[] = [UserRegisteredIntegrationEventHandler]
     ...integrationProviders,
     ...ordersProviders,
     ...paymentsProviders,
-    ...ticketInventoriesProviders,
+    ...ticketTypesProviders,
     ...ticketsProviders,
   ],
   controllers: [CartsController],

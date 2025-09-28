@@ -28,6 +28,4 @@ const ResponseSchema = z.object({
 });
 
 export class GetEventByIdDto extends createZodDto(RequestSchema) {}
-export class GetEventResponseDto extends createZodDto(
-  ApiSuccessResponseSchema(ResponseSchema),
-) {}
+export class GetEventResponseDto extends createZodDto(ApiSuccessResponseSchema(ResponseSchema)) {}

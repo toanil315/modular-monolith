@@ -2,32 +2,17 @@ import { Body, Controller, Get, Post, Param, Put, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
 import { EVENTS_END_POINT_TAGS } from '../tags';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import {
-  CreateEventDto,
-  CreateEventResponseDto,
-} from './dtos/create-event.dto';
+import { CreateEventDto, CreateEventResponseDto } from './dtos/create-event.dto';
 import { CreateEventCommand } from '../../application/events/create-event/create-event.command';
 import { GetEventByIdDto, GetEventResponseDto } from './dtos/get-event.dto';
 import { GetEventQuery } from '../../application/events/get-event/get-event.query';
-import {
-  CancelEventDto,
-  CancelEventResponseDto,
-} from './dtos/cancel-event.dto';
+import { CancelEventDto, CancelEventResponseDto } from './dtos/cancel-event.dto';
 import { CancelEventCommand } from '../../application/events/cancel-event/cancel-event.command';
-import {
-  PublishEventDto,
-  PublishEventResponseDto,
-} from './dtos/publish-event.dto';
+import { PublishEventDto, PublishEventResponseDto } from './dtos/publish-event.dto';
 import { PublishEventCommand } from '../../application/events/publish-event/publish-event.command';
-import {
-  RescheduleEventDto,
-  RescheduleEventResponseDto,
-} from './dtos/reschedule-event.dto';
+import { RescheduleEventDto, RescheduleEventResponseDto } from './dtos/reschedule-event.dto';
 import { RescheduleEventCommand } from '../../application/events/reschedule-event/reschedule-event.command';
-import {
-  SearchEventsDto,
-  SearchEventsResponseDto,
-} from './dtos/search-event.dto';
+import { SearchEventsDto, SearchEventsResponseDto } from './dtos/search-event.dto';
 import { SearchEventsQuery } from '../../application/events/search-event/search-event.query';
 import { ApiZodResponse } from 'src/modules/common/presentation/http/api-zod-response.decorator';
 
@@ -95,9 +80,7 @@ export class EventsController {
     type: GetEventResponseDto,
   })
   async getEvent(@Param() { id }: GetEventByIdDto) {
-    const event = await this.queryBus.execute(
-      new GetEventQuery({ eventId: id }),
-    );
+    const event = await this.queryBus.execute(new GetEventQuery({ eventId: id }));
 
     return event;
   }

@@ -1,5 +1,5 @@
 import { HealthCheckService, HealthCheck } from '@nestjs/terminus';
-import { Injectable, Get, Inject, Controller } from '@nestjs/common';
+import { Get, Inject, Controller } from '@nestjs/common';
 import {
   CACHE_HEALTH_INDICATOR_TOKEN,
   CacheHealthIndicator,

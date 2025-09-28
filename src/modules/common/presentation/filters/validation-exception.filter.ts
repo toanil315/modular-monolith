@@ -1,9 +1,4 @@
-import {
-  ExceptionFilter,
-  Catch,
-  ArgumentsHost,
-  HttpStatus,
-} from '@nestjs/common';
+import { ExceptionFilter, Catch, ArgumentsHost, HttpStatus } from '@nestjs/common';
 import { Response } from 'express';
 import { ResponseFormatter } from '../http/response.formatter';
 import { ValidationException } from '../../application/exceptions/validation.exception';
@@ -16,12 +11,6 @@ export class ValidationExceptionFilter implements ExceptionFilter {
 
     response
       .status(HttpStatus.BAD_REQUEST)
-      .json(
-        ResponseFormatter.error(
-          'VALIDATION_ERROR',
-          exception.message,
-          exception.details,
-        ),
-      );
+      .json(ResponseFormatter.error('VALIDATION_ERROR', exception.message, exception.details));
   }
 }

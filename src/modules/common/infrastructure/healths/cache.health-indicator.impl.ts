@@ -4,10 +4,7 @@ import {
   CACHE_HEALTH_INDICATOR_TOKEN,
   CacheHealthIndicator,
 } from '../../application/healths/health.indicator';
-import {
-  CACHING_SERVICE_TOKEN,
-  CachingService,
-} from '../../application/caching/caching.service';
+import { CACHING_SERVICE_TOKEN, CachingService } from '../../application/caching/caching.service';
 
 @Injectable()
 export class CacheHealthIndicatorImpl implements CacheHealthIndicator {
@@ -22,11 +19,7 @@ export class CacheHealthIndicatorImpl implements CacheHealthIndicator {
     const expectedHealthCheckValue = 'ok';
 
     try {
-      await this.cachingService.set(
-        expectedHealthCheckKey,
-        expectedHealthCheckValue,
-        100,
-      );
+      await this.cachingService.set(expectedHealthCheckKey, expectedHealthCheckValue, 100);
       const value = await this.cachingService.get(expectedHealthCheckKey);
 
       if (value === expectedHealthCheckValue) {

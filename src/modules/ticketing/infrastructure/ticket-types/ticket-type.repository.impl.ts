@@ -3,7 +3,7 @@ import { BaseRepository } from 'src/modules/common/infrastructure/database/base-
 import { TicketType } from '../../domain/ticket-types/ticket-type';
 import { TicketTypeTypeOrmEntity } from './ticket-type.entity';
 import {
-  TICKET_INVENTORY_REPOSITORY_TOKEN,
+  TICKET_TYPE_REPOSITORY_TOKEN,
   TicketTypeRepository,
 } from '../../domain/ticket-types/ticket-type.repository';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -61,6 +61,6 @@ export class TicketTypeRepositoryImpl
 }
 
 export const TicketTypeRepositoryProvider: Provider = {
-  provide: TICKET_INVENTORY_REPOSITORY_TOKEN,
+  provide: TICKET_TYPE_REPOSITORY_TOKEN,
   useClass: TicketTypeRepositoryImpl,
 };

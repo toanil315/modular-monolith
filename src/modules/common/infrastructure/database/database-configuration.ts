@@ -18,9 +18,7 @@ export class DatabaseConfiguration {
     };
   }
 
-  static getMigrationConfiguration(
-    moduleDirName: string,
-  ): Partial<TypeOrmModuleOptions> {
+  static getMigrationConfiguration(moduleDirName: string): Partial<TypeOrmModuleOptions> {
     return {
       entities: [moduleDirName + '/../**/*.entity.{ts,js}'],
       migrationsTableName: 'migrations',

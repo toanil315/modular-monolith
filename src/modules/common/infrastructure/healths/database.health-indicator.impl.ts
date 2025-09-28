@@ -9,18 +9,14 @@ import { HealthIndicatorService } from '@nestjs/terminus';
 
 @Injectable()
 export class DatabaseHealthIndicatorImpl implements DatabaseHealthIndicator {
-  constructor(
-    private readonly healthIndicatorService: HealthIndicatorService,
-  ) {}
+  constructor(private readonly healthIndicatorService: HealthIndicatorService) {}
 
   async isHealthy() {
     let dataSource: DataSource | null = null;
     const indicator = this.healthIndicatorService.check('database');
 
     try {
-      dataSource = new DataSource(
-        DatabaseConfiguration.get() as DataSourceOptions,
-      );
+      dataSource = new DataSource(DatabaseConfiguration.get() as DataSourceOptions);
       await dataSource.initialize();
 
       await dataSource.query('SELECT 1');

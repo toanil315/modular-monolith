@@ -5,12 +5,10 @@ import { Category } from 'src/modules/events/domain/categories/category';
 import { Result } from 'src/modules/common/domain/result';
 
 @QueryHandler(GetCategoriesQuery)
-export class GetCategoriesQueryHandler
-  implements IQueryHandler<GetCategoriesQuery>
-{
+export class GetCategoriesQueryHandler implements IQueryHandler<GetCategoriesQuery> {
   constructor(private readonly dataSource: DataSource) {}
 
-  async execute(query: GetCategoriesQuery) {
+  async execute(_: GetCategoriesQuery) {
     const rawEntities = await this.dataSource.query<
       { id: string; name: string; isArchived: boolean }[]
     >(`
@@ -22,9 +20,7 @@ export class GetCategoriesQueryHandler
     `);
 
     return Result.success(
-      rawEntities.map(
-        (record) => new Category(record.id, record.name, record.isArchived),
-      ),
+      rawEntities.map((record) => new Category(record.id, record.name, record.isArchived)),
     );
   }
 }

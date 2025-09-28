@@ -31,11 +31,7 @@ export class User extends Entity {
     this.lastName = lastName;
 
     this.raise(
-      new UserDomainEvent.UserProfileUpdatedDomainEvent(
-        this.id,
-        this.firstName,
-        this.lastName,
-      ),
+      new UserDomainEvent.UserProfileUpdatedDomainEvent(this.id, this.firstName, this.lastName),
     );
 
     return Result.success(this);

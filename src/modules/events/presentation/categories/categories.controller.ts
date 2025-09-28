@@ -3,28 +3,16 @@ import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
 import { EVENTS_END_POINT_TAGS } from '../tags';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { CreateCategoryCommand } from '../../application/categories/create-category/create-category.command';
-import {
-  CreateCategoryDto,
-  CreateCategoryResponseDto,
-} from './dtos/create-category.dto';
+import { CreateCategoryDto, CreateCategoryResponseDto } from './dtos/create-category.dto';
 
 import { GetCategoryQuery } from '../../application/categories/get-category/get-category.query';
 import { GetCategoriesResponseDto } from './dtos/get-categories.dto';
 import { GetCategoriesQuery } from '../../application/categories/get-categories/get-categories.query';
-import {
-  UpdateCategoryDto,
-  UpdateCategoryResponseDto,
-} from './dtos/update-category.dto';
+import { UpdateCategoryDto, UpdateCategoryResponseDto } from './dtos/update-category.dto';
 import { UpdateCategoryCommand } from '../../application/categories/update-category/update-category.command';
-import {
-  ArchiveCategoryDto,
-  ArchiveCategoryResponseDto,
-} from './dtos/archive-category.dto';
+import { ArchiveCategoryDto, ArchiveCategoryResponseDto } from './dtos/archive-category.dto';
 import { ArchiveCategoryCommand } from '../../application/categories/archive-category/archive-category.command';
-import {
-  GetCategoryByIdDto,
-  GetCategoryResponseDto,
-} from './dtos/get-category.dto';
+import { GetCategoryByIdDto, GetCategoryResponseDto } from './dtos/get-category.dto';
 import { ApiZodResponse } from 'src/modules/common/presentation/http/api-zod-response.decorator';
 
 @ApiTags(EVENTS_END_POINT_TAGS.CATEGORIES)
@@ -79,9 +67,7 @@ export class CategoriesController {
     type: GetCategoryResponseDto,
   })
   async getCategory(@Param() { id }: GetCategoryByIdDto) {
-    const category = await this.queryBus.execute(
-      new GetCategoryQuery({ categoryId: id }),
-    );
+    const category = await this.queryBus.execute(new GetCategoryQuery({ categoryId: id }));
 
     return category;
   }

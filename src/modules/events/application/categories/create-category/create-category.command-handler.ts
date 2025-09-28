@@ -6,9 +6,7 @@ import { CATEGORY_REPOSITORY_TOKEN } from 'src/modules/events/infrastructure/cat
 import { CategoryRepository } from 'src/modules/events/domain/categories/category.repository';
 
 @CommandHandler(CreateCategoryCommand)
-export class CreateCategoryCommandHandler
-  implements ICommandHandler<CreateCategoryCommand>
-{
+export class CreateCategoryCommandHandler implements ICommandHandler<CreateCategoryCommand> {
   constructor(
     @Inject(CATEGORY_REPOSITORY_TOKEN)
     private categoryRepository: CategoryRepository,

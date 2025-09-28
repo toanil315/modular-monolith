@@ -15,9 +15,7 @@ export class Category extends Entity {
   static create(name: string) {
     const category = new Category(uuidV4(), name, false);
 
-    category.raise(
-      new CategoryDomainEvent.CategoryCreatedDomainEvent(category.id),
-    );
+    category.raise(new CategoryDomainEvent.CategoryCreatedDomainEvent(category.id));
 
     return Result.success(category);
   }
@@ -38,12 +36,7 @@ export class Category extends Entity {
 
     this.name = name;
 
-    this.raise(
-      new CategoryDomainEvent.CategoryNameChangedDomainEvent(
-        this.id,
-        this.name,
-      ),
-    );
+    this.raise(new CategoryDomainEvent.CategoryNameChangedDomainEvent(this.id, this.name));
     return Result.success(this);
   }
 }

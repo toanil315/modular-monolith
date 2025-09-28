@@ -78,11 +78,7 @@ export class Event extends Entity {
     this.endsAt = endsAt;
 
     this.raise(
-      new EventDomainEvent.EventRescheduledDomainEvent(
-        this.id,
-        this.startsAt,
-        this.endsAt,
-      ),
+      new EventDomainEvent.EventRescheduledDomainEvent(this.id, this.startsAt, this.endsAt),
     );
     return Result.success(this);
   }

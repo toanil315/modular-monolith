@@ -5,4 +5,4 @@ export interface TicketTypeRepository {
   save: (TicketType: TicketType) => Promise<void>;
 }
 
-export const TICKET_INVENTORY_REPOSITORY_TOKEN = 'TICKET_INVENTORY_REPOSITORY_TOKEN';
+export const TICKET_TYPE_REPOSITORY_TOKEN = 'TICKET_TYPE_REPOSITORY_TOKEN';

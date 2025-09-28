@@ -13,9 +13,7 @@ import { CategoryCachingKey } from '../caching/caching.key';
 import { Category } from 'src/modules/events/domain/categories/category';
 
 @QueryHandler(GetCategoryQuery)
-export class GetCategoryQueryHandler
-  implements IQueryHandler<GetCategoryQuery>
-{
+export class GetCategoryQueryHandler implements IQueryHandler<GetCategoryQuery> {
   constructor(
     @Inject(CATEGORY_REPOSITORY_TOKEN)
     private categoryRepository: CategoryRepository,
@@ -34,15 +32,10 @@ export class GetCategoryQueryHandler
     const category = await this.categoryRepository.getById(props.categoryId);
 
     if (!category) {
-      return Result.failure(
-        CategoryErrors.CategoryNotFoundError(props.categoryId),
-      );
+      return Result.failure(CategoryErrors.CategoryNotFoundError(props.categoryId));
     }
 
-    this.cachingService.set(
-      CategoryCachingKey.CATEGORY(props.categoryId),
-      category,
-    );
+    this.cachingService.set(CategoryCachingKey.CATEGORY(props.categoryId), category);
 
     return Result.success(category);
   }

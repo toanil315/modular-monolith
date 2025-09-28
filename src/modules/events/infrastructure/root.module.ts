@@ -26,6 +26,7 @@ import { UpdateTicketTypePriceCommandHandler } from '../application/ticket-types
 import { GetTicketTypeQueryHandler } from '../application/ticket-types/get-ticket-type/get-ticket-type.query-handler';
 import { GetTicketTypesQueryHandler } from '../application/ticket-types/get-ticket-types/get-ticket-types.query-handler';
 import { TicketTypesController } from '../presentation/ticket-types/ticket-types.controller';
+import { EventsIntegrationEventPublisherProvider } from '../integration/publishers/integration-event.publisher.impl';
 
 const categoriesProviders: Provider[] = [
   CategoryRepositoryProvider,
@@ -68,6 +69,8 @@ const ticketTypesProviders: Provider[] = [
   ],
   providers: [
     EventsPublicApisProvider,
+    EventsIntegrationEventPublisherProvider,
+
     ...categoriesProviders,
     ...eventsProviders,
     ...ticketTypesProviders,

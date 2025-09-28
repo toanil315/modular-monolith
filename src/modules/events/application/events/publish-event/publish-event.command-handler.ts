@@ -7,12 +7,8 @@ import { EventErrors } from 'src/modules/events/domain/events/event.error';
 import { Result } from 'src/modules/common/domain/result';
 
 @CommandHandler(PublishEventCommand)
-export class PublishEventCommandHandler
-  implements ICommandHandler<PublishEventCommand>
-{
-  constructor(
-    @Inject(EVENT_REPOSITORY_TOKEN) private eventRepository: EventRepository,
-  ) {}
+export class PublishEventCommandHandler implements ICommandHandler<PublishEventCommand> {
+  constructor(@Inject(EVENT_REPOSITORY_TOKEN) private eventRepository: EventRepository) {}
 
   async execute({ props }: PublishEventCommand) {
     const event = await this.eventRepository.getById(props.id);

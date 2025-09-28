@@ -7,9 +7,7 @@ import { CategoryErrors } from 'src/modules/events/domain/categories/category.er
 import { Result } from 'src/modules/common/domain/result';
 
 @CommandHandler(ArchiveCategoryCommand)
-export class ArchiveCategoryCommandHandler
-  implements ICommandHandler<ArchiveCategoryCommand>
-{
+export class ArchiveCategoryCommandHandler implements ICommandHandler<ArchiveCategoryCommand> {
   constructor(
     @Inject(CATEGORY_REPOSITORY_TOKEN)
     private categoryRepository: CategoryRepository,

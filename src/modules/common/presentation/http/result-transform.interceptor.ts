@@ -25,9 +25,7 @@ export class ResultTransformInterceptor<T>
     context: ExecutionContext,
     next: CallHandler,
   ): Observable<ApiSuccessResponse<T> | undefined> {
-    return next
-      .handle()
-      .pipe(map((result) => this.fromResultToDto(result, context)));
+    return next.handle().pipe(map((result) => this.fromResultToDto(result, context)));
   }
 
   private fromResultToDto(result: Result<T>, context: ExecutionContext) {
@@ -36,16 +34,12 @@ export class ResultTransformInterceptor<T>
       const response: Response = context.switchToHttp().getResponse();
       response
         .status(this.fromErrorTypeToStatusCode(error.type))
-        .json(
-          ResponseFormatter.error(error.code, error.message, error.details),
-        );
+        .json(ResponseFormatter.error(error.code, error.message, error.details));
 
       return;
     }
 
-    const { success, data } = this.schema.safeParse(
-      ResponseFormatter.success(result.value),
-    );
+    const { success, data } = this.schema.safeParse(ResponseFormatter.success(result.value));
 
     if (!success) {
       throw new InternalServerErrorException('Response validation failed');

@@ -6,9 +6,7 @@ import { UserRepository } from 'src/modules/users/domain/users/user.repository';
 import { User } from 'src/modules/users/domain/users/user';
 
 @CommandHandler(RegisterUserCommand)
-export class RegisterUserCommandHandler
-  implements ICommandHandler<RegisterUserCommand>
-{
+export class RegisterUserCommandHandler implements ICommandHandler<RegisterUserCommand> {
   constructor(
     @Inject(USER_REPOSITORY_TOKEN)
     private readonly userRepository: UserRepository,

@@ -17,9 +17,7 @@ interface EventResponse {
 }
 
 @QueryHandler(SearchEventsQuery)
-export class SearchEventsQueryHandler
-  implements IQueryHandler<SearchEventsQuery>
-{
+export class SearchEventsQueryHandler implements IQueryHandler<SearchEventsQuery> {
   constructor(private readonly dataSource: DataSource) {}
 
   async execute({ props }: SearchEventsQuery) {

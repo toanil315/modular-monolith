@@ -7,9 +7,7 @@ import { Result } from 'src/modules/common/domain/result';
 import { TicketTypeErrors } from 'src/modules/events/domain/ticket-types/ticket-type.error';
 
 @QueryHandler(GetTicketTypeQuery)
-export class GetTicketTypeQueryHandler
-  implements IQueryHandler<GetTicketTypeQuery>
-{
+export class GetTicketTypeQueryHandler implements IQueryHandler<GetTicketTypeQuery> {
   constructor(
     @Inject(TICKET_TYPE_REPOSITORY_TOKEN)
     private ticketTypeRepository: TicketTypeRepository,

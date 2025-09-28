@@ -1,7 +1,4 @@
-import {
-  ApiErrorResponse,
-  ApiSuccessResponse,
-} from '../validations/common.schema';
+import { ApiErrorResponse, ApiSuccessResponse } from '../validations/common.schema';
 
 export class ResponseFormatter {
   static success<T>(data: T, message?: string): ApiSuccessResponse<T> {
@@ -12,11 +9,7 @@ export class ResponseFormatter {
     };
   }
 
-  static error(
-    code: string,
-    message: string,
-    details?: unknown,
-  ): ApiErrorResponse {
+  static error(code: string, message: string, details?: unknown): ApiErrorResponse {
     return {
       success: false,
       error: { code, message, details },

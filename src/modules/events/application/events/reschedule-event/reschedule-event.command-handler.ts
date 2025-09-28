@@ -7,12 +7,8 @@ import { RescheduleEventCommand } from './reschedule-event.command';
 import { Result } from 'src/modules/common/domain/result';
 
 @CommandHandler(RescheduleEventCommand)
-export class RescheduleEventCommandHandler
-  implements ICommandHandler<RescheduleEventCommand>
-{
-  constructor(
-    @Inject(EVENT_REPOSITORY_TOKEN) private eventRepository: EventRepository,
-  ) {}
+export class RescheduleEventCommandHandler implements ICommandHandler<RescheduleEventCommand> {
+  constructor(@Inject(EVENT_REPOSITORY_TOKEN) private eventRepository: EventRepository) {}
 
   async execute({ props }: RescheduleEventCommand) {
     const event = await this.eventRepository.getById(props.id);

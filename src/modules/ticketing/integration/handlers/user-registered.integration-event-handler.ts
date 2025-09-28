@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CommandBus, EventsHandler, IEventHandler } from '@nestjs/cqrs';
-import { UsersIntegrationEvent } from 'src/modules/users/integration/events/users.integration-event';
 import { CreateCustomerCommand } from '../../application/customers/create-customer/create-customer.command';
+import { UsersIntegrationEvent } from 'src/modules/users/integration/events/users.integration-event';
 
 @EventsHandler(UsersIntegrationEvent.UserRegisteredIntegrationEvent)
 @Injectable()

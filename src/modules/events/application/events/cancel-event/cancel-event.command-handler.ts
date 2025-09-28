@@ -7,12 +7,8 @@ import { EventErrors } from 'src/modules/events/domain/events/event.error';
 import { Result } from 'src/modules/common/domain/result';
 
 @CommandHandler(CancelEventCommand)
-export class CancelCommandHandler
-  implements ICommandHandler<CancelEventCommand>
-{
-  constructor(
-    @Inject(EVENT_REPOSITORY_TOKEN) private eventRepository: EventRepository,
-  ) {}
+export class CancelCommandHandler implements ICommandHandler<CancelEventCommand> {
+  constructor(@Inject(EVENT_REPOSITORY_TOKEN) private eventRepository: EventRepository) {}
 
   async execute({ props }: CancelEventCommand) {
     const event = await this.eventRepository.getById(props.id);

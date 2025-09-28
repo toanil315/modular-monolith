@@ -16,22 +16,17 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "typeorm": "npx typeorm-ts-node-commonjs",
-
     "migration:generate:events": "npm run typeorm -- migration:generate ./src/modules/events/infrastructure/database/migrations/$npm_config_name -d ./src/modules/events/infrastructure/database/datasource.ts",
     "migration:run:events": "npm run typeorm -- migration:run -d ./src/modules/events/infrastructure/database/datasource.ts",
     "migration:rollback:events": "npm run typeorm -- migration:revert -d ./src/modules/events/infrastructure/database/datasource.ts",
-
     "migration:generate:users": "npm run typeorm -- migration:generate ./src/modules/users/infrastructure/database/migrations/$npm_config_name -d ./src/modules/users/infrastructure/database/datasource.ts",
     "migration:run:users": "npm run typeorm -- migration:run -d ./src/modules/users/infrastructure/database/datasource.ts",
     "migration:rollback:users": "npm run typeorm -- migration:revert -d ./src/modules/users/infrastructure/database/datasource.ts",
-
     "migration:generate:ticketing": "npm run typeorm -- migration:generate ./src/modules/ticketing/infrastructure/database/migrations/$npm_config_name -d ./src/modules/ticketing/infrastructure/database/datasource.ts",
     "migration:run:ticketing": "npm run typeorm -- migration:run -d ./src/modules/ticketing/infrastructure/database/datasource.ts",
     "migration:rollback:ticketing": "npm run typeorm -- migration:revert -d ./src/modules/ticketing/infrastructure/database/datasource.ts",
-    
     "migration:run:all": "npm run migration:run:events && npm run migration:run:users && npm run migration:run:ticketing",
     "migration:rollback:all": "npm run migration:rollback:events && npm run migration:rollback:users && npm run migration:rollback:ticketing"
-
   },
   "dependencies": {
     "@keyv/redis": "^5.1.2",

@@ -10,9 +10,7 @@ import { TicketType } from 'src/modules/events/domain/ticket-types/ticket-type';
 import { Result } from 'src/modules/common/domain/result';
 
 @CommandHandler(CreateTicketTypeCommand)
-export class CreateTicketTypeCommandHandler
-  implements ICommandHandler<CreateTicketTypeCommand>
-{
+export class CreateTicketTypeCommandHandler implements ICommandHandler<CreateTicketTypeCommand> {
   constructor(
     @Inject(TICKET_TYPE_REPOSITORY_TOKEN)
     private ticketTypeRepository: TicketTypeRepository,

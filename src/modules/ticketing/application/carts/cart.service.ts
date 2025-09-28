@@ -20,7 +20,7 @@ export class CartService {
 
   async clear(customerId: string) {
     const cacheKey = this.createCacheKey(customerId);
-    var cart = Cart.create(customerId);
+    const cart = Cart.create(customerId);
     await this.cachingService.set(cacheKey, cart, CartService.DEFAULT_EXPIRATION);
   }
 

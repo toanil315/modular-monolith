@@ -1,7 +1,8 @@
 import { TicketType } from '../../domain/ticket-types/ticket-type';
 
-export const INTEGRATION_EVENTS_PUBLISHER_TOKEN = 'INTEGRATION_EVENTS_PUBLISHER_TOKEN';
+export const EVENTS_INTEGRATION_EVENTS_PUBLISHER_TOKEN =
+  'EVENTS_INTEGRATION_EVENTS_PUBLISHER_TOKEN';
 
-export interface IntegrationEventsPublisher {
+export interface EventsIntegrationEventsPublisher {
   publishTicketTypeCreated: (ticketType: TicketType) => Promise<void>;
 }
