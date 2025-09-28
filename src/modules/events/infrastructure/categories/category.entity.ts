@@ -1,10 +1,4 @@
-import {
-  Entity,
-  Column,
-  PrimaryColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Entity, Column, PrimaryColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { EVENTS_SCHEMA } from '../database/datasource';
 
 @Entity({ schema: EVENTS_SCHEMA, name: 'categories' })
@@ -18,9 +12,9 @@ export class CategoryTypeOrmEntity {
   @Column({ type: 'boolean', default: false })
   isArchived: boolean;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamp with time zone' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamp with time zone' })
   updatedAt: Date;
 }

@@ -15,7 +15,7 @@ export class Ticket extends Entity {
     public eventId: string,
     public ticketTypeId: string,
     public code: string,
-    public createdAtUtc: Date,
+    public createdAt: Date,
     public archived: boolean,
   ) {
     super();

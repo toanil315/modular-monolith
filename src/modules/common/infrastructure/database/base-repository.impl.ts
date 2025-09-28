@@ -8,8 +8,20 @@ export abstract class BaseRepository<TDomain extends Entity, TOrmEntity extends 
     protected readonly domainEventPublisher: DomainEventPublisher,
   ) {}
 
-  protected async persist(domainEntity: TDomain, ormEntity: DeepPartial<TOrmEntity>) {
-    await this.ormRepo.save(ormEntity);
-    await this.domainEventPublisher.publish(domainEntity);
+  protected async persist(
+    domainEntity: TDomain | TDomain[],
+    ormEntity: DeepPartial<TOrmEntity> | DeepPartial<TOrmEntity>[],
+  ) {
+    await this.ormRepo.save<DeepPartial<TOrmEntity>>(
+      ormEntity as Parameters<typeof this.ormRepo.save>[0],
+    );
+
+    if (Array.isArray(domainEntity)) {
+      for (const entity of domainEntity) {
+        await this.domainEventPublisher.publish(entity);
+      }
+    } else {
+      await this.domainEventPublisher.publish(domainEntity);
+    }
   }
 }

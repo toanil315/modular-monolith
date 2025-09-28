@@ -9,16 +9,46 @@ import { CustomerRepositoryProvider } from './customers/customer.repository.impl
 import { CreateCustomerCommandHandler } from '../application/customers/create-customer/create-customer.command-handler';
 import { CartsController } from '../presentation/carts/carts.controller';
 import { UserRegisteredIntegrationEventHandler } from '../integration/handlers/user-registered.integration-event-handler';
+import { OrderItemTypeOrmEntity } from './orders/order-item.entity';
+import { OrderTypeOrmEntity } from './orders/order.entity';
+import { PaymentTypeOrmEntity } from './payments/payment.entity';
+import { TicketInventoryTypeOrmEntity } from './ticket-inventories/ticket-inventory.entity';
+import { TicketTypeOrmEntity } from './tickets/ticket.entity';
+import { OrderRepositoryProvider } from './orders/order.repository.impl';
+import { PaymentRepositoryProvider } from './payments/payment.repository.impl';
+import { TicketInventoryRepositoryProvider } from './ticket-inventories/ticket-inventory.repository.impl';
+import { TicketRepositoryProvider } from './tickets/ticket.repository.impl';
 
 const cartsProviders: Provider[] = [CartService, AddToCartCommandHandler];
-
 const customersProviders: Provider[] = [CustomerRepositoryProvider, CreateCustomerCommandHandler];
-
+const ordersProviders: Provider[] = [OrderRepositoryProvider];
+const paymentsProviders: Provider[] = [PaymentRepositoryProvider];
+const ticketInventoriesProviders: Provider[] = [TicketInventoryRepositoryProvider];
+const ticketsProviders: Provider[] = [TicketRepositoryProvider];
 const integrationProviders: Provider[] = [UserRegisteredIntegrationEventHandler];
 
 @Module({
-  imports: [TypeOrmModule.forFeature([CustomerTypeOrmEntity]), RootUsersModule, RootEventsModule],
-  providers: [...cartsProviders, ...customersProviders, ...integrationProviders],
+  imports: [
+    TypeOrmModule.forFeature([
+      CustomerTypeOrmEntity,
+      OrderItemTypeOrmEntity,
+      OrderTypeOrmEntity,
+      PaymentTypeOrmEntity,
+      TicketInventoryTypeOrmEntity,
+      TicketTypeOrmEntity,
+    ]),
+    RootUsersModule,
+    RootEventsModule,
+  ],
+  providers: [
+    ...cartsProviders,
+    ...customersProviders,
+    ...integrationProviders,
+    ...ordersProviders,
+    ...paymentsProviders,
+    ...ticketInventoriesProviders,
+    ...ticketsProviders,
+  ],
   controllers: [CartsController],
 })
 export class RootTicketingModule {}

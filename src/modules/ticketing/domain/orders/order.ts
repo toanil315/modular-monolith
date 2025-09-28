@@ -7,7 +7,7 @@ import { Customer } from '../customers/customer';
 import { TicketType } from '../events/ticket-type';
 import { OrderErrors } from './order.error';
 
-enum OrderStatus {
+export enum OrderStatus {
   Pending = 0,
   Paid = 1,
   Refunded = 2,
@@ -22,7 +22,7 @@ export class Order extends Entity {
     public totalPrice: number,
     public currency: string | null,
     public ticketsIssued: boolean,
-    public createdAtUtc: Date,
+    public createdAt: Date,
     public orderItems: OrderItem[],
   ) {
     super();

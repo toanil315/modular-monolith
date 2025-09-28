@@ -1,10 +1,4 @@
-import {
-  Entity,
-  Column,
-  PrimaryColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Entity, Column, PrimaryColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { USERS_SCHEMA } from '../database/datasource';
 
 @Entity({ schema: USERS_SCHEMA, name: 'users' })
@@ -21,9 +15,9 @@ export class UserTypeOrmEntity {
   @Column({ type: 'varchar', length: 255, nullable: false })
   email: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamp with time zone' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamp with time zone' })
   updatedAt: Date;
 }

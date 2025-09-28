@@ -15,9 +15,9 @@ export class CustomerTypeOrmEntity {
   @Column({ type: 'varchar', length: 255, nullable: false })
   email: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamp with time zone' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamp with time zone' })
   updatedAt: Date;
 }

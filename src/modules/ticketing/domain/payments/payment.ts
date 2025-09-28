@@ -13,8 +13,8 @@ export class Payment extends Entity {
     public amount: number,
     public currency: string,
     public amountRefunded: number | null,
-    public createdAtUtc: Date,
-    public refundedAtUtc: Date | null,
+    public createdAt: Date,
+    public refundedAt: Date | null,
   ) {
     super();
   }
