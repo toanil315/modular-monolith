@@ -7,7 +7,7 @@ import {
   TicketTypeRepository,
 } from '../../domain/ticket-types/ticket-type.repository';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import {
   DOMAIN_EVENT_PUBLISHER_TOKEN,
   DomainEventPublisher,
@@ -30,6 +30,30 @@ export class TicketTypeRepositoryImpl
   async getById(TicketTypeId: string): Promise<TicketType | null> {
     const TicketTypeEntity = await this.ormRepo.findOne({
       where: { id: TicketTypeId },
+    });
+
+    if (!TicketTypeEntity) {
+      return null;
+    }
+
+    return new TicketType(
+      TicketTypeEntity.id,
+      TicketTypeEntity.eventId,
+      TicketTypeEntity.name,
+      TicketTypeEntity.price,
+      TicketTypeEntity.currency,
+      TicketTypeEntity.quantity,
+      TicketTypeEntity.availableQuantity,
+    );
+  }
+
+  async getWithLock(ticketTypeId: string): Promise<TicketType | null> {
+    const TicketTypeEntity = await this.ormRepo.findOne({
+      where: { id: ticketTypeId },
+      lock: {
+        mode: 'pessimistic_write',
+        onLocked: 'nowait',
+      },
     });
 
     if (!TicketTypeEntity) {

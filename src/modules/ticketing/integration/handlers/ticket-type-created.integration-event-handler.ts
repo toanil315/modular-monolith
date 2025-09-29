@@ -13,7 +13,7 @@ export class TicketTypeCreatedIntegrationEventHandler
   async handle(event: TicketTypeIntegrationEvent.TicketTypeCreatedIntegrationEvent) {
     const result = await this.commandBus.execute(
       new CreateTicketTypeCommand({
-        id: event.id,
+        id: event.ticketTypeId,
         currency: event.currency,
         eventId: event.eventId,
         name: event.name,

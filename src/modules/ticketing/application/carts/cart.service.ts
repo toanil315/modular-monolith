@@ -35,7 +35,7 @@ export class CartService {
       existingCartItem.quantity += cartItem.quantity;
     }
 
-    await this.cachingService.set(cacheKey, cacheKey, CartService.DEFAULT_EXPIRATION);
+    await this.cachingService.set(cacheKey, cart, CartService.DEFAULT_EXPIRATION);
     return cart;
   }
 

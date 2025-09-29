@@ -4,20 +4,26 @@ import {
   DOMAIN_EVENT_PUBLISHER_TOKEN,
   DomainEventPublisher,
 } from 'src/modules/common/application/domain-event/domain-event.publisher';
-import { InjectDataSource } from '@nestjs/typeorm';
-import { DataSource } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { Order } from '../../domain/orders/order';
 import { OrderTypeOrmEntity } from './order.entity';
 import { OrderItemTypeOrmEntity } from './order-item.entity';
+import { BaseRepository } from 'src/modules/common/infrastructure/database/base-repository.impl';
 
 @Injectable()
-export class OrderRepositoryImpl implements OrderRepository {
+export class OrderRepositoryImpl
+  extends BaseRepository<Order, OrderTypeOrmEntity>
+  implements OrderRepository
+{
   constructor(
-    @InjectDataSource()
-    private readonly dataSource: DataSource,
+    @InjectRepository(OrderTypeOrmEntity)
+    ormRepo: Repository<OrderTypeOrmEntity>,
     @Inject(DOMAIN_EVENT_PUBLISHER_TOKEN)
-    private readonly domainEventPublisher: DomainEventPublisher,
-  ) {}
+    domainEventPublisher: DomainEventPublisher,
+  ) {
+    super(ormRepo, domainEventPublisher);
+  }
 
   async getById(orderId: string) {
     const query = `
@@ -51,7 +57,7 @@ export class OrderRepositoryImpl implements OrderRepository {
         GROUP BY o.id;     
     `;
 
-    const rows = await this.dataSource.query<Order[]>(query, [orderId]);
+    const rows = await this.ormRepo.manager.query<Order[]>(query, [orderId]);
 
     if (!rows.length) return null;
 
@@ -59,7 +65,7 @@ export class OrderRepositoryImpl implements OrderRepository {
   }
 
   async save(order: Order) {
-    await this.dataSource.transaction(async (manager) => {
+    await this.ormRepo.manager.transaction(async (manager) => {
       await manager.getRepository(OrderTypeOrmEntity).save({
         id: order.id,
         customerId: order.customerId,

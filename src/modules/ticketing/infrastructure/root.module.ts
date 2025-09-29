@@ -20,11 +20,20 @@ import { CreateTicketTypeCommandHandler } from '../application/ticket-types/crea
 import { TicketTypeCreatedIntegrationEventHandler } from '../integration/handlers/ticket-type-created.integration-event-handler';
 import { RootEventsModule } from 'src/modules/events/public/modules';
 import { RootUsersModule } from 'src/modules/users/public/modules';
+import { PaymentService } from '../application/payments/payment.service';
+import { CreateOrderCommandHandler } from '../application/orders/create-order/create-order.command-handler';
+import { OrdersController } from '../presentation/orders/orders.controller';
+import { RefundCommandHandler } from '../application/payments/refund/refund-command-handler';
+import { PaymentsController } from '../presentation/payments/payments.controller';
 
 const cartsProviders: Provider[] = [CartService, AddToCartCommandHandler];
 const customersProviders: Provider[] = [CustomerRepositoryProvider, CreateCustomerCommandHandler];
-const ordersProviders: Provider[] = [OrderRepositoryProvider];
-const paymentsProviders: Provider[] = [PaymentRepositoryProvider];
+const ordersProviders: Provider[] = [OrderRepositoryProvider, CreateOrderCommandHandler];
+const paymentsProviders: Provider[] = [
+  PaymentRepositoryProvider,
+  PaymentService,
+  RefundCommandHandler,
+];
 const ticketTypesProviders: Provider[] = [
   TicketTypeRepositoryProvider,
   CreateTicketTypeCommandHandler,
@@ -57,6 +66,6 @@ const integrationProviders: Provider[] = [
     ...ticketTypesProviders,
     ...ticketsProviders,
   ],
-  controllers: [CartsController],
+  controllers: [CartsController, OrdersController, PaymentsController],
 })
 export class RootTicketingModule {}
