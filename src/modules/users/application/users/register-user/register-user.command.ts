@@ -8,6 +8,7 @@ export class RegisterUserCommand extends Command<Result<User>> {
       firstName: string;
       lastName: string;
       email: string;
+      password: string;
     },
   ) {
     super();

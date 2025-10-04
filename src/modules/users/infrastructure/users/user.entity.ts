@@ -15,6 +15,9 @@ export class UserTypeOrmEntity {
   @Column({ type: 'varchar', length: 255, nullable: false })
   email: string;
 
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  identityId: string;
+
   @CreateDateColumn({ type: 'timestamp with time zone' })
   createdAt: Date;
 

@@ -33,7 +33,13 @@ export class UserRepositoryImpl
       return null;
     }
 
-    return new User(userEntity.id, userEntity.firstName, userEntity.lastName, userEntity.email);
+    return new User(
+      userEntity.id,
+      userEntity.firstName,
+      userEntity.lastName,
+      userEntity.email,
+      userEntity.identityId,
+    );
   }
 
   async save(user: User): Promise<void> {
@@ -42,6 +48,7 @@ export class UserRepositoryImpl
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
+      identityId: user.identityId,
     });
   }
 }

@@ -10,12 +10,13 @@ export class User extends Entity {
     public firstName: string,
     public lastName: string,
     public email: string,
+    public identityId: string,
   ) {
     super();
   }
 
-  static create(firstName: string, lastName: string, email: string) {
-    const user = new User(uuidV4(), firstName, lastName, email);
+  static create(firstName: string, lastName: string, email: string, identityId: string) {
+    const user = new User(uuidV4(), firstName, lastName, email, identityId);
 
     user.raise(new UserDomainEvent.UserRegisteredDomainEvent(user.id));
 

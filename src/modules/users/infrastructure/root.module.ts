@@ -9,6 +9,9 @@ import { GetUserQueryHandler } from '../application/users/get-user/get-user.quer
 import { RegisterUserCommandHandler } from '../application/users/register-user/register-user.command-handler';
 import { UpdateUserProfileCommandHandler } from '../application/users/update-user-profile/update-user-profile.command-handler';
 import { UserRegisteredDomainEventHandler } from '../application/users/register-user/user-registered.domain-event-handler';
+import { HttpModule } from '@nestjs/axios';
+import { IdentityProviderServiceProvider } from './identity/identity-provider.service.impl';
+import { KeycloakClient } from './identity/keycloak-client';
 
 const usersProviders: Provider[] = [
   UserRepositoryProvider,
@@ -20,9 +23,16 @@ const usersProviders: Provider[] = [
   UserRegisteredDomainEventHandler,
 ];
 
+const identityProviders: Provider[] = [IdentityProviderServiceProvider, KeycloakClient];
+
 @Module({
-  imports: [TypeOrmModule.forFeature([UserTypeOrmEntity])],
-  providers: [UsersPublicApisProvider, IntegrationEventsPublisherProvider, ...usersProviders],
+  imports: [TypeOrmModule.forFeature([UserTypeOrmEntity]), HttpModule.register({})],
+  providers: [
+    UsersPublicApisProvider,
+    IntegrationEventsPublisherProvider,
+    ...usersProviders,
+    ...identityProviders,
+  ],
   controllers: [UsersController],
   exports: [UsersPublicApisProvider],
 })

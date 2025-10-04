@@ -6,6 +6,7 @@ export const RequestSchema = z.object({
   firstName: z.string().max(255).nonempty(),
   lastName: z.string().max(255).nonempty(),
   email: z.email().nonempty(),
+  password: z.string().max(255).nonempty(),
 });
 
 const ResponseSchema = z.object({

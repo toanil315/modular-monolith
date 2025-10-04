@@ -9,6 +9,7 @@ import { GetUserByIdDto, GetUserByIdResponseDto } from './dtos/get-user.dto';
 import { GetUserQuery } from '../../application/users/get-user/get-user.query';
 import { UpdateUserProfileDto, UpdateUserProfileResponseDto } from './dtos/update-user-profile.dto';
 import { UpdateUserProfileCommand } from '../../application/users/update-user-profile/update-user-profile.command';
+import { Public } from 'nest-keycloak-connect';
 
 @ApiTags(USERS_END_POINT_TAGS.USERS)
 @Controller(USERS_END_POINT_TAGS.USERS)
@@ -19,6 +20,7 @@ export class UsersController {
   ) {}
 
   @Post()
+  @Public()
   @ApiOperation({
     summary: 'Register User',
     description: 'New user registration entry',
@@ -34,6 +36,7 @@ export class UsersController {
         firstName: dto.firstName,
         lastName: dto.lastName,
         email: dto.email,
+        password: dto.password,
       }),
     );
   }
