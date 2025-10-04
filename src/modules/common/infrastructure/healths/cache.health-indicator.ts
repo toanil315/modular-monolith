@@ -1,10 +1,12 @@
 import { Inject, Injectable, Provider } from '@nestjs/common';
-import { HealthIndicatorService } from '@nestjs/terminus';
-import {
-  CACHE_HEALTH_INDICATOR_TOKEN,
-  CacheHealthIndicator,
-} from '../../application/healths/health.indicator';
+import { HealthIndicatorResult, HealthIndicatorService } from '@nestjs/terminus';
 import { CACHING_SERVICE_TOKEN, CachingService } from '../../application/caching/caching.service';
+
+export interface CacheHealthIndicator {
+  isHealthy: () => Promise<HealthIndicatorResult>;
+}
+
+export const CACHE_HEALTH_INDICATOR_TOKEN = 'CACHE_HEALTH_INDICATOR_TOKEN';
 
 @Injectable()
 export class CacheHealthIndicatorImpl implements CacheHealthIndicator {

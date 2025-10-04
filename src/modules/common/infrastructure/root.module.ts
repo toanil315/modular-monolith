@@ -1,6 +1,6 @@
 import { Global, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { APP_FILTER, APP_PIPE } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { CqrsModule } from '@nestjs/cqrs';
 import { ServerExceptionsFilter } from '../presentation/filters/server-exception.filter';
 import { ValidationExceptionFilter } from '../presentation/filters/validation-exception.filter';
@@ -9,12 +9,22 @@ import KeyvRedis from '@keyv/redis';
 import { CachingServiceProvider } from './caching/caching.service.impl';
 import { RequestValidationPipe } from '../application/behaviors/request-validation.pipe';
 import { TerminusModule } from '@nestjs/terminus';
-import { DatabaseHealthIndicatorProvider } from './healths/database.health-indicator.impl';
-import { CacheHealthIndicatorProvider } from './healths/cache.health-indicator.impl';
+import { DatabaseHealthIndicatorProvider } from './healths/database.health-indicator';
+import { CacheHealthIndicatorProvider } from './healths/cache.health-indicator';
 import { HealthController } from '../presentation/healths/health.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DatabaseConfiguration } from './database/database-configuration';
 import { DomainEventPublisherProvider } from './domain-event/domain-event.publisher.impl';
+import {
+  AuthGuard,
+  KeycloakConnectModule,
+  PolicyEnforcementMode,
+  ResourceGuard,
+  RoleGuard,
+  TokenValidation,
+} from 'nest-keycloak-connect';
+import { UnauthorizedExceptionFilter } from '../presentation/filters/un-authorized.filter';
+import { AuthHealthIndicatorProvider } from './healths/auth.health-indicator';
 
 @Global()
 @Module({
@@ -33,6 +43,14 @@ import { DomainEventPublisherProvider } from './domain-event/domain-event.publis
     }),
     TerminusModule,
     TypeOrmModule.forRoot(DatabaseConfiguration.get()),
+    KeycloakConnectModule.register({
+      authServerUrl: 'http://localhost:18080',
+      realm: 'evently',
+      clientId: 'evently-confidential-client',
+      secret: '30sKCRr3II2U3swXxGAm7hHFJ46sU8pQ',
+      policyEnforcement: PolicyEnforcementMode.PERMISSIVE,
+      tokenValidation: TokenValidation.ONLINE,
+    }),
   ],
   providers: [
     {
@@ -47,10 +65,26 @@ import { DomainEventPublisherProvider } from './domain-event/domain-event.publis
       provide: APP_FILTER,
       useClass: ValidationExceptionFilter,
     },
+    {
+      provide: APP_FILTER,
+      useClass: UnauthorizedExceptionFilter,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RoleGuard,
+    },
+
     CachingServiceProvider,
+
+    DomainEventPublisherProvider,
+
     DatabaseHealthIndicatorProvider,
     CacheHealthIndicatorProvider,
-    DomainEventPublisherProvider,
+    AuthHealthIndicatorProvider,
   ],
   exports: [CachingServiceProvider, DomainEventPublisherProvider],
   controllers: [HealthController],

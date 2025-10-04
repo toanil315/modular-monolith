@@ -17,6 +17,8 @@ export class ServerExceptionsFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
 
+    console.log(exception);
+
     response.status(500).json({
       success: false,
       message: (exception as any).message || 'Internal server error',
