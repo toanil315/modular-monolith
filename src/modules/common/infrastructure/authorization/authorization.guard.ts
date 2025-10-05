@@ -5,7 +5,14 @@ import {
 } from '../../application/authorization/permission.service';
 import { CustomUserClaim } from '../../application/authorization/custom-user-claim';
 import { Reflector } from '@nestjs/core';
-import { Permissions } from './permission.decorator';
+import { Permissions } from '../../application/authorization/permission.decorator';
+
+interface IdentityUser {
+  sub: string;
+  email: string;
+  given_name: string;
+  family_name: string;
+}
 
 @Injectable()
 export class AuthorizationGuard implements CanActivate {

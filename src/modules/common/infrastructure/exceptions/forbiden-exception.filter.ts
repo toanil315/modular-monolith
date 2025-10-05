@@ -6,7 +6,7 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { ResponseFormatter } from '../https/response.formatter';
+import { ResponseFormatter } from '../../presentation/abstractions/response.formatter';
 
 @Catch(ForbiddenException)
 export class ForbiddenExceptionFilter implements ExceptionFilter {

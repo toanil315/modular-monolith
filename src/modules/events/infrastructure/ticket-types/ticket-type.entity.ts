@@ -1,14 +1,5 @@
-import {
-  Entity,
-  Column,
-  PrimaryColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
-  ManyToOne,
-  JoinColumn,
-} from 'typeorm';
+import { Entity, Column, PrimaryColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { EVENTS_SCHEMA } from '../database/datasource';
-import { EventTypeOrmEntity } from '../events/event.entity';
 
 @Entity({ schema: EVENTS_SCHEMA, name: 'ticket_types' })
 export class TicketTypeOrmEntity {

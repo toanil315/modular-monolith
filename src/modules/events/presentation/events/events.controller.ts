@@ -14,8 +14,8 @@ import { RescheduleEventDto, RescheduleEventResponseDto } from './dtos/reschedul
 import { RescheduleEventCommand } from '../../application/events/reschedule-event/reschedule-event.command';
 import { SearchEventsDto, SearchEventsResponseDto } from './dtos/search-event.dto';
 import { SearchEventsQuery } from '../../application/events/search-event/search-event.query';
-import { ApiZodResponse } from 'src/modules/common/infrastructure/https/api-zod-response.decorator';
-import { Permissions } from 'src/modules/common/infrastructure/authorization/permission.decorator';
+import { ApiZodResponse } from 'src/modules/common/presentation/abstractions/api-zod-response.decorator';
+import { Permissions } from 'src/modules/common/application/authorization/permission.decorator';
 
 @ApiTags(EVENTS_END_POINT_TAGS.EVENTS)
 @Controller(EVENTS_END_POINT_TAGS.EVENTS)

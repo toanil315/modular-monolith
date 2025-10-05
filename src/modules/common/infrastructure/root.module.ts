@@ -9,8 +9,8 @@ import KeyvRedis from '@keyv/redis';
 import { CachingServiceProvider } from './caching/caching.service.impl';
 import { RequestValidationPipe } from './validation/request-validation.pipe';
 import { TerminusModule } from '@nestjs/terminus';
-import { DatabaseHealthIndicatorProvider } from './healths/database.health-indicator';
-import { CacheHealthIndicatorProvider } from './healths/cache.health-indicator';
+import { DatabaseHealthIndicatorProvider } from './healths/database.health-indicator.impl';
+import { CacheHealthIndicatorProvider } from './healths/cache.health-indicator.impl';
 import { HealthController } from '../presentation/healths/health.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DatabaseConfiguration } from './database/database-configuration';
@@ -23,7 +23,7 @@ import {
   TokenValidation,
 } from 'nest-keycloak-connect';
 import { UnauthorizedExceptionFilter } from './exceptions/un-authorized.filter';
-import { AuthHealthIndicatorProvider } from './healths/auth.health-indicator';
+import { AuthHealthIndicatorProvider } from './healths/auth.health-indicator.impl';
 import { ForbiddenExceptionFilter } from './exceptions/forbiden-exception.filter';
 
 @Global()

@@ -10,7 +10,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import z from 'zod';
 import { ResponseFormatter } from './response.formatter';
-import { ApiSuccessResponse } from '../validation/common.schema';
+import { ApiSuccessResponse } from './common.schema';
 import { Result } from '../../domain/result';
 import { ErrorType } from '../../domain/error';
 import { Response } from 'express';

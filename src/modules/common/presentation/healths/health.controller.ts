@@ -1,22 +1,22 @@
 import { HealthCheckService, HealthCheck } from '@nestjs/terminus';
 import { Get, Inject, Controller } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Public } from 'nest-keycloak-connect';
+import { Result } from '../../domain/result';
+import { ApiZodResponse } from '../abstractions/api-zod-response.decorator';
+import { GetHealthResponseDto } from './dto';
 import {
   DATABASE_HEALTH_INDICATOR_TOKEN,
   DatabaseHealthIndicator,
-} from '../../infrastructure/healths/database.health-indicator';
+} from '../../application/healths/database.health-indicator';
 import {
   CACHE_HEALTH_INDICATOR_TOKEN,
   CacheHealthIndicator,
-} from '../../infrastructure/healths/cache.health-indicator';
+} from '../../application/healths/cache.health-indicator';
 import {
   AUTH_HEALTH_INDICATOR_TOKEN,
   AuthHealthIndicator,
-} from '../../infrastructure/healths/auth.health-indicator';
-import { Public } from 'nest-keycloak-connect';
-import { Result } from '../../domain/result';
-import { ApiZodResponse } from '../../infrastructure/https/api-zod-response.decorator';
-import { GetHealthResponseDto } from './dto';
+} from '../../application/healths/auth.health-indicator';
 
 @ApiTags('health')
 @Controller('health')

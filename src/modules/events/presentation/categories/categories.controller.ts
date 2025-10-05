@@ -13,7 +13,7 @@ import { UpdateCategoryCommand } from '../../application/categories/update-categ
 import { ArchiveCategoryDto, ArchiveCategoryResponseDto } from './dtos/archive-category.dto';
 import { ArchiveCategoryCommand } from '../../application/categories/archive-category/archive-category.command';
 import { GetCategoryByIdDto, GetCategoryResponseDto } from './dtos/get-category.dto';
-import { ApiZodResponse } from 'src/modules/common/infrastructure/https/api-zod-response.decorator';
+import { ApiZodResponse } from 'src/modules/common/presentation/abstractions/api-zod-response.decorator';
 
 @ApiTags(EVENTS_END_POINT_TAGS.CATEGORIES)
 @Controller(EVENTS_END_POINT_TAGS.CATEGORIES)

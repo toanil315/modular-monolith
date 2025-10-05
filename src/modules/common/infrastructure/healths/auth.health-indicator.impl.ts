@@ -1,12 +1,10 @@
 import { Injectable, Provider } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { HealthIndicatorResult, HealthIndicatorService } from '@nestjs/terminus';
-
-export interface AuthHealthIndicator {
-  isHealthy: () => Promise<HealthIndicatorResult>;
-}
-
-export const AUTH_HEALTH_INDICATOR_TOKEN = 'AUTH_HEALTH_INDICATOR_TOKEN';
+import { HealthIndicatorService } from '@nestjs/terminus';
+import {
+  AUTH_HEALTH_INDICATOR_TOKEN,
+  AuthHealthIndicator,
+} from '../../application/healths/auth.health-indicator';
 
 @Injectable()
 export class AuthHealthIndicatorImpl implements AuthHealthIndicator {

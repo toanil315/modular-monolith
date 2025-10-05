@@ -1,13 +1,11 @@
 import { Injectable, Provider } from '@nestjs/common';
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { DatabaseConfiguration } from '../database/database-configuration';
-import { HealthIndicatorResult, HealthIndicatorService } from '@nestjs/terminus';
-
-export interface DatabaseHealthIndicator {
-  isHealthy: () => Promise<HealthIndicatorResult>;
-}
-
-export const DATABASE_HEALTH_INDICATOR_TOKEN = 'DATABASE_HEALTH_INDICATOR_TOKEN';
+import { HealthIndicatorService } from '@nestjs/terminus';
+import {
+  DATABASE_HEALTH_INDICATOR_TOKEN,
+  DatabaseHealthIndicator,
+} from '../../application/healths/database.health-indicator';
 
 @Injectable()
 export class DatabaseHealthIndicatorImpl implements DatabaseHealthIndicator {

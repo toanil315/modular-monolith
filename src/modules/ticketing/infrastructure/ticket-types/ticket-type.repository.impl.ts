@@ -7,7 +7,7 @@ import {
   TicketTypeRepository,
 } from '../../domain/ticket-types/ticket-type.repository';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EntityManager, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import {
   DOMAIN_EVENT_PUBLISHER_TOKEN,
   DomainEventPublisher,

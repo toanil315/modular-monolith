@@ -1,6 +1,6 @@
 import { ExceptionFilter, Catch, ArgumentsHost, HttpStatus } from '@nestjs/common';
 import { Response } from 'express';
-import { ResponseFormatter } from '../https/response.formatter';
+import { ResponseFormatter } from '../../presentation/abstractions/response.formatter';
 import { ValidationException } from '../../application/exceptions/validation.exception';
 
 @Catch(ValidationException)

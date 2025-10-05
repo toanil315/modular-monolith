@@ -13,7 +13,7 @@ import {
   UpdateTicketTypePriceResponseDto,
 } from './dtos/update-ticket-type-price.dto';
 import { UpdateTicketTypePriceCommand } from '../../application/ticket-types/update-ticket-type-price/update-ticket-type-price.command';
-import { ApiZodResponse } from 'src/modules/common/infrastructure/https/api-zod-response.decorator';
+import { ApiZodResponse } from 'src/modules/common/presentation/abstractions/api-zod-response.decorator';
 
 @ApiTags(EVENTS_END_POINT_TAGS.TICKET_TYPES)
 @Controller(EVENTS_END_POINT_TAGS.TICKET_TYPES)

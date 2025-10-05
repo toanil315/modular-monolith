@@ -1,7 +1,7 @@
 import { Body, Controller, Put } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
 import { CommandBus } from '@nestjs/cqrs';
-import { ApiZodResponse } from 'src/modules/common/infrastructure/https/api-zod-response.decorator';
+import { ApiZodResponse } from 'src/modules/common/presentation/abstractions/api-zod-response.decorator';
 import { TICKETING_END_POINT_TAGS } from '../tags';
 import { RefundDto, RefundResponseDto } from './dtos/refund.dto';
 import { RefundCommand } from '../../application/payments/refund/refund-command';
