@@ -1,6 +1,6 @@
 import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
-import { ApiSuccessResponseSchema } from '../validations/common.schema';
+import { ApiSuccessResponseSchema } from '../../infrastructure/validation/common.schema';
 
 const DetailSchema = z.object({
   status: z.string().nonempty(),

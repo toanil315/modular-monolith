@@ -15,7 +15,7 @@ import {
 } from '../../infrastructure/healths/auth.health-indicator';
 import { Public } from 'nest-keycloak-connect';
 import { Result } from '../../domain/result';
-import { ApiZodResponse } from '../http/api-zod-response.decorator';
+import { ApiZodResponse } from '../../infrastructure/https/api-zod-response.decorator';
 import { GetHealthResponseDto } from './dto';
 
 @ApiTags('health')

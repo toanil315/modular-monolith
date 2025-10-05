@@ -1,4 +1,4 @@
-import { ApiErrorResponse, ApiSuccessResponse } from '../validations/common.schema';
+import { ApiErrorResponse, ApiSuccessResponse } from '../validation/common.schema';
 
 export class ResponseFormatter {
   static success<T>(data: T, message?: string): ApiSuccessResponse<T> {

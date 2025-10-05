@@ -17,7 +17,7 @@ import { PermissionTypeOrmEntity } from './users/permisison.entity';
 import { GetUserPermissionQueryHandler } from '../application/users/get-user-permission/get-user-permission.query-handler';
 import { PermissionServiceProvider } from './authorization/permission.service.impl';
 import { APP_GUARD } from '@nestjs/core';
-import { AuthorizationGuard } from 'src/modules/common/application/authorization/authorization.guard';
+import { AuthorizationGuard } from 'src/modules/common/infrastructure/authorization/authorization.guard';
 
 const usersProviders: Provider[] = [
   UserRepositoryProvider,

@@ -2,12 +2,12 @@ import { Global, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_FILTER, APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { CqrsModule } from '@nestjs/cqrs';
-import { ServerExceptionsFilter } from '../presentation/filters/server-exception.filter';
-import { ValidationExceptionFilter } from '../presentation/filters/validation-exception.filter';
+import { ServerExceptionsFilter } from './exceptions/server-exception.filter';
+import { ValidationExceptionFilter } from './exceptions/validation-exception.filter';
 import { CacheModule } from '@nestjs/cache-manager';
 import KeyvRedis from '@keyv/redis';
 import { CachingServiceProvider } from './caching/caching.service.impl';
-import { RequestValidationPipe } from '../application/behaviors/request-validation.pipe';
+import { RequestValidationPipe } from './validation/request-validation.pipe';
 import { TerminusModule } from '@nestjs/terminus';
 import { DatabaseHealthIndicatorProvider } from './healths/database.health-indicator';
 import { CacheHealthIndicatorProvider } from './healths/cache.health-indicator';
@@ -22,9 +22,9 @@ import {
   RoleGuard,
   TokenValidation,
 } from 'nest-keycloak-connect';
-import { UnauthorizedExceptionFilter } from '../presentation/filters/un-authorized.filter';
+import { UnauthorizedExceptionFilter } from './exceptions/un-authorized.filter';
 import { AuthHealthIndicatorProvider } from './healths/auth.health-indicator';
-import { ForbiddenExceptionFilter } from '../presentation/filters/forbiden-exception.filter';
+import { ForbiddenExceptionFilter } from './exceptions/forbiden-exception.filter';
 
 @Global()
 @Module({

@@ -1,6 +1,9 @@
 import { Injectable, CanActivate, ExecutionContext, Inject } from '@nestjs/common';
-import { PERMISSION_SERVICE_TOKEN, PermissionService } from './permission.service';
-import { CustomUserClaim } from './custom-user-claim';
+import {
+  PERMISSION_SERVICE_TOKEN,
+  PermissionService,
+} from '../../application/authorization/permission.service';
+import { CustomUserClaim } from '../../application/authorization/custom-user-claim';
 import { Reflector } from '@nestjs/core';
 import { Permissions } from './permission.decorator';
 

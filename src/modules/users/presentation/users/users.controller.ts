@@ -3,7 +3,7 @@ import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
 import { USERS_END_POINT_TAGS } from '../tags';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { RegisterUserDto, RegisterUserResponseDto } from './dtos/register-user.dto';
-import { ApiZodResponse } from 'src/modules/common/presentation/http/api-zod-response.decorator';
+import { ApiZodResponse } from 'src/modules/common/infrastructure/https/api-zod-response.decorator';
 import { RegisterUserCommand } from '../../application/users/register-user/register-user.command';
 import { GetUserByIdDto, GetUserByIdResponseDto } from './dtos/get-user.dto';
 import { GetUserQuery } from '../../application/users/get-user/get-user.query';
