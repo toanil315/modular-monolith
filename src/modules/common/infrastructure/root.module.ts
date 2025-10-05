@@ -19,12 +19,12 @@ import {
   AuthGuard,
   KeycloakConnectModule,
   PolicyEnforcementMode,
-  ResourceGuard,
   RoleGuard,
   TokenValidation,
 } from 'nest-keycloak-connect';
 import { UnauthorizedExceptionFilter } from '../presentation/filters/un-authorized.filter';
 import { AuthHealthIndicatorProvider } from './healths/auth.health-indicator';
+import { ForbiddenExceptionFilter } from '../presentation/filters/forbiden-exception.filter';
 
 @Global()
 @Module({
@@ -50,6 +50,7 @@ import { AuthHealthIndicatorProvider } from './healths/auth.health-indicator';
       secret: '30sKCRr3II2U3swXxGAm7hHFJ46sU8pQ',
       policyEnforcement: PolicyEnforcementMode.PERMISSIVE,
       tokenValidation: TokenValidation.ONLINE,
+      logLevels: ['log'],
     }),
   ],
   providers: [
@@ -68,6 +69,10 @@ import { AuthHealthIndicatorProvider } from './healths/auth.health-indicator';
     {
       provide: APP_FILTER,
       useClass: UnauthorizedExceptionFilter,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: ForbiddenExceptionFilter,
     },
     {
       provide: APP_GUARD,

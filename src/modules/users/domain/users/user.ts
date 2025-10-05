@@ -3,6 +3,7 @@ import { v4 as uuidV4 } from 'uuid';
 import { UserDomainEvent } from './user.domain-event';
 import { Result } from 'src/modules/common/domain/result';
 import { UserErrors } from './user.error';
+import { Role } from './role';
 
 export class User extends Entity {
   constructor(
@@ -11,12 +12,13 @@ export class User extends Entity {
     public lastName: string,
     public email: string,
     public identityId: string,
+    public roles?: Role[],
   ) {
     super();
   }
 
   static create(firstName: string, lastName: string, email: string, identityId: string) {
-    const user = new User(uuidV4(), firstName, lastName, email, identityId);
+    const user = new User(uuidV4(), firstName, lastName, email, identityId, [Role.Member]);
 
     user.raise(new UserDomainEvent.UserRegisteredDomainEvent(user.id));
 

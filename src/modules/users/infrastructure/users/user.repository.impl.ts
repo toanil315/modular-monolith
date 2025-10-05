@@ -9,6 +9,7 @@ import {
   DOMAIN_EVENT_PUBLISHER_TOKEN,
   DomainEventPublisher,
 } from 'src/modules/common/application/domain-event/domain-event.publisher';
+import { Role } from '../../domain/users/role';
 
 @Injectable()
 export class UserRepositoryImpl
@@ -27,6 +28,7 @@ export class UserRepositoryImpl
   async getById(userId: string): Promise<User | null> {
     const userEntity = await this.ormRepo.findOne({
       where: { id: userId },
+      relations: ['roles'],
     });
 
     if (!userEntity) {
@@ -39,6 +41,7 @@ export class UserRepositoryImpl
       userEntity.lastName,
       userEntity.email,
       userEntity.identityId,
+      userEntity.roles.map((role) => new Role(role.id)),
     );
   }
 
@@ -49,6 +52,9 @@ export class UserRepositoryImpl
       lastName: user.lastName,
       email: user.email,
       identityId: user.identityId,
+      roles: user.roles?.map((role) => ({
+        id: role.name,
+      })),
     });
   }
 }

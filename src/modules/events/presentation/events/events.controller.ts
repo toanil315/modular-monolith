@@ -15,6 +15,7 @@ import { RescheduleEventCommand } from '../../application/events/reschedule-even
 import { SearchEventsDto, SearchEventsResponseDto } from './dtos/search-event.dto';
 import { SearchEventsQuery } from '../../application/events/search-event/search-event.query';
 import { ApiZodResponse } from 'src/modules/common/presentation/http/api-zod-response.decorator';
+import { Permissions } from 'src/modules/common/application/authorization/permission.decorator';
 
 @ApiTags(EVENTS_END_POINT_TAGS.EVENTS)
 @Controller(EVENTS_END_POINT_TAGS.EVENTS)
@@ -71,6 +72,7 @@ export class EventsController {
   }
 
   @Get(':id')
+  @Permissions(['events:search'])
   @ApiOperation({
     summary: 'Get Event By ID',
     description: 'Get specific event by ID',

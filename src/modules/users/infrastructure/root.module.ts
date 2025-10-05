@@ -12,24 +12,45 @@ import { UserRegisteredDomainEventHandler } from '../application/users/register-
 import { HttpModule } from '@nestjs/axios';
 import { IdentityProviderServiceProvider } from './identity/identity-provider.service.impl';
 import { KeycloakClient } from './identity/keycloak-client';
+import { RoleTypeOrmEntity } from './users/role.entity';
+import { PermissionTypeOrmEntity } from './users/permisison.entity';
+import { GetUserPermissionQueryHandler } from '../application/users/get-user-permission/get-user-permission.query-handler';
+import { PermissionServiceProvider } from './authorization/permission.service.impl';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthorizationGuard } from 'src/modules/common/application/authorization/authorization.guard';
 
 const usersProviders: Provider[] = [
   UserRepositoryProvider,
+
   GetUserQueryHandler,
+  GetUserPermissionQueryHandler,
 
   RegisterUserCommandHandler,
   UpdateUserProfileCommandHandler,
 
   UserRegisteredDomainEventHandler,
+
+  PermissionServiceProvider,
 ];
 
 const identityProviders: Provider[] = [IdentityProviderServiceProvider, KeycloakClient];
 
+const authorizationProviders: Provider[] = [
+  {
+    provide: APP_GUARD,
+    useClass: AuthorizationGuard,
+  },
+];
+
 @Module({
-  imports: [TypeOrmModule.forFeature([UserTypeOrmEntity]), HttpModule.register({})],
+  imports: [
+    TypeOrmModule.forFeature([UserTypeOrmEntity, RoleTypeOrmEntity, PermissionTypeOrmEntity]),
+    HttpModule.register({}),
+  ],
   providers: [
     UsersPublicApisProvider,
     IntegrationEventsPublisherProvider,
+    ...authorizationProviders,
     ...usersProviders,
     ...identityProviders,
   ],
