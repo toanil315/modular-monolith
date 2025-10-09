@@ -1,8 +1,10 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { GetCategoryQuery } from './get-category.query';
 import { Inject } from '@nestjs/common';
-import { CATEGORY_REPOSITORY_TOKEN } from 'src/modules/events/infrastructure/categories/category.repository.impl';
-import { CategoryRepository } from 'src/modules/events/domain/categories/category.repository';
+import {
+  CATEGORY_REPOSITORY_TOKEN,
+  CategoryRepository,
+} from 'src/modules/events/domain/categories/category.repository';
 import { CategoryErrors } from 'src/modules/events/domain/categories/category.error';
 import { Result } from 'src/modules/common/domain/result';
 import {

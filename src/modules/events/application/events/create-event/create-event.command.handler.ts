@@ -4,8 +4,10 @@ import { EventRepository } from 'src/modules/events/domain/events/event.reposito
 import { EVENT_REPOSITORY_TOKEN } from 'src/modules/events/infrastructure/events/event.repository.impl';
 import { CreateEventCommand } from './create-event.command';
 import { Event } from 'src/modules/events/domain/events/event';
-import { CATEGORY_REPOSITORY_TOKEN } from 'src/modules/events/infrastructure/categories/category.repository.impl';
-import { CategoryRepository } from 'src/modules/events/domain/categories/category.repository';
+import {
+  CATEGORY_REPOSITORY_TOKEN,
+  CategoryRepository,
+} from 'src/modules/events/domain/categories/category.repository';
 import { EventErrors } from 'src/modules/events/domain/events/event.error';
 import { Result } from 'src/modules/common/domain/result';
 import { CategoryErrors } from 'src/modules/events/domain/categories/category.error';
