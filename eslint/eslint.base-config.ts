@@ -7,7 +7,7 @@ import { FlatCompat } from '@eslint/eslintrc';
 import { ConfigWithExtends } from '@eslint/config-helpers';
 
 const compat = new FlatCompat({
-  baseDirectory: __dirname,
+  baseDirectory: './',
   recommendedConfig: js.configs.recommended,
   allConfig: js.configs.all,
 });
@@ -18,7 +18,7 @@ export const baseConfigs: ConfigWithExtends = {
     sourceType: 'module',
 
     parserOptions: {
-      project: 'tsconfig.json',
+      project: '../tsconfig.json',
       tsconfigRootDir: __dirname,
     },
 
