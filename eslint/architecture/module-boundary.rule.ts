@@ -45,10 +45,16 @@ export const moduleBoundaryRule = bizModules.flatMap((module) => {
     return moduleRelationShip[module].map((m) => getLayerElementName(m, layer));
   });
 
+  // ✨ Build descriptive message
+  const allowedText =
+    moduleRelationShip[module].length > 0
+      ? moduleRelationShip[module].map((m) => `${m}/public`).join(', ')
+      : 'none';
+
   return layers.map((layer) => ({
     from: getLayerElementName(module, layer),
     disallow: [...unAssociatedModuleLayers, ...associatedModuleLayersExceptPublic],
     allow: associatedModulePublicLayers,
-    message: `[Module Boundary] ${module} may only import from its associated modules' public APIs. Imports from unassociated or internal module paths are forbidden.`,
+    message: `[Module Boundary] ${module} may only import from its associated modules' public APIs: ${allowedText}. Imports from unassociated or internal module paths are forbidden.`,
   }));
 });
