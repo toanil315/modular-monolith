@@ -19,7 +19,7 @@ import { PermissionServiceProvider } from './authorization/permission.service.im
 import { APP_GUARD } from '@nestjs/core';
 import { AuthorizationGuard } from 'src/modules/common/infrastructure/authorization/authorization.guard';
 import {
-  OUTBOX_MESSAGE_PROCESSOR_JOB_QUEUE,
+  USERS_OUTBOX_MESSAGE_PROCESSOR_JOB_QUEUE,
   UserOutboxConfigProvider,
 } from './outbox/outbox.config';
 import { UsersOutboxMessageTypeOrmEntity } from './outbox/outbox-message.entity';
@@ -70,7 +70,7 @@ const outboxProviders: Provider[] = [
     ]),
     HttpModule.register({}),
     BullModule.registerQueue({
-      name: OUTBOX_MESSAGE_PROCESSOR_JOB_QUEUE,
+      name: USERS_OUTBOX_MESSAGE_PROCESSOR_JOB_QUEUE,
     }),
   ],
   providers: [

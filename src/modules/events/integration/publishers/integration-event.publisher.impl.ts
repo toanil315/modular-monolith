@@ -1,18 +1,21 @@
-import { Injectable, Provider } from '@nestjs/common';
+import { Inject, Injectable, Provider } from '@nestjs/common';
 import {
   EVENTS_INTEGRATION_EVENTS_PUBLISHER_TOKEN,
   EventsIntegrationEventsPublisher,
 } from '../../application/abstractions/integration-event.publisher';
-import { EventBus } from '@nestjs/cqrs';
 import { TicketType } from '../../domain/ticket-types/ticket-type';
 import { TicketTypeIntegrationEvent } from '../events/ticket-types.integration-event';
+import {
+  EVENT_BUS_ADAPTER_TOKEN,
+  EventBusAdapter,
+} from 'src/modules/common/application/event-bus/event-bus.adapter';
 
 @Injectable()
 export class EventsIntegrationEventsPublisherImpl implements EventsIntegrationEventsPublisher {
-  constructor(private readonly eventBus: EventBus) {}
+  constructor(@Inject(EVENT_BUS_ADAPTER_TOKEN) private readonly eventBus: EventBusAdapter) {}
 
   async publishTicketTypeCreated(ticketType: TicketType) {
-    await this.eventBus.publish(
+    await this.eventBus.publish([
       new TicketTypeIntegrationEvent.TicketTypeCreatedIntegrationEvent(
         ticketType.id,
         ticketType.eventId,
@@ -21,7 +24,7 @@ export class EventsIntegrationEventsPublisherImpl implements EventsIntegrationEv
         ticketType.currency,
         ticketType.quantity,
       ),
-    );
+    ]);
   }
 }
 

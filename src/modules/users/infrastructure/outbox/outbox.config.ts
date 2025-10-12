@@ -4,9 +4,10 @@ import {
 } from 'src/modules/common/infrastructure/outbox/outbox.config';
 import { UsersOutboxMessageTypeOrmEntity } from './outbox-message.entity';
 
-export const OUTBOX_MESSAGE_PROCESSOR_JOB = 'OUTBOX_MESSAGE_PROCESSOR';
-export const OUTBOX_MESSAGE_PROCESSOR_JOB_SCHEDULER = 'OUTBOX_MESSAGE_PROCESSOR_JOB_SCHEDULER';
-export const OUTBOX_MESSAGE_PROCESSOR_JOB_QUEUE = 'OUTBOX_MESSAGE_PROCESSOR_JOB_QUEUE';
+export const USERS_OUTBOX_MESSAGE_PROCESSOR_JOB = 'USERS_OUTBOX_MESSAGE_PROCESSOR';
+export const USERS_OUTBOX_MESSAGE_PROCESSOR_JOB_SCHEDULER =
+  'USERS_OUTBOX_MESSAGE_PROCESSOR_JOB_SCHEDULER';
+export const USERS_OUTBOX_MESSAGE_PROCESSOR_JOB_QUEUE = 'USERS_OUTBOX_MESSAGE_PROCESSOR_JOB_QUEUE';
 
 export const UserOutboxConfig: OutboxConfig = {
   entity: UsersOutboxMessageTypeOrmEntity,

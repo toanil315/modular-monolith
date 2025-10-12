@@ -6,9 +6,9 @@ import {
   OutboxConfig,
 } from 'src/modules/common/infrastructure/outbox/outbox.config';
 import {
-  USERS_OUTBOX_MESSAGE_PROCESSOR_JOB,
-  USERS_OUTBOX_MESSAGE_PROCESSOR_JOB_QUEUE,
-  USERS_OUTBOX_MESSAGE_PROCESSOR_JOB_SCHEDULER,
+  EVENTS_OUTBOX_MESSAGE_PROCESSOR_JOB,
+  EVENTS_OUTBOX_MESSAGE_PROCESSOR_JOB_QUEUE,
+  EVENTS_OUTBOX_MESSAGE_PROCESSOR_JOB_SCHEDULER,
 } from './outbox.config';
 import { InjectQueue } from '@nestjs/bullmq';
 
@@ -19,7 +19,7 @@ export class OutboxJobScheduler implements OnModuleInit {
   private readonly logger = new Logger(OutboxJobScheduler.name);
 
   constructor(
-    @InjectQueue(USERS_OUTBOX_MESSAGE_PROCESSOR_JOB_QUEUE)
+    @InjectQueue(EVENTS_OUTBOX_MESSAGE_PROCESSOR_JOB_QUEUE)
     private readonly queue: Queue,
     @Inject(OUTBOX_CONFIG_TOKEN) private readonly outboxConfigs: OutboxConfig,
     private readonly schedulerRegistry: SchedulerRegistry,
@@ -30,23 +30,23 @@ export class OutboxJobScheduler implements OnModuleInit {
       () => this.addOutboxProcessorJobIntoQueue(),
       this.outboxConfigs.interval * SECOND,
     );
-    this.schedulerRegistry.addInterval(USERS_OUTBOX_MESSAGE_PROCESSOR_JOB_SCHEDULER, interval);
+    this.schedulerRegistry.addInterval(EVENTS_OUTBOX_MESSAGE_PROCESSOR_JOB_SCHEDULER, interval);
   }
 
   private async addOutboxProcessorJobIntoQueue() {
     try {
       await this.queue.add(
-        USERS_OUTBOX_MESSAGE_PROCESSOR_JOB,
+        EVENTS_OUTBOX_MESSAGE_PROCESSOR_JOB,
         {},
         {
-          jobId: USERS_OUTBOX_MESSAGE_PROCESSOR_JOB,
+          jobId: EVENTS_OUTBOX_MESSAGE_PROCESSOR_JOB,
           removeOnComplete: true,
           removeOnFail: true,
         },
       );
     } catch (err) {
       this.logger.error(
-        `${USERS_OUTBOX_MESSAGE_PROCESSOR_JOB}: Failed to enqueue Outbox job: `,
+        `${EVENTS_OUTBOX_MESSAGE_PROCESSOR_JOB}: Failed to enqueue Outbox job: `,
         err,
       );
     }

@@ -26,6 +26,8 @@ import { AuthHealthIndicatorProvider } from './healths/auth.health-indicator.imp
 import { ForbiddenExceptionFilter } from './exceptions/forbiden-exception.filter';
 import { ScheduleModule } from '@nestjs/schedule';
 import { BullModule } from '@nestjs/bullmq';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { EventBusAdapterProvider } from './event-bus/event-bus.adapter.impl';
 
 @Global()
 @Module({
@@ -63,6 +65,7 @@ import { BullModule } from '@nestjs/bullmq';
         username: '',
       },
     }),
+    EventEmitterModule.forRoot(),
   ],
   providers: [
     {
@@ -99,8 +102,10 @@ import { BullModule } from '@nestjs/bullmq';
     DatabaseHealthIndicatorProvider,
     CacheHealthIndicatorProvider,
     AuthHealthIndicatorProvider,
+
+    EventBusAdapterProvider,
   ],
-  exports: [CachingServiceProvider],
+  exports: [CachingServiceProvider, EventBusAdapterProvider],
   controllers: [HealthController],
 })
 export class CommonModule {}

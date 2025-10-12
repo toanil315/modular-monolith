@@ -28,9 +28,16 @@ import { GetTicketTypesQueryHandler } from '../application/ticket-types/get-tick
 import { TicketTypesController } from '../presentation/ticket-types/ticket-types.controller';
 import { EventsIntegrationEventPublisherProvider } from '../integration/publishers/integration-event.publisher.impl';
 import { TicketTypeCreatedDomainEventHandler } from '../application/ticket-types/create-ticket-type/ticket-type-created.domain-event-handler';
-import { EventsOutboxConfigProvider } from './outbox/outbox.config';
+import {
+  EventsOutboxConfigProvider,
+  EVENTS_OUTBOX_MESSAGE_PROCESSOR_JOB_QUEUE,
+} from './outbox/outbox.config';
 import { EventsOutboxMessageTypeOrmEntity } from './outbox/outbox-message.entity';
 import { OutboxPersistenceHandlerProvider } from 'src/modules/users/infrastructure/outbox/outbox-persistence.handler';
+import { DomainEventRegistryProvider } from './outbox/domain-event.registry';
+import { OutboxJobScheduler } from './outbox/outbox.job-sheduler';
+import { OutboxMessageProcessor } from './outbox/outbox.processor';
+import { BullModule } from '@nestjs/bullmq';
 
 const categoriesProviders: Provider[] = [
   CategoryRepositoryProvider,
@@ -69,7 +76,13 @@ const ticketTypesProviders: Provider[] = [
   TicketTypeCreatedDomainEventHandler,
 ];
 
-const outboxProviders: Provider[] = [EventsOutboxConfigProvider, OutboxPersistenceHandlerProvider];
+const outboxProviders: Provider[] = [
+  EventsOutboxConfigProvider,
+  OutboxPersistenceHandlerProvider,
+  DomainEventRegistryProvider,
+  OutboxJobScheduler,
+  OutboxMessageProcessor,
+];
 
 @Module({
   imports: [
@@ -79,6 +92,9 @@ const outboxProviders: Provider[] = [EventsOutboxConfigProvider, OutboxPersisten
       TicketTypeOrmEntity,
       EventsOutboxMessageTypeOrmEntity,
     ]),
+    BullModule.registerQueue({
+      name: EVENTS_OUTBOX_MESSAGE_PROCESSOR_JOB_QUEUE,
+    }),
   ],
   providers: [
     EventsPublicApisProvider,

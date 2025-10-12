@@ -4,6 +4,12 @@ import {
 } from 'src/modules/common/infrastructure/outbox/outbox.config';
 import { EventsOutboxMessageTypeOrmEntity } from './outbox-message.entity';
 
+export const EVENTS_OUTBOX_MESSAGE_PROCESSOR_JOB = 'EVENTS_OUTBOX_MESSAGE_PROCESSOR';
+export const EVENTS_OUTBOX_MESSAGE_PROCESSOR_JOB_SCHEDULER =
+  'EVENTS_OUTBOX_MESSAGE_PROCESSOR_JOB_SCHEDULER';
+export const EVENTS_OUTBOX_MESSAGE_PROCESSOR_JOB_QUEUE =
+  'EVENTS_OUTBOX_MESSAGE_PROCESSOR_JOB_QUEUE';
+
 export const EventsOutboxConfig: OutboxConfig = {
   entity: EventsOutboxMessageTypeOrmEntity,
   interval: 15,

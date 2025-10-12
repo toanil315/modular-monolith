@@ -1,15 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { CommandBus, EventsHandler, IEventHandler } from '@nestjs/cqrs';
+import { CommandBus } from '@nestjs/cqrs';
 import { TicketTypeIntegrationEvent } from 'src/modules/events/public/events';
 import { CreateTicketTypeCommand } from '../../application/ticket-types/create-ticket-type.command';
+import { EventHandler } from 'src/modules/common/application/event-bus/event-handler.decorator';
 
-@EventsHandler(TicketTypeIntegrationEvent.TicketTypeCreatedIntegrationEvent)
 @Injectable()
-export class TicketTypeCreatedIntegrationEventHandler
-  implements IEventHandler<TicketTypeIntegrationEvent.TicketTypeCreatedIntegrationEvent>
-{
+export class TicketTypeCreatedIntegrationEventHandler {
   constructor(private readonly commandBus: CommandBus) {}
 
+  @EventHandler(TicketTypeIntegrationEvent.TicketTypeCreatedIntegrationEvent)
   async handle(event: TicketTypeIntegrationEvent.TicketTypeCreatedIntegrationEvent) {
     const result = await this.commandBus.execute(
       new CreateTicketTypeCommand({

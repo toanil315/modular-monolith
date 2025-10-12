@@ -1,15 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { CommandBus, EventsHandler, IEventHandler } from '@nestjs/cqrs';
+import { CommandBus } from '@nestjs/cqrs';
 import { CreateCustomerCommand } from '../../application/customers/create-customer/create-customer.command';
 import { UsersIntegrationEvent } from 'src/modules/users/public/events';
+import { EventHandler } from 'src/modules/common/application/event-bus/event-handler.decorator';
 
-@EventsHandler(UsersIntegrationEvent.UserRegisteredIntegrationEvent)
 @Injectable()
-export class UserRegisteredIntegrationEventHandler
-  implements IEventHandler<UsersIntegrationEvent.UserRegisteredIntegrationEvent>
-{
+export class UserRegisteredIntegrationEventHandler {
   constructor(private readonly commandBus: CommandBus) {}
 
+  @EventHandler(UsersIntegrationEvent.UserRegisteredIntegrationEvent)
   async handle(event: UsersIntegrationEvent.UserRegisteredIntegrationEvent) {
     const result = await this.commandBus.execute(
       new CreateCustomerCommand({

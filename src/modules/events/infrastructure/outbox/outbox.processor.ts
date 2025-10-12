@@ -1,9 +1,8 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { UsersOutboxMessageTypeOrmEntity } from './outbox-message.entity';
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import {
-  USERS_OUTBOX_MESSAGE_PROCESSOR_JOB,
-  USERS_OUTBOX_MESSAGE_PROCESSOR_JOB_QUEUE,
+  EVENTS_OUTBOX_MESSAGE_PROCESSOR_JOB,
+  EVENTS_OUTBOX_MESSAGE_PROCESSOR_JOB_QUEUE,
 } from './outbox.config';
 import {
   OUTBOX_CONFIG_TOKEN,
@@ -19,9 +18,10 @@ import {
   EVENT_BUS_ADAPTER_TOKEN,
   EventBusAdapter,
 } from 'src/modules/common/application/event-bus/event-bus.adapter';
+import { EventsOutboxMessageTypeOrmEntity } from './outbox-message.entity';
 
 @Injectable()
-@Processor(USERS_OUTBOX_MESSAGE_PROCESSOR_JOB_QUEUE)
+@Processor(EVENTS_OUTBOX_MESSAGE_PROCESSOR_JOB_QUEUE)
 export class OutboxMessageProcessor extends WorkerHost {
   private readonly logger = new Logger(OutboxMessageProcessor.name);
 
@@ -38,7 +38,7 @@ export class OutboxMessageProcessor extends WorkerHost {
   }
 
   async process() {
-    this.logger.log(`${USERS_OUTBOX_MESSAGE_PROCESSOR_JOB}: Starting outbox message processing`);
+    this.logger.log(`${EVENTS_OUTBOX_MESSAGE_PROCESSOR_JOB}: Starting outbox message processing`);
 
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
@@ -47,7 +47,7 @@ export class OutboxMessageProcessor extends WorkerHost {
     try {
       // Lock unprocessed rows (FOR UPDATE SKIP LOCKED)
       const outboxMessages = await queryRunner.manager
-        .createQueryBuilder(UsersOutboxMessageTypeOrmEntity, 'msg')
+        .createQueryBuilder(EventsOutboxMessageTypeOrmEntity, 'msg')
         .where('msg.processedAt IS NULL')
         .orderBy('msg.createdAt', 'ASC')
         .limit(this.outboxConfigs.batchSize)
@@ -55,7 +55,7 @@ export class OutboxMessageProcessor extends WorkerHost {
         .getMany();
 
       this.logger.debug(
-        `${USERS_OUTBOX_MESSAGE_PROCESSOR_JOB}: Fetched ${outboxMessages.length} messages`,
+        `${EVENTS_OUTBOX_MESSAGE_PROCESSOR_JOB}: Fetched ${outboxMessages.length} messages`,
       );
 
       const successfullyProcessedIds: string[] = [];
@@ -82,7 +82,7 @@ export class OutboxMessageProcessor extends WorkerHost {
           successfullyProcessedIds.push(message.id);
         } catch (err) {
           this.logger.error(
-            `${USERS_OUTBOX_MESSAGE_PROCESSOR_JOB} - Failed to process message ${message.id}`,
+            `${EVENTS_OUTBOX_MESSAGE_PROCESSOR_JOB} - Failed to process message ${message.id}`,
             err instanceof Error ? err.stack : String(err),
           );
         }
@@ -92,20 +92,20 @@ export class OutboxMessageProcessor extends WorkerHost {
       if (successfullyProcessedIds.length > 0) {
         await queryRunner.manager
           .createQueryBuilder()
-          .update(UsersOutboxMessageTypeOrmEntity)
+          .update(EventsOutboxMessageTypeOrmEntity)
           .set({ processedAt: Date.now() })
           .whereInIds(successfullyProcessedIds)
           .execute();
 
         this.logger.log(
-          `${USERS_OUTBOX_MESSAGE_PROCESSOR_JOB} - Successfully marked ${successfullyProcessedIds.length} messages as processed.`,
+          `${EVENTS_OUTBOX_MESSAGE_PROCESSOR_JOB} - Successfully marked ${successfullyProcessedIds.length} messages as processed.`,
         );
       }
 
       await queryRunner.commitTransaction();
-      this.logger.log(`${USERS_OUTBOX_MESSAGE_PROCESSOR_JOB}: Completed outbox processing`);
+      this.logger.log(`${EVENTS_OUTBOX_MESSAGE_PROCESSOR_JOB}: Completed outbox processing`);
     } catch (err) {
-      this.logger.error(`${USERS_OUTBOX_MESSAGE_PROCESSOR_JOB}: Transaction failed`, err);
+      this.logger.error(`${EVENTS_OUTBOX_MESSAGE_PROCESSOR_JOB}: Transaction failed`, err);
       await queryRunner.rollbackTransaction();
     } finally {
       await queryRunner.release();
