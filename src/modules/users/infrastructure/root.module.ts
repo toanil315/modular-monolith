@@ -18,9 +18,16 @@ import { GetUserPermissionQueryHandler } from '../application/users/get-user-per
 import { PermissionServiceProvider } from './authorization/permission.service.impl';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthorizationGuard } from 'src/modules/common/infrastructure/authorization/authorization.guard';
-import { UserOutboxConfigProvider } from './outbox/outbox.config';
+import {
+  OUTBOX_MESSAGE_PROCESSOR_JOB_QUEUE,
+  UserOutboxConfigProvider,
+} from './outbox/outbox.config';
 import { UsersOutboxMessageTypeOrmEntity } from './outbox/outbox-message.entity';
 import { OutboxPersistenceHandlerProvider } from './outbox/outbox-persistence.handler';
+import { BullModule } from '@nestjs/bullmq';
+import { OutboxJobScheduler } from './outbox/outbox.job-sheduler';
+import { OutboxMessageProcessor } from './outbox/outbox.processor';
+import { DomainEventRegistryProvider } from './outbox/domain-event.registry';
 
 const usersProviders: Provider[] = [
   UserRepositoryProvider,
@@ -45,7 +52,13 @@ const authorizationProviders: Provider[] = [
   },
 ];
 
-const outboxProviders: Provider[] = [UserOutboxConfigProvider, OutboxPersistenceHandlerProvider];
+const outboxProviders: Provider[] = [
+  UserOutboxConfigProvider,
+  OutboxPersistenceHandlerProvider,
+  OutboxJobScheduler,
+  OutboxMessageProcessor,
+  DomainEventRegistryProvider,
+];
 
 @Module({
   imports: [
@@ -56,6 +69,9 @@ const outboxProviders: Provider[] = [UserOutboxConfigProvider, OutboxPersistence
       UsersOutboxMessageTypeOrmEntity,
     ]),
     HttpModule.register({}),
+    BullModule.registerQueue({
+      name: OUTBOX_MESSAGE_PROCESSOR_JOB_QUEUE,
+    }),
   ],
   providers: [
     UsersPublicApisProvider,

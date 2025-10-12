@@ -24,6 +24,8 @@ import {
 import { UnauthorizedExceptionFilter } from './exceptions/un-authorized.filter';
 import { AuthHealthIndicatorProvider } from './healths/auth.health-indicator.impl';
 import { ForbiddenExceptionFilter } from './exceptions/forbiden-exception.filter';
+import { ScheduleModule } from '@nestjs/schedule';
+import { BullModule } from '@nestjs/bullmq';
 
 @Global()
 @Module({
@@ -50,6 +52,16 @@ import { ForbiddenExceptionFilter } from './exceptions/forbiden-exception.filter
       policyEnforcement: PolicyEnforcementMode.PERMISSIVE,
       tokenValidation: TokenValidation.ONLINE,
       logLevels: ['log'],
+      useNestLogger: false,
+    }),
+    ScheduleModule.forRoot(),
+    BullModule.forRoot({
+      connection: {
+        host: 'localhost',
+        port: 6379,
+        password: 'mysecretpassword',
+        username: '',
+      },
     }),
   ],
   providers: [

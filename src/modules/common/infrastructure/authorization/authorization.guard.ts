@@ -6,6 +6,7 @@ import {
 import { CustomUserClaim } from '../../application/authorization/custom-user-claim';
 import { Reflector } from '@nestjs/core';
 import { Permissions } from '../../application/authorization/permission.decorator';
+import { META_UNPROTECTED } from 'nest-keycloak-connect';
 
 interface IdentityUser {
   sub: string;
@@ -18,14 +19,18 @@ interface IdentityUser {
 export class AuthorizationGuard implements CanActivate {
   constructor(
     private reflector: Reflector,
-
     @Inject(PERMISSION_SERVICE_TOKEN) private readonly permissionService: PermissionService,
   ) {}
 
   async canActivate(context: ExecutionContext) {
     const req = context.switchToHttp().getRequest();
 
-    if (!req) {
+    const isUnprotected = this.reflector.getAllAndOverride<boolean>(META_UNPROTECTED, [
+      context.getClass(),
+      context.getHandler(),
+    ]);
+
+    if (!req || isUnprotected) {
       return true;
     }
 

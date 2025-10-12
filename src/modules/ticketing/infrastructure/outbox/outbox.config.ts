@@ -6,6 +6,8 @@ import { TicketingOutboxMessageTypeOrmEntity } from './outbox-message.entity';
 
 export const TicketingOutboxConfig: OutboxConfig = {
   entity: TicketingOutboxMessageTypeOrmEntity,
+  interval: 15,
+  batchSize: 20,
 };
 
 export const TicketingOutboxConfigProvider = {

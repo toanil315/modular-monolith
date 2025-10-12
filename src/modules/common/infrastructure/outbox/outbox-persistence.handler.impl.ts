@@ -17,7 +17,7 @@ export class OutboxPersistenceHandlerImpl implements OutboxPersistenceHandler {
       (event) => ({
         id: event.id,
         content: JSON.stringify(event),
-        type: event.type,
+        type: event.constructor.name,
         createdAt: new Date(event.occurredOn),
       }),
     );
