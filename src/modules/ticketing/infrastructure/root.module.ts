@@ -25,6 +25,9 @@ import { CreateOrderCommandHandler } from '../application/orders/create-order/cr
 import { OrdersController } from '../presentation/orders/orders.controller';
 import { RefundCommandHandler } from '../application/payments/refund/refund-command-handler';
 import { PaymentsController } from '../presentation/payments/payments.controller';
+import { TicketingOutboxConfigProvider } from './outbox/outbox.config';
+import { OutboxPersistenceHandlerProvider } from './outbox/outbox-persistence.handler';
+import { TicketingOutboxMessageTypeOrmEntity } from './outbox/outbox-message.entity';
 
 const cartsProviders: Provider[] = [CartService, AddToCartCommandHandler];
 const customersProviders: Provider[] = [CustomerRepositoryProvider, CreateCustomerCommandHandler];
@@ -34,14 +37,22 @@ const paymentsProviders: Provider[] = [
   PaymentService,
   RefundCommandHandler,
 ];
+
 const ticketTypesProviders: Provider[] = [
   TicketTypeRepositoryProvider,
   CreateTicketTypeCommandHandler,
 ];
+
 const ticketsProviders: Provider[] = [TicketRepositoryProvider];
+
 const integrationProviders: Provider[] = [
   UserRegisteredIntegrationEventHandler,
   TicketTypeCreatedIntegrationEventHandler,
+];
+
+const outboxProviders: Provider[] = [
+  TicketingOutboxConfigProvider,
+  OutboxPersistenceHandlerProvider,
 ];
 
 @Module({
@@ -53,6 +64,7 @@ const integrationProviders: Provider[] = [
       PaymentTypeOrmEntity,
       TicketTypeTypeOrmEntity,
       TicketTypeOrmEntity,
+      TicketingOutboxMessageTypeOrmEntity,
     ]),
     RootUsersModule,
     RootEventsModule,
@@ -65,6 +77,7 @@ const integrationProviders: Provider[] = [
     ...paymentsProviders,
     ...ticketTypesProviders,
     ...ticketsProviders,
+    ...outboxProviders,
   ],
   controllers: [CartsController, OrdersController, PaymentsController],
 })

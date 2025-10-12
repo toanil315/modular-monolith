@@ -28,6 +28,9 @@ import { GetTicketTypesQueryHandler } from '../application/ticket-types/get-tick
 import { TicketTypesController } from '../presentation/ticket-types/ticket-types.controller';
 import { EventsIntegrationEventPublisherProvider } from '../integration/publishers/integration-event.publisher.impl';
 import { TicketTypeCreatedDomainEventHandler } from '../application/ticket-types/create-ticket-type/ticket-type-created.domain-event-handler';
+import { EventsOutboxConfigProvider } from './outbox/outbox.config';
+import { EventsOutboxMessageTypeOrmEntity } from './outbox/outbox-message.entity';
+import { OutboxPersistenceHandlerProvider } from 'src/modules/users/infrastructure/outbox/outbox-persistence.handler';
 
 const categoriesProviders: Provider[] = [
   CategoryRepositoryProvider,
@@ -66,9 +69,16 @@ const ticketTypesProviders: Provider[] = [
   TicketTypeCreatedDomainEventHandler,
 ];
 
+const outboxProviders: Provider[] = [EventsOutboxConfigProvider, OutboxPersistenceHandlerProvider];
+
 @Module({
   imports: [
-    TypeOrmModule.forFeature([CategoryTypeOrmEntity, EventTypeOrmEntity, TicketTypeOrmEntity]),
+    TypeOrmModule.forFeature([
+      CategoryTypeOrmEntity,
+      EventTypeOrmEntity,
+      TicketTypeOrmEntity,
+      EventsOutboxMessageTypeOrmEntity,
+    ]),
   ],
   providers: [
     EventsPublicApisProvider,
@@ -77,6 +87,7 @@ const ticketTypesProviders: Provider[] = [
     ...categoriesProviders,
     ...eventsProviders,
     ...ticketTypesProviders,
+    ...outboxProviders,
   ],
   controllers: [CategoriesController, EventsController, TicketTypesController],
 

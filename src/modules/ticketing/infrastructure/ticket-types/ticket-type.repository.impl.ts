@@ -6,29 +6,26 @@ import {
   TICKET_TYPE_REPOSITORY_TOKEN,
   TicketTypeRepository,
 } from '../../domain/ticket-types/ticket-type.repository';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { InjectEntityManager } from '@nestjs/typeorm';
+import { EntityManager } from 'typeorm';
 import {
-  DOMAIN_EVENT_PUBLISHER_TOKEN,
-  DomainEventPublisher,
-} from 'src/modules/common/application/domain-event/domain-event.publisher';
+  OUTBOX_PERSISTENCE_HANDLER_TOKEN,
+  OutboxPersistenceHandler,
+} from 'src/modules/common/application/messagings/outbox-persistence.handler';
 
 @Injectable()
-export class TicketTypeRepositoryImpl
-  extends BaseRepository<TicketType, TicketTypeTypeOrmEntity>
-  implements TicketTypeRepository
-{
+export class TicketTypeRepositoryImpl extends BaseRepository implements TicketTypeRepository {
   constructor(
-    @InjectRepository(TicketTypeTypeOrmEntity)
-    ormRepo: Repository<TicketTypeTypeOrmEntity>,
-    @Inject(DOMAIN_EVENT_PUBLISHER_TOKEN)
-    domainEventPublisher: DomainEventPublisher,
+    @InjectEntityManager()
+    manager: EntityManager,
+    @Inject(OUTBOX_PERSISTENCE_HANDLER_TOKEN)
+    outboxPersistenceHandler: OutboxPersistenceHandler,
   ) {
-    super(ormRepo, domainEventPublisher);
+    super(manager, outboxPersistenceHandler);
   }
 
   async getById(TicketTypeId: string): Promise<TicketType | null> {
-    const TicketTypeEntity = await this.ormRepo.findOne({
+    const TicketTypeEntity = await this.manager.findOne(TicketTypeTypeOrmEntity, {
       where: { id: TicketTypeId },
     });
 
@@ -48,7 +45,7 @@ export class TicketTypeRepositoryImpl
   }
 
   async getWithLock(ticketTypeId: string): Promise<TicketType | null> {
-    const TicketTypeEntity = await this.ormRepo.findOne({
+    const TicketTypeEntity = await this.manager.findOne(TicketTypeTypeOrmEntity, {
       where: { id: ticketTypeId },
       lock: {
         mode: 'pessimistic_write',
@@ -71,15 +68,18 @@ export class TicketTypeRepositoryImpl
     );
   }
 
-  async save(TicketType: TicketType): Promise<void> {
-    await this.persist(TicketType, {
-      id: TicketType.id,
-      currency: TicketType.currency,
-      eventId: TicketType.eventId,
-      name: TicketType.name,
-      price: TicketType.price,
-      quantity: TicketType.quantity,
-      availableQuantity: TicketType.availableQuantity,
+  async save(ticketType: TicketType): Promise<void> {
+    await this.manager.transaction(async (manager) => {
+      await this.manager.save(TicketTypeTypeOrmEntity, {
+        id: ticketType.id,
+        currency: ticketType.currency,
+        eventId: ticketType.eventId,
+        name: ticketType.name,
+        price: ticketType.price,
+        quantity: ticketType.quantity,
+        availableQuantity: ticketType.availableQuantity,
+      });
+      await this.outboxPersistenceHandler.save(ticketType, manager);
     });
   }
 }

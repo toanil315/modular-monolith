@@ -6,29 +6,26 @@ import {
   PAYMENT_REPOSITORY_TOKEN,
   PaymentRepository,
 } from '../../domain/payments/payment.repository';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { InjectEntityManager } from '@nestjs/typeorm';
+import { EntityManager } from 'typeorm';
 import {
-  DOMAIN_EVENT_PUBLISHER_TOKEN,
-  DomainEventPublisher,
-} from 'src/modules/common/application/domain-event/domain-event.publisher';
+  OUTBOX_PERSISTENCE_HANDLER_TOKEN,
+  OutboxPersistenceHandler,
+} from 'src/modules/common/application/messagings/outbox-persistence.handler';
 
 @Injectable()
-export class PaymentRepositoryImpl
-  extends BaseRepository<Payment, PaymentTypeOrmEntity>
-  implements PaymentRepository
-{
+export class PaymentRepositoryImpl extends BaseRepository implements PaymentRepository {
   constructor(
-    @InjectRepository(PaymentTypeOrmEntity)
-    ormRepo: Repository<PaymentTypeOrmEntity>,
-    @Inject(DOMAIN_EVENT_PUBLISHER_TOKEN)
-    domainEventPublisher: DomainEventPublisher,
+    @InjectEntityManager()
+    manager: EntityManager,
+    @Inject(OUTBOX_PERSISTENCE_HANDLER_TOKEN)
+    outboxPersistenceHandler: OutboxPersistenceHandler,
   ) {
-    super(ormRepo, domainEventPublisher);
+    super(manager, outboxPersistenceHandler);
   }
 
   async getById(paymentId: string): Promise<Payment | null> {
-    const paymentEntity = await this.ormRepo.findOne({
+    const paymentEntity = await this.manager.findOne(PaymentTypeOrmEntity, {
       where: { id: paymentId },
     });
 
@@ -49,8 +46,8 @@ export class PaymentRepositoryImpl
   }
 
   async getForEvent(eventId: string): Promise<Payment[]> {
-    const rows = await this.ormRepo
-      .createQueryBuilder('p')
+    const rows = await this.manager
+      .createQueryBuilder(PaymentTypeOrmEntity, 'p')
       .innerJoin('orders', 'o', 'o.id = p.orderId')
       .where('o.eventId = :eventId', { eventId })
       .getMany();
@@ -71,15 +68,18 @@ export class PaymentRepositoryImpl
   }
 
   async save(payment: Payment): Promise<void> {
-    await this.persist(payment, {
-      id: payment.id,
-      amount: payment.amount,
-      amountRefunded: payment.amountRefunded,
-      createdAt: payment.createdAt,
-      currency: payment.currency,
-      orderId: payment.orderId,
-      refundedAt: payment.refundedAt,
-      transactionId: payment.transactionId,
+    await this.manager.transaction(async (manager) => {
+      await this.manager.save(PaymentTypeOrmEntity, {
+        id: payment.id,
+        amount: payment.amount,
+        amountRefunded: payment.amountRefunded,
+        createdAt: payment.createdAt,
+        currency: payment.currency,
+        orderId: payment.orderId,
+        refundedAt: payment.refundedAt,
+        transactionId: payment.transactionId,
+      });
+      await this.outboxPersistenceHandler.save(payment, manager);
     });
   }
 }

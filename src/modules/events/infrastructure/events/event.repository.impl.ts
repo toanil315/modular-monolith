@@ -1,31 +1,28 @@
 import { Inject, Injectable, Provider } from '@nestjs/common';
-import { Repository } from 'typeorm';
-import { EventTypeOrmEntity } from './event.entity';
+import { EntityManager } from 'typeorm';
 import { Event } from '../../domain/events/event';
 import { EventRepository } from '../../domain/events/event.repository';
 import { BaseRepository } from 'src/modules/common/infrastructure/database/base-repository.impl';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectEntityManager } from '@nestjs/typeorm';
 import {
-  DOMAIN_EVENT_PUBLISHER_TOKEN,
-  DomainEventPublisher,
-} from 'src/modules/common/application/domain-event/domain-event.publisher';
+  OUTBOX_PERSISTENCE_HANDLER_TOKEN,
+  OutboxPersistenceHandler,
+} from 'src/modules/common/application/messagings/outbox-persistence.handler';
+import { EventTypeOrmEntity } from './event.entity';
 
 @Injectable()
-export class EventRepositoryImpl
-  extends BaseRepository<Event, EventTypeOrmEntity>
-  implements EventRepository
-{
+export class EventRepositoryImpl extends BaseRepository implements EventRepository {
   constructor(
-    @InjectRepository(EventTypeOrmEntity)
-    ormRepo: Repository<EventTypeOrmEntity>,
-    @Inject(DOMAIN_EVENT_PUBLISHER_TOKEN)
-    domainEventPublisher: DomainEventPublisher,
+    @InjectEntityManager()
+    manager: EntityManager,
+    @Inject(OUTBOX_PERSISTENCE_HANDLER_TOKEN)
+    outboxPersistenceHandler: OutboxPersistenceHandler,
   ) {
-    super(ormRepo, domainEventPublisher);
+    super(manager, outboxPersistenceHandler);
   }
 
   async getById(eventId: string): Promise<Event | null> {
-    const eventEntity = await this.ormRepo.findOne({
+    const eventEntity = await this.manager.findOne(EventTypeOrmEntity, {
       where: { id: eventId },
     });
 
@@ -46,15 +43,18 @@ export class EventRepositoryImpl
   }
 
   async save(event: Event): Promise<void> {
-    await this.persist(event, {
-      id: event.id,
-      categoryId: event.categoryId,
-      title: event.title,
-      status: event.status,
-      description: event.description,
-      location: event.location,
-      startsAt: event.startsAt,
-      endsAt: event.endsAt,
+    await this.manager.transaction(async (manager) => {
+      await manager.save(EventTypeOrmEntity, {
+        id: event.id,
+        categoryId: event.categoryId,
+        title: event.title,
+        status: event.status,
+        description: event.description,
+        location: event.location,
+        startsAt: event.startsAt,
+        endsAt: event.endsAt,
+      });
+      await this.outboxPersistenceHandler.save(event, manager);
     });
   }
 }

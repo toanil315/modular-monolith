@@ -5,30 +5,27 @@ import {
   CustomerRepository,
 } from '../../domain/customers/customer.repository';
 import { BaseRepository } from 'src/modules/common/infrastructure/database/base-repository.impl';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
+import { EntityManager } from 'typeorm';
+import { InjectEntityManager } from '@nestjs/typeorm';
 import { CustomerTypeOrmEntity } from './customer.entity';
 import {
-  DOMAIN_EVENT_PUBLISHER_TOKEN,
-  DomainEventPublisher,
-} from 'src/modules/common/application/domain-event/domain-event.publisher';
+  OUTBOX_PERSISTENCE_HANDLER_TOKEN,
+  OutboxPersistenceHandler,
+} from 'src/modules/common/application/messagings/outbox-persistence.handler';
 
 @Injectable()
-export class CustomerRepositoryImpl
-  extends BaseRepository<Customer, CustomerTypeOrmEntity>
-  implements CustomerRepository
-{
+export class CustomerRepositoryImpl extends BaseRepository implements CustomerRepository {
   constructor(
-    @InjectRepository(CustomerTypeOrmEntity)
-    ormRepo: Repository<CustomerTypeOrmEntity>,
-    @Inject(DOMAIN_EVENT_PUBLISHER_TOKEN)
-    domainEventPublisher: DomainEventPublisher,
+    @InjectEntityManager()
+    manager: EntityManager,
+    @Inject(OUTBOX_PERSISTENCE_HANDLER_TOKEN)
+    outboxPersistenceHandler: OutboxPersistenceHandler,
   ) {
-    super(ormRepo, domainEventPublisher);
+    super(manager, outboxPersistenceHandler);
   }
 
   async getById(customerId: string): Promise<Customer | null> {
-    const customerEntity = await this.ormRepo.findOne({
+    const customerEntity = await this.manager.findOne(CustomerTypeOrmEntity, {
       where: { id: customerId },
     });
 
@@ -45,11 +42,14 @@ export class CustomerRepositoryImpl
   }
 
   async save(customer: Customer): Promise<void> {
-    await this.persist(customer, {
-      id: customer.id,
-      firstName: customer.firstName,
-      lastName: customer.lastName,
-      email: customer.email,
+    await this.manager.transaction(async (manager) => {
+      await manager.save(CustomerTypeOrmEntity, {
+        id: customer.id,
+        firstName: customer.firstName,
+        lastName: customer.lastName,
+        email: customer.email,
+      });
+      await this.outboxPersistenceHandler.save(customer, manager);
     });
   }
 }

@@ -14,7 +14,6 @@ import { CacheHealthIndicatorProvider } from './healths/cache.health-indicator.i
 import { HealthController } from '../presentation/healths/health.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DatabaseConfiguration } from './database/database-configuration';
-import { DomainEventPublisherProvider } from './domain-event/domain-event.publisher.impl';
 import {
   AuthGuard,
   KeycloakConnectModule,
@@ -85,13 +84,11 @@ import { ForbiddenExceptionFilter } from './exceptions/forbiden-exception.filter
 
     CachingServiceProvider,
 
-    DomainEventPublisherProvider,
-
     DatabaseHealthIndicatorProvider,
     CacheHealthIndicatorProvider,
     AuthHealthIndicatorProvider,
   ],
-  exports: [CachingServiceProvider, DomainEventPublisherProvider],
+  exports: [CachingServiceProvider],
   controllers: [HealthController],
 })
 export class CommonModule {}

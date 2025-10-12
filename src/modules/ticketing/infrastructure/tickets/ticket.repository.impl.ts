@@ -3,29 +3,26 @@ import { BaseRepository } from 'src/modules/common/infrastructure/database/base-
 import { Ticket } from '../../domain/tickets/ticket';
 import { TicketTypeOrmEntity } from './ticket.entity';
 import { TICKET_REPOSITORY_TOKEN, TicketRepository } from '../../domain/tickets/ticket.repository';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { InjectEntityManager } from '@nestjs/typeorm';
+import { EntityManager } from 'typeorm';
 import {
-  DOMAIN_EVENT_PUBLISHER_TOKEN,
-  DomainEventPublisher,
-} from 'src/modules/common/application/domain-event/domain-event.publisher';
+  OUTBOX_PERSISTENCE_HANDLER_TOKEN,
+  OutboxPersistenceHandler,
+} from 'src/modules/common/application/messagings/outbox-persistence.handler';
 
 @Injectable()
-export class TicketRepositoryImpl
-  extends BaseRepository<Ticket, TicketTypeOrmEntity>
-  implements TicketRepository
-{
+export class TicketRepositoryImpl extends BaseRepository implements TicketRepository {
   constructor(
-    @InjectRepository(TicketTypeOrmEntity)
-    ormRepo: Repository<TicketTypeOrmEntity>,
-    @Inject(DOMAIN_EVENT_PUBLISHER_TOKEN)
-    domainEventPublisher: DomainEventPublisher,
+    @InjectEntityManager()
+    manager: EntityManager,
+    @Inject(OUTBOX_PERSISTENCE_HANDLER_TOKEN)
+    outboxPersistenceHandler: OutboxPersistenceHandler,
   ) {
-    super(ormRepo, domainEventPublisher);
+    super(manager, outboxPersistenceHandler);
   }
 
   async getByIdOrCode(identifier: string): Promise<Ticket | null> {
-    const ticketEntity = await this.ormRepo.findOne({
+    const ticketEntity = await this.manager.findOne(TicketTypeOrmEntity, {
       where: [{ id: identifier }, { code: identifier }],
     });
 
@@ -46,7 +43,7 @@ export class TicketRepositoryImpl
   }
 
   async getForEvent(eventId: string): Promise<Ticket | null> {
-    const ticketEntity = await this.ormRepo.findOne({
+    const ticketEntity = await this.manager.findOne(TicketTypeOrmEntity, {
       where: { eventId },
     });
 
@@ -67,15 +64,18 @@ export class TicketRepositoryImpl
   }
 
   async save(ticket: Ticket): Promise<void> {
-    await this.persist(ticket, {
-      id: ticket.id,
-      archived: ticket.archived,
-      code: ticket.code,
-      createdAt: ticket.createdAt,
-      customerId: ticket.customerId,
-      eventId: ticket.eventId,
-      orderId: ticket.orderId,
-      ticketTypeId: ticket.ticketTypeId,
+    await this.manager.transaction(async (manager) => {
+      await this.manager.save(TicketTypeOrmEntity, {
+        id: ticket.id,
+        archived: ticket.archived,
+        code: ticket.code,
+        createdAt: ticket.createdAt,
+        customerId: ticket.customerId,
+        eventId: ticket.eventId,
+        orderId: ticket.orderId,
+        ticketTypeId: ticket.ticketTypeId,
+      });
+      await this.outboxPersistenceHandler.save(ticket, manager);
     });
   }
 }

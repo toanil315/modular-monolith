@@ -3,30 +3,28 @@ import { UserTypeOrmEntity } from './user.entity';
 import { User } from '../../domain/users/user';
 import { UserRepository } from '../../domain/users/user.repository';
 import { BaseRepository } from 'src/modules/common/infrastructure/database/base-repository.impl';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
-import {
-  DOMAIN_EVENT_PUBLISHER_TOKEN,
-  DomainEventPublisher,
-} from 'src/modules/common/application/domain-event/domain-event.publisher';
+import { EntityManager } from 'typeorm';
+import { InjectEntityManager } from '@nestjs/typeorm';
+
 import { Role } from '../../domain/users/role';
+import {
+  OUTBOX_PERSISTENCE_HANDLER_TOKEN,
+  OutboxPersistenceHandler,
+} from 'src/modules/common/application/messagings/outbox-persistence.handler';
 
 @Injectable()
-export class UserRepositoryImpl
-  extends BaseRepository<User, UserTypeOrmEntity>
-  implements UserRepository
-{
+export class UserRepositoryImpl extends BaseRepository implements UserRepository {
   constructor(
-    @InjectRepository(UserTypeOrmEntity)
-    ormRepo: Repository<UserTypeOrmEntity>,
-    @Inject(DOMAIN_EVENT_PUBLISHER_TOKEN)
-    domainEventPublisher: DomainEventPublisher,
+    @InjectEntityManager()
+    manager: EntityManager,
+    @Inject(OUTBOX_PERSISTENCE_HANDLER_TOKEN)
+    outboxPersistenceHandler: OutboxPersistenceHandler,
   ) {
-    super(ormRepo, domainEventPublisher);
+    super(manager, outboxPersistenceHandler);
   }
 
   async getById(userId: string): Promise<User | null> {
-    const userEntity = await this.ormRepo.findOne({
+    const userEntity = await this.manager.findOne(UserTypeOrmEntity, {
       where: { id: userId },
       relations: ['roles'],
     });
@@ -46,15 +44,18 @@ export class UserRepositoryImpl
   }
 
   async save(user: User): Promise<void> {
-    await this.persist(user, {
-      id: user.id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      identityId: user.identityId,
-      roles: user.roles?.map((role) => ({
-        id: role.name,
-      })),
+    await this.manager.transaction(async (manager) => {
+      await manager.save(UserTypeOrmEntity, {
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        identityId: user.identityId,
+        roles: user.roles?.map((role) => ({
+          id: role.name,
+        })),
+      });
+      await this.outboxPersistenceHandler.save(user, manager);
     });
   }
 }

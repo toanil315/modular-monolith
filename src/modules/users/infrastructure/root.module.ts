@@ -18,6 +18,9 @@ import { GetUserPermissionQueryHandler } from '../application/users/get-user-per
 import { PermissionServiceProvider } from './authorization/permission.service.impl';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthorizationGuard } from 'src/modules/common/infrastructure/authorization/authorization.guard';
+import { UserOutboxConfigProvider } from './outbox/outbox.config';
+import { UsersOutboxMessageTypeOrmEntity } from './outbox/outbox-message.entity';
+import { OutboxPersistenceHandlerProvider } from './outbox/outbox-persistence.handler';
 
 const usersProviders: Provider[] = [
   UserRepositoryProvider,
@@ -42,9 +45,16 @@ const authorizationProviders: Provider[] = [
   },
 ];
 
+const outboxProviders: Provider[] = [UserOutboxConfigProvider, OutboxPersistenceHandlerProvider];
+
 @Module({
   imports: [
-    TypeOrmModule.forFeature([UserTypeOrmEntity, RoleTypeOrmEntity, PermissionTypeOrmEntity]),
+    TypeOrmModule.forFeature([
+      UserTypeOrmEntity,
+      RoleTypeOrmEntity,
+      PermissionTypeOrmEntity,
+      UsersOutboxMessageTypeOrmEntity,
+    ]),
     HttpModule.register({}),
   ],
   providers: [
@@ -53,6 +63,7 @@ const authorizationProviders: Provider[] = [
     ...authorizationProviders,
     ...usersProviders,
     ...identityProviders,
+    ...outboxProviders,
   ],
   controllers: [UsersController],
   exports: [UsersPublicApisProvider],

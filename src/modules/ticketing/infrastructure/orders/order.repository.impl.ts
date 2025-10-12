@@ -1,28 +1,25 @@
 import { Inject, Injectable, Provider } from '@nestjs/common';
 import { ORDER_REPOSITORY_TOKEN, OrderRepository } from '../../domain/orders/order.repository';
-import {
-  DOMAIN_EVENT_PUBLISHER_TOKEN,
-  DomainEventPublisher,
-} from 'src/modules/common/application/domain-event/domain-event.publisher';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { InjectEntityManager } from '@nestjs/typeorm';
+import { EntityManager } from 'typeorm';
 import { Order } from '../../domain/orders/order';
 import { OrderTypeOrmEntity } from './order.entity';
 import { OrderItemTypeOrmEntity } from './order-item.entity';
 import { BaseRepository } from 'src/modules/common/infrastructure/database/base-repository.impl';
+import {
+  OUTBOX_PERSISTENCE_HANDLER_TOKEN,
+  OutboxPersistenceHandler,
+} from 'src/modules/common/application/messagings/outbox-persistence.handler';
 
 @Injectable()
-export class OrderRepositoryImpl
-  extends BaseRepository<Order, OrderTypeOrmEntity>
-  implements OrderRepository
-{
+export class OrderRepositoryImpl extends BaseRepository implements OrderRepository {
   constructor(
-    @InjectRepository(OrderTypeOrmEntity)
-    ormRepo: Repository<OrderTypeOrmEntity>,
-    @Inject(DOMAIN_EVENT_PUBLISHER_TOKEN)
-    domainEventPublisher: DomainEventPublisher,
+    @InjectEntityManager()
+    manager: EntityManager,
+    @Inject(OUTBOX_PERSISTENCE_HANDLER_TOKEN)
+    outboxPersistenceHandler: OutboxPersistenceHandler,
   ) {
-    super(ormRepo, domainEventPublisher);
+    super(manager, outboxPersistenceHandler);
   }
 
   async getById(orderId: string) {
@@ -57,7 +54,7 @@ export class OrderRepositoryImpl
         GROUP BY o.id;     
     `;
 
-    const rows = await this.ormRepo.manager.query<Order[]>(query, [orderId]);
+    const rows = await this.manager.query<Order[]>(query, [orderId]);
 
     if (!rows.length) return null;
 
@@ -65,8 +62,8 @@ export class OrderRepositoryImpl
   }
 
   async save(order: Order) {
-    await this.ormRepo.manager.transaction(async (manager) => {
-      await manager.getRepository(OrderTypeOrmEntity).save({
+    await this.manager.transaction(async (manager) => {
+      await manager.save(OrderTypeOrmEntity, {
         id: order.id,
         customerId: order.customerId,
         createdAt: order.createdAt,
@@ -76,7 +73,8 @@ export class OrderRepositoryImpl
         totalPrice: order.totalPrice,
       });
 
-      await manager.getRepository(OrderItemTypeOrmEntity).save(
+      await manager.save(
+        OrderItemTypeOrmEntity,
         order.orderItems.map<Partial<OrderItemTypeOrmEntity>>((orderItem) => ({
           id: orderItem.id,
           orderId: orderItem.orderId,
@@ -87,8 +85,9 @@ export class OrderRepositoryImpl
           quantity: orderItem.quantity,
         })),
       );
+
+      await this.outboxPersistenceHandler.save(order, manager);
     });
-    await this.domainEventPublisher.publish(order);
   }
 }
 
