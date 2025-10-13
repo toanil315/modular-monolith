@@ -38,6 +38,8 @@ import { DomainEventRegistryProvider } from './outbox/domain-event.registry';
 import { OutboxJobScheduler } from './outbox/outbox.job-sheduler';
 import { OutboxMessageProcessor } from './outbox/outbox.processor';
 import { BullModule } from '@nestjs/bullmq';
+import { OutboxConsumerRepositoryProvider } from './outbox/outbox-consumed-message.repository';
+import { EventsOutboxConsumedMessageTypeOrmEntity } from './outbox/outbox-consumed-message.entity';
 
 const categoriesProviders: Provider[] = [
   CategoryRepositoryProvider,
@@ -82,6 +84,7 @@ const outboxProviders: Provider[] = [
   DomainEventRegistryProvider,
   OutboxJobScheduler,
   OutboxMessageProcessor,
+  OutboxConsumerRepositoryProvider,
 ];
 
 @Module({
@@ -91,6 +94,7 @@ const outboxProviders: Provider[] = [
       EventTypeOrmEntity,
       TicketTypeOrmEntity,
       EventsOutboxMessageTypeOrmEntity,
+      EventsOutboxConsumedMessageTypeOrmEntity,
     ]),
     BullModule.registerQueue({
       name: EVENTS_OUTBOX_MESSAGE_PROCESSOR_JOB_QUEUE,

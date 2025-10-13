@@ -28,6 +28,8 @@ import { PaymentsController } from '../presentation/payments/payments.controller
 import { TicketingOutboxConfigProvider } from './outbox/outbox.config';
 import { OutboxPersistenceHandlerProvider } from './outbox/outbox-persistence.handler';
 import { TicketingOutboxMessageTypeOrmEntity } from './outbox/outbox-message.entity';
+import { OutboxConsumerRepositoryProvider } from './outbox/outbox-consumed-message.repository';
+import { TicketingOutboxConsumedMessageTypeOrmEntity } from './outbox/outbox-consumed-message.entity';
 
 const cartsProviders: Provider[] = [CartService, AddToCartCommandHandler];
 const customersProviders: Provider[] = [CustomerRepositoryProvider, CreateCustomerCommandHandler];
@@ -53,6 +55,7 @@ const integrationProviders: Provider[] = [
 const outboxProviders: Provider[] = [
   TicketingOutboxConfigProvider,
   OutboxPersistenceHandlerProvider,
+  OutboxConsumerRepositoryProvider,
 ];
 
 @Module({
@@ -65,6 +68,7 @@ const outboxProviders: Provider[] = [
       TicketTypeTypeOrmEntity,
       TicketTypeOrmEntity,
       TicketingOutboxMessageTypeOrmEntity,
+      TicketingOutboxConsumedMessageTypeOrmEntity,
     ]),
     RootUsersModule,
     RootEventsModule,

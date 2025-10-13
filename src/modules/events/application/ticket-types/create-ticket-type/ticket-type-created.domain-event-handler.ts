@@ -7,14 +7,22 @@ import {
 } from '../../abstractions/integration-event.publisher';
 import { GetTicketTypeQuery } from '../get-ticket-type/get-ticket-type.query';
 import { EventHandler } from 'src/modules/common/application/event-bus/event-handler.decorator';
+import { BaseEventHandler } from 'src/modules/common/application/event-bus/event-handler.base';
+import {
+  OUTBOX_CONSUMER_REPOSITORY_TOKEN,
+  OutboxConsumerRepository,
+} from 'src/modules/common/application/messagings/outbox-consumer.repository';
 
 @Injectable()
-export class TicketTypeCreatedDomainEventHandler {
+export class TicketTypeCreatedDomainEventHandler extends BaseEventHandler {
   constructor(
     private readonly queryBus: QueryBus,
     @Inject(EVENTS_INTEGRATION_EVENTS_PUBLISHER_TOKEN)
     private readonly eventsIntegrationEventPublisher: EventsIntegrationEventsPublisher,
-  ) {}
+    @Inject(OUTBOX_CONSUMER_REPOSITORY_TOKEN) outboxConsumerRepository: OutboxConsumerRepository,
+  ) {
+    super(outboxConsumerRepository, 'events.application.ticket-types');
+  }
 
   @EventHandler(TicketTypeDomainEvent.TicketTypeCreatedDomainEvent)
   async handle({ ticketTypeId }: TicketTypeDomainEvent.TicketTypeCreatedDomainEvent) {

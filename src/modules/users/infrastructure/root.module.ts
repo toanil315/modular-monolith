@@ -28,6 +28,8 @@ import { BullModule } from '@nestjs/bullmq';
 import { OutboxJobScheduler } from './outbox/outbox.job-sheduler';
 import { OutboxMessageProcessor } from './outbox/outbox.processor';
 import { DomainEventRegistryProvider } from './outbox/domain-event.registry';
+import { OutboxConsumerRepositoryProvider } from './outbox/outbox-consumed-message.repository';
+import { UsersOutboxConsumedMessageTypeOrmEntity } from './outbox/outbox-consumed-message.entity';
 
 const usersProviders: Provider[] = [
   UserRepositoryProvider,
@@ -58,6 +60,7 @@ const outboxProviders: Provider[] = [
   OutboxJobScheduler,
   OutboxMessageProcessor,
   DomainEventRegistryProvider,
+  OutboxConsumerRepositoryProvider,
 ];
 
 @Module({
@@ -67,6 +70,7 @@ const outboxProviders: Provider[] = [
       RoleTypeOrmEntity,
       PermissionTypeOrmEntity,
       UsersOutboxMessageTypeOrmEntity,
+      UsersOutboxConsumedMessageTypeOrmEntity,
     ]),
     HttpModule.register({}),
     BullModule.registerQueue({
