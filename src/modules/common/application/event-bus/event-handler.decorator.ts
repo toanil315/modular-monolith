@@ -20,7 +20,9 @@ export function EventHandler<TEvent extends DomainEvent>(
 
       // Make sure handler inherits from BaseEventHandler
       if (!(this instanceof BaseEventHandler)) {
-        return originalMethod.apply(this, args);
+        throw new Error(
+          'EventHandler decorator must be implemented within class inherited from BaseEventHandler',
+        );
       }
 
       // --- Outbox consumer logic ---

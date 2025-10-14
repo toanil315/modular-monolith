@@ -20,7 +20,9 @@ export function IntegrationEventHandler<TEvent extends IntegrationEvent>(
 
       // Make sure handler inherits from BaseEventHandler
       if (!(this instanceof BaseIntegrationEventHandler)) {
-        return originalMethod.apply(this, args);
+        throw new Error(
+          'IntegrationEventHandler decorator must be implemented within class inherited from BaseIntegrationEventHandler',
+        );
       }
 
       // --- Inbox consumer logic ---
