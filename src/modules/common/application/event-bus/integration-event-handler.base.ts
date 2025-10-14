@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { OutboxConsumerRepository } from '../messagings/outbox-consumer.repository';
 import { DomainEvent } from '../../domain/domain-event';
+import { InboxConsumerRepository } from '../messagings/inbox-consumer.repository';
 
 @Injectable()
-export abstract class BaseEventHandler {
+export abstract class BaseIntegrationEventHandler {
   constructor(
-    protected readonly outboxConsumerRepository: OutboxConsumerRepository,
+    protected readonly inboxConsumerRepository: InboxConsumerRepository,
     protected readonly context: string,
   ) {}
 
@@ -14,10 +14,10 @@ export abstract class BaseEventHandler {
   }
 
   protected async isProcessed(event: DomainEvent) {
-    return await this.outboxConsumerRepository.isProcessed(event, this.handlerName);
+    return await this.inboxConsumerRepository.isProcessed(event, this.handlerName);
   }
 
   protected async saveConsumedMessage(event: DomainEvent) {
-    await this.outboxConsumerRepository.save(event, this.handlerName);
+    await this.inboxConsumerRepository.save(event, this.handlerName);
   }
 }

@@ -27,7 +27,6 @@ import { OutboxPersistenceHandlerProvider } from './outbox/outbox-persistence.ha
 import { BullModule } from '@nestjs/bullmq';
 import { OutboxJobScheduler } from './outbox/outbox.job-sheduler';
 import { OutboxMessageProcessor } from './outbox/outbox.processor';
-import { DomainEventRegistryProvider } from './outbox/domain-event.registry';
 import { OutboxConsumerRepositoryProvider } from './outbox/outbox-consumed-message.repository';
 import { UsersOutboxConsumedMessageTypeOrmEntity } from './outbox/outbox-consumed-message.entity';
 
@@ -59,7 +58,6 @@ const outboxProviders: Provider[] = [
   OutboxPersistenceHandlerProvider,
   OutboxJobScheduler,
   OutboxMessageProcessor,
-  DomainEventRegistryProvider,
   OutboxConsumerRepositoryProvider,
 ];
 

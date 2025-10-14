@@ -1,14 +1,25 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { CreateCustomerCommand } from '../../application/customers/create-customer/create-customer.command';
 import { UsersIntegrationEvent } from 'src/modules/users/public/events';
-import { EventHandler } from 'src/modules/common/application/event-bus/event-handler.decorator';
+import { BaseIntegrationEventHandler } from 'src/modules/common/application/event-bus/integration-event-handler.base';
+import {
+  INBOX_CONSUMER_REPOSITORY_TOKEN,
+  InboxConsumerRepository,
+} from 'src/modules/common/application/messagings/inbox-consumer.repository';
+import { IntegrationEventHandler } from 'src/modules/common/application/event-bus/integration-event-handler.decorator';
 
 @Injectable()
-export class UserRegisteredIntegrationEventHandler {
-  constructor(private readonly commandBus: CommandBus) {}
+export class UserRegisteredIntegrationEventHandler extends BaseIntegrationEventHandler {
+  constructor(
+    private readonly commandBus: CommandBus,
+    @Inject(INBOX_CONSUMER_REPOSITORY_TOKEN)
+    inboxConsumerRepository: InboxConsumerRepository,
+  ) {
+    super(inboxConsumerRepository, 'ticketing.integration.handlers');
+  }
 
-  @EventHandler(UsersIntegrationEvent.UserRegisteredIntegrationEvent)
+  @IntegrationEventHandler(UsersIntegrationEvent.UserRegisteredIntegrationEvent)
   async handle(event: UsersIntegrationEvent.UserRegisteredIntegrationEvent) {
     const result = await this.commandBus.execute(
       new CreateCustomerCommand({

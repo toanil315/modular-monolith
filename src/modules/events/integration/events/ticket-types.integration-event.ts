@@ -2,6 +2,8 @@ import { IntegrationEvent } from 'src/modules/common/application/messagings/inte
 
 export namespace TicketTypeIntegrationEvent {
   export class TicketTypeCreatedIntegrationEvent extends IntegrationEvent {
+    static readonly type = 'IntegrationEvent.TicketTypeCreated';
+
     constructor(
       public readonly ticketTypeId: string,
       public readonly eventId: string,
@@ -10,7 +12,7 @@ export namespace TicketTypeIntegrationEvent {
       public readonly currency: string,
       public readonly quantity: number,
     ) {
-      super('IntegrationEvent.TicketTypeCreated');
+      super(TicketTypeCreatedIntegrationEvent.type);
     }
   }
 }

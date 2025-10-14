@@ -2,17 +2,21 @@ import { DomainEvent } from 'src/modules/common/domain/domain-event';
 
 export namespace TicketDomainEvent {
   export class TicketCreatedDomainEvent extends DomainEvent {
+    static readonly type = 'DomainEvent.TicketCreated';
+
     constructor(public readonly ticketId: string) {
-      super('DomainEvent.TicketCreated');
+      super(TicketCreatedDomainEvent.type);
     }
   }
 
   export class TicketArchivedDomainEvent extends DomainEvent {
+    static readonly type = 'DomainEvent.TicketArchived';
+
     constructor(
       public readonly ticketId: string,
       public readonly code: string,
     ) {
-      super('DomainEvent.TicketArchived');
+      super(TicketArchivedDomainEvent.type);
     }
   }
 }

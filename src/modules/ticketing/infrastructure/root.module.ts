@@ -30,6 +30,9 @@ import { OutboxPersistenceHandlerProvider } from './outbox/outbox-persistence.ha
 import { TicketingOutboxMessageTypeOrmEntity } from './outbox/outbox-message.entity';
 import { OutboxConsumerRepositoryProvider } from './outbox/outbox-consumed-message.repository';
 import { TicketingOutboxConsumedMessageTypeOrmEntity } from './outbox/outbox-consumed-message.entity';
+import { InboxConsumerRepositoryProvider } from './inbox/inbox-consumed-message.repository';
+import { TicketingInboxConsumedMessageTypeOrmEntity } from './inbox/inbox-consumed-message.entity';
+import { TicketingInboxConfigProvider } from './inbox/inbox.config';
 
 const cartsProviders: Provider[] = [CartService, AddToCartCommandHandler];
 const customersProviders: Provider[] = [CustomerRepositoryProvider, CreateCustomerCommandHandler];
@@ -58,6 +61,8 @@ const outboxProviders: Provider[] = [
   OutboxConsumerRepositoryProvider,
 ];
 
+const inboxProviders: Provider[] = [TicketingInboxConfigProvider, InboxConsumerRepositoryProvider];
+
 @Module({
   imports: [
     TypeOrmModule.forFeature([
@@ -69,6 +74,7 @@ const outboxProviders: Provider[] = [
       TicketTypeOrmEntity,
       TicketingOutboxMessageTypeOrmEntity,
       TicketingOutboxConsumedMessageTypeOrmEntity,
+      TicketingInboxConsumedMessageTypeOrmEntity,
     ]),
     RootUsersModule,
     RootEventsModule,
@@ -82,6 +88,7 @@ const outboxProviders: Provider[] = [
     ...ticketTypesProviders,
     ...ticketsProviders,
     ...outboxProviders,
+    ...inboxProviders,
   ],
   controllers: [CartsController, OrdersController, PaymentsController],
 })

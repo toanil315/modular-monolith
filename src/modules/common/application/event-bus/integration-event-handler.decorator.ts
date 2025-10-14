@@ -1,29 +1,29 @@
 import { OnEvent } from '@nestjs/event-emitter';
-import { DomainEvent, DomainEventConstructor } from '../../domain/domain-event';
-import { BaseEventHandler } from './event-handler.base';
+import { IntegrationEvent, IntegrationEventConstructor } from '../messagings/integration-event';
+import { BaseIntegrationEventHandler } from './integration-event-handler.base';
 
 /**
  * Strongly typed EventHandler decorator.
  *
  * ✅ Registers the handler with NestJS event emitter
- * ✅ Uses BaseEventHandler's outbox-consumer logic
+ * ✅ Uses BaseIntegrationEventHandler's inbox-consumer logic
  * ✅ Prevents re-processing of already handled events
  */
-export function EventHandler<TEvent extends DomainEvent>(
-  event: DomainEventConstructor,
+export function IntegrationEventHandler<TEvent extends IntegrationEvent>(
+  event: IntegrationEventConstructor,
 ): MethodDecorator {
   return (target: Object, propertyKey: string | symbol, descriptor: PropertyDescriptor) => {
     const originalMethod = descriptor.value;
 
-    descriptor.value = async function (this: BaseEventHandler, ...args: [TEvent]) {
+    descriptor.value = async function (this: BaseIntegrationEventHandler, ...args: [TEvent]) {
       const [eventInstance] = args;
 
       // Make sure handler inherits from BaseEventHandler
-      if (!(this instanceof BaseEventHandler)) {
+      if (!(this instanceof BaseIntegrationEventHandler)) {
         return originalMethod.apply(this, args);
       }
 
-      // --- Outbox consumer logic ---
+      // --- Inbox consumer logic ---
       const alreadyProcessed = await this.isProcessed(eventInstance);
       if (alreadyProcessed) {
         return;

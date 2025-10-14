@@ -12,10 +12,6 @@ import {
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import {
-  DOMAIN_EVENT_REGISTRY_TOKEN,
-  DomainEventRegistry,
-} from 'src/modules/common/infrastructure/outbox/domain-event.registry';
-import {
   EVENT_BUS_ADAPTER_TOKEN,
   EventBusAdapter,
 } from 'src/modules/common/application/event-bus/event-bus.adapter';
@@ -28,8 +24,6 @@ export class OutboxMessageProcessor extends WorkerHost {
   constructor(
     @InjectDataSource()
     private readonly dataSource: DataSource,
-    @Inject(DOMAIN_EVENT_REGISTRY_TOKEN)
-    private readonly eventRegistry: DomainEventRegistry,
     @Inject(OUTBOX_CONFIG_TOKEN)
     private readonly outboxConfigs: OutboxConfig,
     @Inject(EVENT_BUS_ADAPTER_TOKEN) private readonly eventBus: EventBusAdapter,
@@ -63,21 +57,9 @@ export class OutboxMessageProcessor extends WorkerHost {
       for (const message of outboxMessages) {
         try {
           const rawContent = message.content;
-          const parseContent = typeof rawContent === 'string' ? JSON.parse(rawContent) : rawContent;
+          const event = typeof rawContent === 'string' ? JSON.parse(rawContent) : rawContent;
 
-          const EventCtor = this.eventRegistry.get(message.type);
-
-          if (!EventCtor) {
-            throw new Error(`Unknown domain event type: ${message.type}`);
-          }
-
-          const domainEvent = new EventCtor();
-
-          for (const key in domainEvent) {
-            domainEvent[key] = parseContent[key];
-          }
-
-          await this.eventBus.publish([domainEvent]);
+          await this.eventBus.publish([event]);
 
           successfullyProcessedIds.push(message.id);
         } catch (err) {

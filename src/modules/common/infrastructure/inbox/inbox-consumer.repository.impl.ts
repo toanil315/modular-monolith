@@ -1,22 +1,22 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { EntityManager } from 'typeorm';
-import { OUTBOX_CONFIG_TOKEN, OutboxConfig } from './outbox.config';
-import { OutboxConsumerRepository } from '../../application/messagings/outbox-consumer.repository';
 import { DomainEvent } from '../../domain/domain-event';
 import { InjectEntityManager } from '@nestjs/typeorm';
-import { OutboxConsumedMessageTypeOrmEntity } from './base-cosumed-outbox-message.entity';
+import { INBOX_CONFIG_TOKEN, InboxConfig } from './inbox.config';
+import { InboxConsumerRepository } from '../../application/messagings/inbox-consumer.repository';
+import { InboxConsumedMessageTypeOrmEntity } from './base-consumed-inbox-message.entity';
 
 @Injectable()
-export class OutboxConsumerRepositoryImpl implements OutboxConsumerRepository {
+export class InboxConsumerRepositoryImpl implements InboxConsumerRepository {
   constructor(
-    @Inject(OUTBOX_CONFIG_TOKEN)
-    private readonly config: OutboxConfig,
+    @Inject(INBOX_CONFIG_TOKEN)
+    private readonly config: InboxConfig,
     @InjectEntityManager()
     private readonly entityManager: EntityManager,
   ) {}
 
   async isProcessed(event: DomainEvent, consumerName: string): Promise<boolean> {
-    const consumedMessage = await this.entityManager.findOne<OutboxConsumedMessageTypeOrmEntity>(
+    const consumedMessage = await this.entityManager.findOne<InboxConsumedMessageTypeOrmEntity>(
       this.config.consumedEntity,
       {
         where: {

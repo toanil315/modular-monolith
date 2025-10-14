@@ -34,7 +34,6 @@ import {
 } from './outbox/outbox.config';
 import { EventsOutboxMessageTypeOrmEntity } from './outbox/outbox-message.entity';
 import { OutboxPersistenceHandlerProvider } from 'src/modules/users/infrastructure/outbox/outbox-persistence.handler';
-import { DomainEventRegistryProvider } from './outbox/domain-event.registry';
 import { OutboxJobScheduler } from './outbox/outbox.job-sheduler';
 import { OutboxMessageProcessor } from './outbox/outbox.processor';
 import { BullModule } from '@nestjs/bullmq';
@@ -81,7 +80,6 @@ const ticketTypesProviders: Provider[] = [
 const outboxProviders: Provider[] = [
   EventsOutboxConfigProvider,
   OutboxPersistenceHandlerProvider,
-  DomainEventRegistryProvider,
   OutboxJobScheduler,
   OutboxMessageProcessor,
   OutboxConsumerRepositoryProvider,

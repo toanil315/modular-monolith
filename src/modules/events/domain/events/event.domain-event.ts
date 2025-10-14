@@ -2,30 +2,38 @@ import { DomainEvent } from '../../../common/domain/domain-event';
 
 export namespace EventDomainEvent {
   export class EventCreatedDomainEvent extends DomainEvent {
+    static readonly type = 'DomainEvent.EventCreated';
+
     constructor(public readonly eventId: string) {
-      super('DomainEvent.EventCreated');
+      super(EventCreatedDomainEvent.type);
     }
   }
 
   export class EventCanceledDomainEvent extends DomainEvent {
+    static readonly type = 'DomainEvent.EventCanceled';
+
     constructor(public readonly eventId: string) {
-      super('DomainEvent.EventCanceled');
+      super(EventCanceledDomainEvent.type);
     }
   }
 
   export class EventRescheduledDomainEvent extends DomainEvent {
+    static readonly type = 'DomainEvent.EventRescheduled';
+
     constructor(
       public readonly eventId: string,
       public readonly startsAt: number,
       public readonly endsAt: number,
     ) {
-      super('DomainEvent.EventScheduled');
+      super(EventRescheduledDomainEvent.type);
     }
   }
 
   export class EventPublishedDomainEvent extends DomainEvent {
+    static readonly type = 'DomainEvent.EventPublished';
+
     constructor(public readonly eventId: string) {
-      super('DomainEvent.EventScheduled');
+      super(EventPublishedDomainEvent.type);
     }
   }
 }

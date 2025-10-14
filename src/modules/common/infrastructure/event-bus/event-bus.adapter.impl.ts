@@ -1,7 +1,6 @@
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Injectable, Provider } from '@nestjs/common';
 import { DomainEvent } from '../../domain/domain-event';
-import { IntegrationEvent } from '../../application/messagings/integration-event';
 import {
   EVENT_BUS_ADAPTER_TOKEN,
   EventBusAdapter,
@@ -17,10 +16,10 @@ export class EventBusAdapterImpl implements EventBusAdapter {
    * @see: https://github.com/EventEmitter2/EventEmitter2#emitteremitasyncevent--eventns-arg1-arg2-
    * @see https://docs.nestjs.com/techniques/events
    */
-  async publish<TEvent extends DomainEvent | IntegrationEvent>(events: TEvent[]): Promise<void> {
+  async publish<TEvent extends DomainEvent>(events: TEvent[]): Promise<void> {
     await Promise.all(
       events.map((event) => {
-        return this.eventEmitter.emitAsync(event.constructor.name, event);
+        return this.eventEmitter.emitAsync(event.type, event);
       }),
     );
   }

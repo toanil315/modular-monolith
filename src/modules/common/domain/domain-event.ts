@@ -1,6 +1,8 @@
 import { v4 as uuidV4 } from 'uuid';
 
 export class DomainEvent {
+  static type: string;
+
   public readonly id: string;
   public readonly occurredOn: number;
   public readonly type: string;
@@ -13,3 +15,8 @@ export class DomainEvent {
     Object.setPrototypeOf(this, new.target.prototype);
   }
 }
+
+export type DomainEventConstructor<T extends DomainEvent = DomainEvent> = {
+  new (...args: any[]): T;
+  type: string;
+};
