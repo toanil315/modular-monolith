@@ -17,11 +17,15 @@ import {
 export class PaymentRepositoryImpl extends BaseRepository implements PaymentRepository {
   constructor(
     @InjectEntityManager()
-    manager: EntityManager,
+    private readonly manager: EntityManager,
     @Inject(OUTBOX_PERSISTENCE_HANDLER_TOKEN)
-    outboxPersistenceHandler: OutboxPersistenceHandler,
+    private readonly outboxPersistenceHandler: OutboxPersistenceHandler,
   ) {
-    super(manager, outboxPersistenceHandler);
+    super();
+  }
+
+  withManager(manager: EntityManager) {
+    return new PaymentRepositoryImpl(manager, this.outboxPersistenceHandler) as this;
   }
 
   async getById(paymentId: string): Promise<Payment | null> {

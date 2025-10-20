@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { OutboxConsumerRepository } from '../messagings/outbox-consumer.repository';
 import { DomainEvent } from '../../domain/domain-event';
+import { EntityManager } from 'typeorm';
 
 @Injectable()
 export abstract class BaseEventHandler {
@@ -13,11 +14,15 @@ export abstract class BaseEventHandler {
     return `${this.context}.${this.constructor.name}`;
   }
 
+  protected async withTransaction<T>(fn: (manager: EntityManager) => Promise<T>) {
+    return this.outboxConsumerRepository.withTransaction(fn);
+  }
+
   protected async isProcessed(event: DomainEvent) {
     return await this.outboxConsumerRepository.isProcessed(event, this.handlerName);
   }
 
-  protected async saveConsumedMessage(event: DomainEvent) {
-    await this.outboxConsumerRepository.save(event, this.handlerName);
+  protected async saveConsumedMessage(event: DomainEvent, manager: EntityManager) {
+    await this.outboxConsumerRepository.withManager(manager).save(event, this.handlerName);
   }
 }

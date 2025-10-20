@@ -5,18 +5,25 @@ import { InjectEntityManager } from '@nestjs/typeorm';
 import { INBOX_CONFIG_TOKEN, InboxConfig } from './inbox.config';
 import { InboxConsumerRepository } from '../../application/messagings/inbox-consumer.repository';
 import { InboxConsumedMessageTypeOrmEntity } from './base-consumed-inbox-message.entity';
+import { BaseRepository } from '../database/base-repository.impl';
 
 @Injectable()
-export class InboxConsumerRepositoryImpl implements InboxConsumerRepository {
+export class InboxConsumerRepositoryImpl extends BaseRepository implements InboxConsumerRepository {
   constructor(
     @Inject(INBOX_CONFIG_TOKEN)
     private readonly config: InboxConfig,
     @InjectEntityManager()
-    private readonly entityManager: EntityManager,
-  ) {}
+    private readonly manager: EntityManager,
+  ) {
+    super();
+  }
+
+  withManager(manager: EntityManager) {
+    return new InboxConsumerRepositoryImpl(this.config, manager) as this;
+  }
 
   async isProcessed(event: DomainEvent, consumerName: string): Promise<boolean> {
-    const consumedMessage = await this.entityManager.findOne<InboxConsumedMessageTypeOrmEntity>(
+    const consumedMessage = await this.manager.findOne<InboxConsumedMessageTypeOrmEntity>(
       this.config.consumedEntity,
       {
         where: {
@@ -30,9 +37,13 @@ export class InboxConsumerRepositoryImpl implements InboxConsumerRepository {
   }
 
   async save(event: DomainEvent, consumerName: string): Promise<void> {
-    await this.entityManager.save(this.config.consumedEntity, {
+    await this.manager.save(this.config.consumedEntity, {
       id: event.id,
       consumer: consumerName,
     });
+  }
+
+  async withTransaction<T>(fn: (manager: EntityManager) => Promise<T>) {
+    return this.manager.transaction(async (manager) => fn(manager));
   }
 }

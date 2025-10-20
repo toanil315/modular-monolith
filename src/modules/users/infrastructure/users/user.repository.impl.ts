@@ -16,11 +16,15 @@ import {
 export class UserRepositoryImpl extends BaseRepository implements UserRepository {
   constructor(
     @InjectEntityManager()
-    manager: EntityManager,
+    private readonly manager: EntityManager,
     @Inject(OUTBOX_PERSISTENCE_HANDLER_TOKEN)
-    outboxPersistenceHandler: OutboxPersistenceHandler,
+    private readonly outboxPersistenceHandler: OutboxPersistenceHandler,
   ) {
-    super(manager, outboxPersistenceHandler);
+    super();
+  }
+
+  withManager(manager: EntityManager) {
+    return new UserRepositoryImpl(manager, this.outboxPersistenceHandler) as this;
   }
 
   async getById(userId: string): Promise<User | null> {

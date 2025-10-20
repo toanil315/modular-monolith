@@ -17,11 +17,15 @@ import {
 export class CustomerRepositoryImpl extends BaseRepository implements CustomerRepository {
   constructor(
     @InjectEntityManager()
-    manager: EntityManager,
+    private readonly manager: EntityManager,
     @Inject(OUTBOX_PERSISTENCE_HANDLER_TOKEN)
-    outboxPersistenceHandler: OutboxPersistenceHandler,
+    private readonly outboxPersistenceHandler: OutboxPersistenceHandler,
   ) {
-    super(manager, outboxPersistenceHandler);
+    super();
+  }
+
+  withManager(manager: EntityManager) {
+    return new CustomerRepositoryImpl(manager, this.outboxPersistenceHandler) as this;
   }
 
   async getById(customerId: string): Promise<Customer | null> {

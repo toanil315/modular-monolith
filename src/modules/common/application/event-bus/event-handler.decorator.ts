@@ -25,19 +25,20 @@ export function EventHandler<TEvent extends DomainEvent>(
         );
       }
 
-      // --- Outbox consumer logic ---
-      const alreadyProcessed = await this.isProcessed(eventInstance);
-      if (alreadyProcessed) {
-        return;
-      }
+      return await this.withTransaction(async (manager) => {
+        const alreadyProcessed = await this.isProcessed(eventInstance);
+        if (alreadyProcessed) {
+          return;
+        }
 
-      // Execute user handler logic
-      const result = await originalMethod.apply(this, args);
+        // Mark event as consumed
+        await this.saveConsumedMessage(eventInstance, manager);
 
-      // Mark event as consumed
-      await this.saveConsumedMessage(eventInstance);
+        // Execute user handler logic
+        const result = await originalMethod.apply(this, args);
 
-      return result;
+        return result;
+      });
     };
 
     // Register with Nest event emitter

@@ -14,11 +14,15 @@ import {
 export class TicketRepositoryImpl extends BaseRepository implements TicketRepository {
   constructor(
     @InjectEntityManager()
-    manager: EntityManager,
+    private readonly manager: EntityManager,
     @Inject(OUTBOX_PERSISTENCE_HANDLER_TOKEN)
-    outboxPersistenceHandler: OutboxPersistenceHandler,
+    private readonly outboxPersistenceHandler: OutboxPersistenceHandler,
   ) {
-    super(manager, outboxPersistenceHandler);
+    super();
+  }
+
+  withManager(manager: EntityManager) {
+    return new TicketRepositoryImpl(manager, this.outboxPersistenceHandler) as this;
   }
 
   async getByIdOrCode(identifier: string): Promise<Ticket | null> {
