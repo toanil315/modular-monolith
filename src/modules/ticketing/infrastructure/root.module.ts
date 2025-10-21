@@ -33,10 +33,17 @@ import { TicketingOutboxConsumedMessageTypeOrmEntity } from './outbox/outbox-con
 import { InboxConsumerRepositoryProvider } from './inbox/inbox-consumed-message.repository';
 import { TicketingInboxConsumedMessageTypeOrmEntity } from './inbox/inbox-consumed-message.entity';
 import { TicketingInboxConfigProvider } from './inbox/inbox.config';
+import { CreateTicketBatchCommandHandler } from '../application/tickets/create-ticket-batch/create-ticket-batch.command-handler';
+import { CreateTicketsDomainEventHandler } from '../application/orders/create-order/create-tickets.domain-event-handler';
+import { IntegrationEventsPublisherProvider } from '../integration/publishers/integration-events.publisher';
 
 const cartsProviders: Provider[] = [CartService, AddToCartCommandHandler];
 const customersProviders: Provider[] = [CustomerRepositoryProvider, CreateCustomerCommandHandler];
-const ordersProviders: Provider[] = [OrderRepositoryProvider, CreateOrderCommandHandler];
+const ordersProviders: Provider[] = [
+  OrderRepositoryProvider,
+  CreateOrderCommandHandler,
+  CreateTicketsDomainEventHandler,
+];
 const paymentsProviders: Provider[] = [
   PaymentRepositoryProvider,
   PaymentService,
@@ -48,11 +55,12 @@ const ticketTypesProviders: Provider[] = [
   CreateTicketTypeCommandHandler,
 ];
 
-const ticketsProviders: Provider[] = [TicketRepositoryProvider];
+const ticketsProviders: Provider[] = [TicketRepositoryProvider, CreateTicketBatchCommandHandler];
 
 const integrationProviders: Provider[] = [
   UserRegisteredIntegrationEventHandler,
   TicketTypeCreatedIntegrationEventHandler,
+  IntegrationEventsPublisherProvider,
 ];
 
 const outboxProviders: Provider[] = [

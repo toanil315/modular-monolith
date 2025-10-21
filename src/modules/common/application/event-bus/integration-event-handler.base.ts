@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { DomainEvent } from '../../domain/domain-event';
 import { InboxConsumerRepository } from '../messagings/inbox-consumer.repository';
 import { EntityManager } from 'typeorm';
+import { IntegrationEvent } from '../messagings/integration-event';
 
 @Injectable()
 export abstract class BaseIntegrationEventHandler {
@@ -9,6 +10,8 @@ export abstract class BaseIntegrationEventHandler {
     protected readonly inboxConsumerRepository: InboxConsumerRepository,
     protected readonly context: string,
   ) {}
+
+  protected abstract handle(integrationEvent: IntegrationEvent): Promise<void>;
 
   protected get handlerName(): string {
     return `${this.context}.${this.constructor.name}`;

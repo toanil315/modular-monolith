@@ -10,6 +10,8 @@ export abstract class BaseEventHandler {
     protected readonly context: string,
   ) {}
 
+  protected abstract handle(domainEvent: DomainEvent): Promise<void>;
+
   protected get handlerName(): string {
     return `${this.context}.${this.constructor.name}`;
   }

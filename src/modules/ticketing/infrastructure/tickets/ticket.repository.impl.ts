@@ -67,6 +67,25 @@ export class TicketRepositoryImpl extends BaseRepository implements TicketReposi
     );
   }
 
+  async saveBatch(tickets: Ticket[]): Promise<void> {
+    await this.manager.transaction(async (manager) => {
+      await this.manager.save(
+        TicketTypeOrmEntity,
+        tickets.map((ticket) => ({
+          id: ticket.id,
+          archived: ticket.archived,
+          code: ticket.code,
+          createdAt: ticket.createdAt,
+          customerId: ticket.customerId,
+          eventId: ticket.eventId,
+          orderId: ticket.orderId,
+          ticketTypeId: ticket.ticketTypeId,
+        })),
+      );
+      await this.outboxPersistenceHandler.saveBatch(tickets, manager);
+    });
+  }
+
   async save(ticket: Ticket): Promise<void> {
     await this.manager.transaction(async (manager) => {
       await this.manager.save(TicketTypeOrmEntity, {

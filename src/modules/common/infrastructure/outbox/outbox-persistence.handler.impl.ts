@@ -25,4 +25,20 @@ export class OutboxPersistenceHandlerImpl implements OutboxPersistenceHandler {
     entityManager.save(this.config.entity, outboxMessages);
     entity.clear();
   }
+
+  async saveBatch(entities: Entity[], entityManager: EntityManager): Promise<void> {
+    const outboxMessages = entities.flatMap((entity) => {
+      return entity.domainEvents.map<Partial<OutboxMessageTypeOrmEntity>>((event) => ({
+        id: event.id,
+        content: JSON.stringify(event),
+        type: event.type,
+        createdAt: new Date(event.occurredOn),
+      }));
+    });
+
+    entityManager.save(this.config.entity, outboxMessages);
+    entities.forEach((entity) => {
+      entity.clear();
+    });
+  }
 }
