@@ -2,7 +2,7 @@ import { DomainEvent } from '../../../common/domain/domain-event';
 
 export namespace UserDomainEvent {
   export class UserRegisteredDomainEvent extends DomainEvent {
-    static readonly type = 'DomainEvent.UserRegistered';
+    static readonly type = 'Users.DomainEvent.UserRegistered';
 
     constructor(public readonly userId: string) {
       super(UserRegisteredDomainEvent.type);
@@ -10,7 +10,7 @@ export namespace UserDomainEvent {
   }
 
   export class UserProfileUpdatedDomainEvent extends DomainEvent {
-    static readonly type = 'DomainEvent.UserProfileUpdated';
+    static readonly type = 'Users.DomainEvent.UserProfileUpdated';
 
     constructor(
       public readonly userId: string,

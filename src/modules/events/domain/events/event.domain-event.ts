@@ -2,7 +2,7 @@ import { DomainEvent } from '../../../common/domain/domain-event';
 
 export namespace EventDomainEvent {
   export class EventCreatedDomainEvent extends DomainEvent {
-    static readonly type = 'DomainEvent.EventCreated';
+    static readonly type = 'Events.DomainEvent.EventCreated';
 
     constructor(public readonly eventId: string) {
       super(EventCreatedDomainEvent.type);
@@ -10,7 +10,7 @@ export namespace EventDomainEvent {
   }
 
   export class EventCanceledDomainEvent extends DomainEvent {
-    static readonly type = 'DomainEvent.EventCanceled';
+    static readonly type = 'Events.DomainEvent.EventCanceled';
 
     constructor(public readonly eventId: string) {
       super(EventCanceledDomainEvent.type);
@@ -18,7 +18,7 @@ export namespace EventDomainEvent {
   }
 
   export class EventRescheduledDomainEvent extends DomainEvent {
-    static readonly type = 'DomainEvent.EventRescheduled';
+    static readonly type = 'Events.DomainEvent.EventRescheduled';
 
     constructor(
       public readonly eventId: string,
@@ -30,7 +30,7 @@ export namespace EventDomainEvent {
   }
 
   export class EventPublishedDomainEvent extends DomainEvent {
-    static readonly type = 'DomainEvent.EventPublished';
+    static readonly type = 'Events.DomainEvent.EventPublished';
 
     constructor(public readonly eventId: string) {
       super(EventPublishedDomainEvent.type);

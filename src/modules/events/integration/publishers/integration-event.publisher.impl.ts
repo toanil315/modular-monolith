@@ -9,6 +9,8 @@ import {
   EVENT_BUS_ADAPTER_TOKEN,
   EventBusAdapter,
 } from 'src/modules/common/application/event-bus/event-bus.adapter';
+import { Event } from '../../domain/events/event';
+import { EventIntegrationEvent } from '../events/events.integration-event';
 
 @Injectable()
 export class EventsIntegrationEventsPublisherImpl implements EventsIntegrationEventsPublisher {
@@ -23,6 +25,22 @@ export class EventsIntegrationEventsPublisherImpl implements EventsIntegrationEv
         ticketType.price,
         ticketType.currency,
         ticketType.quantity,
+      ),
+    ]);
+  }
+
+  async publishEventPublished(event: Event) {
+    await this.eventBus.publish([
+      new EventIntegrationEvent.EventPublishedIntegrationEvent(
+        event.id,
+        event.categoryId,
+        event.title,
+        event.description,
+        event.location,
+        event.status,
+        event.startsAt,
+        event.endsAt,
+        event.ticketTypes,
       ),
     ]);
   }

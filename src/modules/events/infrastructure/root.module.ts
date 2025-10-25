@@ -39,6 +39,7 @@ import { OutboxMessageProcessor } from './outbox/outbox.processor';
 import { BullModule } from '@nestjs/bullmq';
 import { OutboxConsumerRepositoryProvider } from './outbox/outbox-consumed-message.repository';
 import { EventsOutboxConsumedMessageTypeOrmEntity } from './outbox/outbox-consumed-message.entity';
+import { EventPublishedDomainEventHandler } from '../application/events/publish-event/event-published.domain-event-handler';
 
 const categoriesProviders: Provider[] = [
   CategoryRepositoryProvider,
@@ -63,6 +64,7 @@ const eventsProviders: Provider[] = [
   SearchEventsQueryHandler,
 
   EventRescheduledDomainEventHandler,
+  EventPublishedDomainEventHandler,
 ];
 
 const ticketTypesProviders: Provider[] = [

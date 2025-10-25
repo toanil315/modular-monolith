@@ -2,7 +2,7 @@ import { DomainEvent } from 'src/modules/common/domain/domain-event';
 
 export namespace PaymentDomainEvent {
   export class PaymentCreatedDomainEvent extends DomainEvent {
-    static readonly type = 'DomainEvent.PaymentCreated';
+    static readonly type = 'Ticketing.DomainEvent.PaymentCreated';
 
     constructor(public readonly paymentId: string) {
       super(PaymentCreatedDomainEvent.type);
@@ -10,7 +10,7 @@ export namespace PaymentDomainEvent {
   }
 
   export class PaymentPartiallyRefundedDomainEvent extends DomainEvent {
-    static readonly type = 'DomainEvent.PaymentPartiallyRefunded';
+    static readonly type = 'Ticketing.DomainEvent.PaymentPartiallyRefunded';
 
     constructor(
       public readonly paymentId: string,
@@ -22,7 +22,7 @@ export namespace PaymentDomainEvent {
   }
 
   export class PaymentRefundedDomainEvent extends DomainEvent {
-    static readonly type = 'DomainEvent.PaymentRefunded';
+    static readonly type = 'Ticketing.DomainEvent.PaymentRefunded';
 
     constructor(
       public readonly paymentId: string,
