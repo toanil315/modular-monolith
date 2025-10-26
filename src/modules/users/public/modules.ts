@@ -1,1 +1,1 @@
-export * from '../infrastructure/root.module';
+export * from '../root.module';

@@ -43,6 +43,8 @@
     "@nestjs/swagger": "^11.2.0",
     "@nestjs/terminus": "^11.0.0",
     "@nestjs/typeorm": "^11.0.0",
+    "@temporalio/client": "^1.13.1",
+    "@temporalio/worker": "^1.13.1",
     "axios": "^1.12.2",
     "bullmq": "^5.61.0",
     "cache-manager": "^7.2.0",
