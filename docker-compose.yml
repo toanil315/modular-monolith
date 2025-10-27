@@ -42,30 +42,19 @@ services:
       - 18080:8080
       - 19000:9000
 
-  temporal:
-    image: temporalio/auto-setup:latest
-    depends_on:
-      - postgres
-    environment:
-      DB: postgres12
-      POSTGRES_SEEDS: postgres
-      POSTGRES_USER: postgres
-      POSTGRES_PWD: postgres
-      DB_PORT: 5432
+  workflow:
+    image: docker.restate.dev/restatedev/restate:latest
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
     ports:
-      - '7233:7233'
-      - '8088:8088'
-    restart: unless-stopped
-
-  temporal-ui:
-    image: temporalio/ui:latest
-    depends_on:
-      - temporal
-    ports:
-      - '8080:8080'
+      - '8080:8080' # Ingress
+      - '9070:9070' # Admin
     environment:
-      - TEMPORAL_ADDRESS=temporal:7233
-      - TEMPORAL_UI_PORT=8080
+      - RESTATE_NODE_NAME=restate-1
+      - RESTATE_FORCE_NODE_ID=1
+      - RESTATE_AUTO_PROVISION=true
+    volumes:
+      - ./.restate-data:/restate-data
 
 volumes:
   postgres_data:

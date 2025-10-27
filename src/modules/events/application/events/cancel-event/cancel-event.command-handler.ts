@@ -19,6 +19,8 @@ export class CancelCommandHandler implements ICommandHandler<CancelEventCommand>
 
     const result = event.cancel();
 
+    console.log('====result: ', result);
+
     if (!result.isSuccess) {
       return result;
     }

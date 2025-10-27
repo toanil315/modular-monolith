@@ -16,6 +16,7 @@ import { SearchEventsDto, SearchEventsResponseDto } from './dtos/search-event.dt
 import { SearchEventsQuery } from '../../application/events/search-event/search-event.query';
 import { ApiZodResponse } from 'src/modules/common/presentation/abstractions/api-zod-response.decorator';
 import { Permissions } from 'src/modules/common/application/authorization/permission.decorator';
+import { TriggerCancelEventWorkflowCommand } from '../../application/events/cancel-event/trigger-cancel-workflow.command';
 
 @ApiTags(EVENTS_END_POINT_TAGS.EVENTS)
 @Controller(EVENTS_END_POINT_TAGS.EVENTS)
@@ -115,9 +116,9 @@ export class EventsController {
     description: 'Cancel Event Successful',
     type: CancelEventResponseDto,
   })
-  cancelEvent(@Body() dto: CancelEventDto) {
+  async cancelEvent(@Body() dto: CancelEventDto) {
     return this.commandBus.execute(
-      new CancelEventCommand({
+      new TriggerCancelEventWorkflowCommand({
         id: dto.id,
       }),
     );

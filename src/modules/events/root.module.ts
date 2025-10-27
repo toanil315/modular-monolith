@@ -40,6 +40,8 @@ import { BullModule } from '@nestjs/bullmq';
 import { OutboxConsumerRepositoryProvider } from './infrastructure/outbox/outbox-consumed-message.repository';
 import { EventsOutboxConsumedMessageTypeOrmEntity } from './infrastructure/outbox/outbox-consumed-message.entity';
 import { EventPublishedDomainEventHandler } from './application/events/publish-event/event-published.domain-event-handler';
+import { TriggerCancelEventWorkflowCommandHandler } from './application/events/cancel-event/trigger-cancel-workflow.command-handler';
+import { RootWorkflowModule } from '../workflows/root.module';
 
 const categoriesProviders: Provider[] = [
   CategoryRepositoryProvider,
@@ -59,6 +61,7 @@ const eventsProviders: Provider[] = [
   PublishEventCommandHandler,
   RescheduleEventCommandHandler,
   CancelCommandHandler,
+  TriggerCancelEventWorkflowCommandHandler,
 
   GetEventQueryHandler,
   SearchEventsQueryHandler,

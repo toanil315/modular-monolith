@@ -28,10 +28,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { BullModule } from '@nestjs/bullmq';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { EventBusAdapterProvider } from './infrastructure/event-bus/event-bus.adapter.impl';
-import {
-  TemporalClientProvider,
-  TemporalConnectionProvider,
-} from './infrastructure/workflow/temporal.client';
+import { RestateClientProvider } from './infrastructure/workflow/restate.client';
 
 const exceptionFilterProviders: Provider[] = [
   {
@@ -68,8 +65,6 @@ const healthCheckProviders: Provider[] = [
   CacheHealthIndicatorProvider,
   AuthHealthIndicatorProvider,
 ];
-
-const temporalProviders: Provider[] = [TemporalClientProvider, TemporalConnectionProvider];
 
 @Global()
 @Module({
@@ -117,13 +112,14 @@ const temporalProviders: Provider[] = [TemporalClientProvider, TemporalConnectio
     ...exceptionFilterProviders,
     ...authorizationProviders,
     ...healthCheckProviders,
-    ...temporalProviders,
 
     CachingServiceProvider,
 
     EventBusAdapterProvider,
+
+    RestateClientProvider,
   ],
-  exports: [CachingServiceProvider, EventBusAdapterProvider, ...temporalProviders],
+  exports: [CachingServiceProvider, EventBusAdapterProvider, RestateClientProvider],
   controllers: [HealthController],
 })
 export class CommonModule {}
