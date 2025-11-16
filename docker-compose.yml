@@ -56,6 +56,39 @@ services:
     volumes:
       - ./.restate-data:/restate-data
 
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: jaeger
+    ports:
+      # Jaeger UI (Web Interface)
+      - '16686:16686'
+      # Jaeger OTLP gRPC endpoint
+      - '14250:14250'
+      # Jaeger OTLP HTTP endpoint
+      - '14268:14268'
+    environment:
+      # Disable health checks to avoid noise
+      COLLECTOR_HEALTH_CHECK_HTTP_PORT: 0
+      # Configure Jaeger to accept OTLP
+      COLLECTOR_OTLP_ENABLED: true
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:latest
+    container_name: otel-collector
+    command: ['--config=/etc/otel-collector-config.yaml']
+    volumes:
+      # Mount the configuration file
+      - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml
+    depends_on:
+      - jaeger
+    ports:
+      # OTLP gRPC port (Application trace data ingress)
+      - '4317:4317'
+      # OTLP HTTP port (Application log data ingress)
+      - '4318:4318'
+      # Collector pprof/ZPages for monitoring the collector itself
+      - '55679:55679'
+
 volumes:
   postgres_data:
   redis_data:

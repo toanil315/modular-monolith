@@ -1,0 +1,45 @@
+receivers:
+  # OTLP Receiver for Traces, Metrics, and Logs from the application
+  otlp:
+    protocols:
+      grpc:
+        endpoint: '0.0.0.0:4317' # Standard gRPC OTLP port (used by tracing.ts)
+      http:
+        endpoint: '0.0.0.0:4318' # Standard HTTP OTLP port (used by pino-opentelemetry-transport)
+
+exporters:
+  otlp:
+    endpoint: jaeger:4317
+    tls:
+      insecure: true
+    # Use standard batching/queueing settings for robustness
+    sending_queue:
+      enabled: true
+      num_consumers: 4
+      queue_size: 512
+
+processors:
+  # Batching processor for efficiency
+  batch:
+    send_batch_size: 1024
+    timeout: 5s
+
+  # Memory limiter to prevent collector overload
+  memory_limiter:
+    limit_mib: 2048
+    spike_limit_mib: 512
+    check_interval: 5s
+
+service:
+  pipelines:
+    # TRACES pipeline: OTLP Receiver -> Batch Processor -> Jaeger Exporter
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, batch]
+      exporters: [otlp]
+
+    # LOGS pipeline: OTLP Receiver (from Pino) -> Batch Processor -> OTLP Exporter (to Jaeger)
+    logs:
+      receivers: [otlp]
+      processors: [memory_limiter, batch]
+      exporters: [otlp]

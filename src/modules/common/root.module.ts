@@ -29,6 +29,7 @@ import { BullModule } from '@nestjs/bullmq';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { EventBusAdapterProvider } from './infrastructure/event-bus/event-bus.adapter.impl';
 import { RestateClientProvider } from './infrastructure/workflow/restate.client';
+import { LoggerModule } from 'nestjs-pino';
 
 const exceptionFilterProviders: Provider[] = [
   {
@@ -91,7 +92,7 @@ const healthCheckProviders: Provider[] = [
       policyEnforcement: PolicyEnforcementMode.PERMISSIVE,
       tokenValidation: TokenValidation.ONLINE,
       logLevels: ['log'],
-      useNestLogger: false,
+      useNestLogger: true,
     }),
     ScheduleModule.forRoot(),
     BullModule.forRoot({
@@ -103,6 +104,7 @@ const healthCheckProviders: Provider[] = [
       },
     }),
     EventEmitterModule.forRoot(),
+    LoggerModule.forRoot(),
   ],
   providers: [
     {
