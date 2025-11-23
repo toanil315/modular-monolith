@@ -26,17 +26,15 @@ export class OutboxConsumerRepositoryImpl
   }
 
   async isProcessed(event: DomainEvent, consumerName: string): Promise<boolean> {
-    const consumedMessage = await this.manager.findOne<OutboxConsumedMessageTypeOrmEntity>(
+    const consumedMessage = await this.manager.findBy<OutboxConsumedMessageTypeOrmEntity>(
       this.config.consumedEntity,
       {
-        where: {
-          id: event.id,
-          consumer: consumerName,
-        },
+        id: event.id,
+        consumer: consumerName,
       },
     );
 
-    return Boolean(consumedMessage);
+    return Boolean(consumedMessage.length);
   }
 
   async save(event: DomainEvent, consumerName: string): Promise<void> {

@@ -48,8 +48,8 @@ export class UserRepositoryImpl extends BaseRepository implements UserRepository
   }
 
   async save(user: User): Promise<void> {
-    await this.manager.transaction(async (manager) => {
-      await manager.save(UserTypeOrmEntity, {
+    await this.manager.transaction(async (transactionManager) => {
+      await transactionManager.save(UserTypeOrmEntity, {
         id: user.id,
         firstName: user.firstName,
         lastName: user.lastName,
@@ -59,7 +59,7 @@ export class UserRepositoryImpl extends BaseRepository implements UserRepository
           id: role.name,
         })),
       });
-      await this.outboxPersistenceHandler.save(user, manager);
+      await this.outboxPersistenceHandler.save(user, transactionManager);
     });
   }
 }

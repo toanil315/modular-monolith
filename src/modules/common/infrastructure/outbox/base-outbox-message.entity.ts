@@ -18,4 +18,7 @@ export abstract class OutboxMessageTypeOrmEntity {
 
   @UpdateDateColumn({ type: 'timestamp with time zone' })
   updatedAt: Date;
+
+  @Column({ type: 'jsonb', nullable: true })
+  otelContext: string;
 }

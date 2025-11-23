@@ -15,11 +15,13 @@ import {
   EVENT_BUS_ADAPTER_TOKEN,
   EventBusAdapter,
 } from 'src/modules/common/application/event-bus/event-bus.adapter';
+import { context, propagation, trace } from '@opentelemetry/api';
 
 @Injectable()
 @Processor(USERS_OUTBOX_MESSAGE_PROCESSOR_JOB_QUEUE)
 export class OutboxMessageProcessor extends WorkerHost {
   private readonly logger = new Logger(OutboxMessageProcessor.name);
+  private readonly tracer = trace.getTracer('users-module-outbox-job-processor');
 
   constructor(
     @InjectDataSource()
@@ -33,13 +35,11 @@ export class OutboxMessageProcessor extends WorkerHost {
 
   async process() {
     this.logger.log(`${USERS_OUTBOX_MESSAGE_PROCESSOR_JOB}: Starting outbox message processing`);
-
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
 
     try {
-      // Lock unprocessed rows (FOR UPDATE SKIP LOCKED)
       const outboxMessages = await queryRunner.manager
         .createQueryBuilder(UsersOutboxMessageTypeOrmEntity, 'msg')
         .where('msg.processedAt IS NULL')
@@ -52,45 +52,74 @@ export class OutboxMessageProcessor extends WorkerHost {
         `${USERS_OUTBOX_MESSAGE_PROCESSOR_JOB}: Fetched ${outboxMessages.length} messages`,
       );
 
-      const successfullyProcessedIds: string[] = [];
+      if (!outboxMessages.length) return;
 
-      for (const message of outboxMessages) {
-        try {
-          const rawContent = message.content;
-          const event = typeof rawContent === 'string' ? JSON.parse(rawContent) : rawContent;
+      return await this.tracer.startActiveSpan(
+        'users.outbox-processor.job',
+        {
+          attributes: {
+            'outbox.batch.size': outboxMessages.length,
+          },
+        },
+        async (batchSpan) => {
+          const successfullyProcessedIds: string[] = [];
+          try {
+            for (const message of outboxMessages) {
+              await this.processMessage(message);
+              successfullyProcessedIds.push(message.id);
+            }
 
-          await this.eventBus.publish([event]);
+            if (successfullyProcessedIds.length > 0) {
+              await queryRunner.manager
+                .createQueryBuilder()
+                .update(UsersOutboxMessageTypeOrmEntity)
+                .set({ processedAt: Date.now() })
+                .whereInIds(successfullyProcessedIds)
+                .execute();
+            }
 
-          successfullyProcessedIds.push(message.id);
-        } catch (err) {
-          this.logger.error(
-            `${USERS_OUTBOX_MESSAGE_PROCESSOR_JOB} - Failed to process message ${message.id}`,
-            err instanceof Error ? err.stack : String(err),
-          );
-        }
-      }
-
-      // Batch update outside the loop
-      if (successfullyProcessedIds.length > 0) {
-        await queryRunner.manager
-          .createQueryBuilder()
-          .update(UsersOutboxMessageTypeOrmEntity)
-          .set({ processedAt: Date.now() })
-          .whereInIds(successfullyProcessedIds)
-          .execute();
-
-        this.logger.log(
-          `${USERS_OUTBOX_MESSAGE_PROCESSOR_JOB} - Successfully marked ${successfullyProcessedIds.length} messages as processed.`,
-        );
-      }
-
-      await queryRunner.commitTransaction();
-      this.logger.log(`${USERS_OUTBOX_MESSAGE_PROCESSOR_JOB}: Completed outbox processing`);
+            await queryRunner.commitTransaction();
+            this.logger.log(`${USERS_OUTBOX_MESSAGE_PROCESSOR_JOB}: Completed outbox processing`);
+          } catch (err) {
+            throw err;
+          } finally {
+            batchSpan.end();
+          }
+        },
+      );
     } catch (err) {
       this.logger.error(`${USERS_OUTBOX_MESSAGE_PROCESSOR_JOB}: Transaction failed`, err);
       await queryRunner.rollbackTransaction();
     } finally {
       await queryRunner.release();
     }
+  }
+
+  private async processMessage(message: UsersOutboxMessageTypeOrmEntity) {
+    const rawContent = message.content;
+    const event = typeof rawContent === 'string' ? JSON.parse(rawContent) : rawContent;
+
+    const otel =
+      typeof message.otelContext === 'string'
+        ? JSON.parse(message.otelContext)
+        : message.otelContext;
+
+    let extractedCtx = propagation.extract(context.active(), {
+      traceparent: otel?.traceparent,
+    });
+
+    const span = this.tracer.startSpan('users.outbox.process_message', {
+      links: [{ context: trace.getSpan(extractedCtx)?.spanContext()! }],
+      attributes: {
+        'outbox.message_id': message.id,
+        'outbox.message_type': message.type,
+        'messaging.system': 'outbox',
+      },
+    });
+
+    context.with(trace.setSpan(context.active(), span), async () => {
+      await this.eventBus.publish([event]);
+      span.end();
+    });
   }
 }

@@ -35,6 +35,7 @@ const sdk = new NodeSDK({
       '@opentelemetry/instrumentation-express': { enabled: false },
       '@opentelemetry/instrumentation-pg': {
         requireParentSpan: true,
+        enhancedDatabaseReporting: true,
       },
     }),
   ],
