@@ -5,9 +5,24 @@ import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { cleanupOpenApiDoc } from 'nestjs-zod';
 import { Logger } from 'nestjs-pino';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  const configService = app.get(ConfigService);
+
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.RMQ,
+    options: {
+      urls: [configService.getOrThrow<string>('RABBITMQ_URL')],
+      queue: 'letter_box',
+      queueOptions: {
+        durable: false,
+      },
+    },
+  });
 
   app.useLogger(app.get(Logger));
 
@@ -21,6 +36,7 @@ async function bootstrap() {
   );
   SwaggerModule.setup('api', app, cleanupOpenApiDoc(documentFactory));
 
+  await app.startAllMicroservices();
   await app.listen(3000);
 }
 bootstrap();

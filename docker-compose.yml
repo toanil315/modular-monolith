@@ -89,6 +89,22 @@ services:
       # Collector pprof/ZPages for monitoring the collector itself
       - '55679:55679'
 
+  rabbitmq:
+    image: rabbitmq:management-alpine
+    container_name: rabbitmq
+    restart: always # Keep the service running
+    ports:
+      - '5672:5672' # AMQP protocol port
+      - '15672:15672' # HTTP Management UI
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq/
+      - rabbitmq_log:/var/log/rabbitmq/
+
 volumes:
   postgres_data:
   redis_data:
+  rabbitmq_data:
+  rabbitmq_log:

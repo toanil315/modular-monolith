@@ -46,6 +46,7 @@ export class OutboxMessageProcessor extends WorkerHost {
         .orderBy('msg.createdAt', 'ASC')
         .limit(this.outboxConfigs.batchSize)
         .setLock('pessimistic_write')
+        .setOnLocked('skip_locked')
         .getMany();
 
       this.logger.debug(
