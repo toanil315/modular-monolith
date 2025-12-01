@@ -34,7 +34,6 @@ export class OutboxMessageProcessor extends WorkerHost {
   }
 
   async process() {
-    this.logger.log(`${USERS_OUTBOX_MESSAGE_PROCESSOR_JOB}: Starting outbox message processing`);
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -80,7 +79,6 @@ export class OutboxMessageProcessor extends WorkerHost {
             }
 
             await queryRunner.commitTransaction();
-            this.logger.log(`${USERS_OUTBOX_MESSAGE_PROCESSOR_JOB}: Completed outbox processing`);
           } catch (err) {
             throw err;
           } finally {

@@ -5,26 +5,16 @@ import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { cleanupOpenApiDoc } from 'nestjs-zod';
 import { Logger } from 'nestjs-pino';
-import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { MicroserviceOptions } from '@nestjs/microservices';
 import { ConfigService } from '@nestjs/config';
+import { getLetterBoxConsumerConfig } from './modules/test-rabbit/consumer.config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.useLogger(app.get(Logger));
 
   const configService = app.get(ConfigService);
-
-  app.connectMicroservice<MicroserviceOptions>({
-    transport: Transport.RMQ,
-    options: {
-      urls: [configService.getOrThrow<string>('RABBITMQ_URL')],
-      queue: 'letter_box',
-      queueOptions: {
-        durable: false,
-      },
-    },
-  });
-
-  app.useLogger(app.get(Logger));
+  app.connectMicroservice<MicroserviceOptions>(getLetterBoxConsumerConfig(configService));
 
   const documentFactory = SwaggerModule.createDocument(
     app,

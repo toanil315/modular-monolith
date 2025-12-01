@@ -37,6 +37,11 @@ export class TestRabbitMQModule implements OnModuleInit {
 
   async onModuleInit() {
     await this.client.connect().catch((error) => console.log(error));
-    this.client.emit('noti', new RmqRecordBuilder('rabbit mq data').build());
+    let i = 0;
+
+    while (true) {
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      this.client.emit('noti', new RmqRecordBuilder(`rabbit mq data ${i++}`).build());
+    }
   }
 }

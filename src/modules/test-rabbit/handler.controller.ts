@@ -1,10 +1,17 @@
 import { Controller } from '@nestjs/common';
-import { EventPattern, Payload } from '@nestjs/microservices';
+import { Ctx, EventPattern, Payload, RmqContext } from '@nestjs/microservices';
 
 @Controller()
 export class RabbitMQController {
   @EventPattern('noti')
-  handleNoti(@Payload() data: string) {
-    console.log('===DATA: ', data);
+  async handleNoti(@Payload() data: string, @Ctx() context: RmqContext) {
+    const channel = context.getChannelRef();
+    const originalMsg = context.getMessage();
+
+    console.log('PROCESS MESSAGE: ', data);
+
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+
+    channel.ack(originalMsg);
   }
 }

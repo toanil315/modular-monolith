@@ -32,8 +32,6 @@ export class OutboxMessageProcessor extends WorkerHost {
   }
 
   async process() {
-    this.logger.log(`${EVENTS_OUTBOX_MESSAGE_PROCESSOR_JOB}: Starting outbox message processing`);
-
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -46,6 +44,7 @@ export class OutboxMessageProcessor extends WorkerHost {
         .orderBy('msg.createdAt', 'ASC')
         .limit(this.outboxConfigs.batchSize)
         .setLock('pessimistic_write')
+        .setOnLocked('skip_locked')
         .getMany();
 
       this.logger.debug(
@@ -78,14 +77,9 @@ export class OutboxMessageProcessor extends WorkerHost {
           .set({ processedAt: Date.now() })
           .whereInIds(successfullyProcessedIds)
           .execute();
-
-        this.logger.log(
-          `${EVENTS_OUTBOX_MESSAGE_PROCESSOR_JOB} - Successfully marked ${successfullyProcessedIds.length} messages as processed.`,
-        );
       }
 
       await queryRunner.commitTransaction();
-      this.logger.log(`${EVENTS_OUTBOX_MESSAGE_PROCESSOR_JOB}: Completed outbox processing`);
     } catch (err) {
       this.logger.error(`${EVENTS_OUTBOX_MESSAGE_PROCESSOR_JOB}: Transaction failed`, err);
       await queryRunner.rollbackTransaction();
