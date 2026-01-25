@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { EVENTS_END_POINT_TAGS } from '../tags';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
@@ -14,6 +14,8 @@ import {
 } from './dtos/update-ticket-type-price.dto';
 import { UpdateTicketTypePriceCommand } from '../../application/ticket-types/update-ticket-type-price/update-ticket-type-price.command';
 import { ApiZodResponse } from 'src/modules/common/presentation/abstractions/api-zod-response.decorator';
+import { ResourceAuthorizationGuard } from 'src/modules/common/infrastructure/authorization/resource-authorization.guard';
+import { CheckPermission } from 'src/modules/common/application/authorization/check-permission.decorator';
 
 @ApiTags(EVENTS_END_POINT_TAGS.TICKET_TYPES)
 @Controller(EVENTS_END_POINT_TAGS.TICKET_TYPES)
@@ -24,6 +26,12 @@ export class TicketTypesController {
   ) {}
 
   @Post()
+  @UseGuards(ResourceAuthorizationGuard)
+  @CheckPermission({
+    resourceType: 'event',
+    resourceIdParam: 'eventId',
+    permission: 'create_ticket_type',
+  })
   @ApiOperation({
     summary: 'Create Ticket Type',
     description: 'New ticket type creation entry',
@@ -80,6 +88,12 @@ export class TicketTypesController {
   }
 
   @Put('update-price')
+  @UseGuards(ResourceAuthorizationGuard)
+  @CheckPermission({
+    resourceType: 'ticket_type',
+    resourceIdParam: 'id',
+    permission: 'edit',
+  })
   @ApiOperation({
     summary: 'Update Ticket Type Price',
     description: 'Update price of ticket type',

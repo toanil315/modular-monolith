@@ -1,12 +1,20 @@
 import "./user.schema.zed"
 
 definition event {
-    // Relationships
-    relation owner: user
-    relation viewer: user | user:*
-    
-    // Permissions
-    permission view = owner + viewer
-    permission edit = owner
-    permission delete = owner
+	// Relationships
+	relation owner: user
+	relation viewer: user | user:*
+
+	// Permissions
+	permission view = owner + viewer
+	permission edit = owner
+	permission delete = owner
+    permission create_ticket_type = owner
+}
+
+definition ticket_type {
+    relation parent: event
+
+    permission view = parent->viewer + parent->owner
+    permission edit = parent->owner
 }

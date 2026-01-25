@@ -8,6 +8,7 @@ import { EventRepository } from 'src/modules/events/domain/events/event.reposito
 import { EventErrors } from 'src/modules/events/domain/events/event.error';
 import { TicketType } from 'src/modules/events/domain/ticket-types/ticket-type';
 import { Result } from 'src/modules/common/domain/result';
+import { PolicyService } from 'src/modules/authz/policy.service';
 
 @CommandHandler(CreateTicketTypeCommand)
 export class CreateTicketTypeCommandHandler implements ICommandHandler<CreateTicketTypeCommand> {
@@ -17,6 +18,8 @@ export class CreateTicketTypeCommandHandler implements ICommandHandler<CreateTic
 
     @Inject(EVENT_REPOSITORY_TOKEN)
     private eventRepository: EventRepository,
+
+    private readonly policyService: PolicyService,
   ) {}
 
   async execute({ props }: CreateTicketTypeCommand) {
@@ -35,6 +38,15 @@ export class CreateTicketTypeCommandHandler implements ICommandHandler<CreateTic
     );
 
     await this.ticketTypeRepository.save(result.value);
+
+    await this.policyService.writeRelationship({
+      resourceType: 'ticket_type',
+      resourceId: result.value.id,
+      relation: 'parent',
+      subjectType: 'event',
+      subjectId: event.id,
+    });
+
     return result;
   }
 }
