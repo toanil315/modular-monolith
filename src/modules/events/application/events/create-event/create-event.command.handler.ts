@@ -11,6 +11,7 @@ import {
 import { EventErrors } from 'src/modules/events/domain/events/event.error';
 import { Result } from 'src/modules/common/domain/result';
 import { CategoryErrors } from 'src/modules/events/domain/categories/category.error';
+import { PolicyService } from 'src/modules/authz/policy.service';
 
 @CommandHandler(CreateEventCommand)
 export class CreateEventCommandHandler implements ICommandHandler<CreateEventCommand> {
@@ -18,6 +19,7 @@ export class CreateEventCommandHandler implements ICommandHandler<CreateEventCom
     @Inject(EVENT_REPOSITORY_TOKEN) private eventRepository: EventRepository,
     @Inject(CATEGORY_REPOSITORY_TOKEN)
     private categoryToken: CategoryRepository,
+    private readonly policyService: PolicyService,
   ) {}
 
   async execute({ props }: CreateEventCommand) {
@@ -45,6 +47,24 @@ export class CreateEventCommandHandler implements ICommandHandler<CreateEventCom
     }
 
     await this.eventRepository.save(result.value);
+
+    // Write ownership relationship to SpiceDB
+    await this.policyService.writeRelationship({
+      resourceType: 'event',
+      resourceId: result.value.id,
+      relation: 'owner',
+      subjectType: 'user',
+      subjectId: props.userId,
+    });
+
+    // Write public view relationship to SpiceDB
+    await this.policyService.writeRelationship({
+      resourceType: 'event',
+      resourceId: result.value.id,
+      relation: 'viewer',
+      subjectType: 'user',
+      subjectId: '*',
+    });
 
     return result;
   }

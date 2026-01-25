@@ -103,6 +103,40 @@ services:
       - rabbitmq_data:/var/lib/rabbitmq/
       - rabbitmq_log:/var/log/rabbitmq/
 
+  migrate:
+    image: authzed/spicedb
+    command: 'migrate head'
+    restart: 'on-failure'
+    environment:
+      - SPICEDB_DATASTORE_ENGINE=postgres
+      - SPICEDB_DATASTORE_CONN_URI=postgres://postgres:postgres@postgres:5432/postgres?sslmode=disable
+    depends_on:
+      - 'postgres'
+
+  spicedb:
+    image: authzed/spicedb
+    command: 'serve'
+    restart: 'always'
+    ports:
+      - '28080:8080'
+      - '9090:9090'
+      - '50051:50051'
+      - '8443:8443'
+    environment:
+      - SPICEDB_GRPC_PRESHARED_KEY=SPICEDB_GRPC_PRESHARED_KEY
+      - SPICEDB_HTTP_ENABLED=true
+      - SPICEDB_DATASTORE_ENGINE=postgres
+      - SPICEDB_DATASTORE_CONN_URI=postgres://postgres:postgres@postgres:5432/postgres?sslmode=disable
+    depends_on:
+      - 'migrate'
+
+  spicedb-playground:
+    image: ghcr.io/authzed/spicedb-playground:latest
+    container_name: spicedb-playground
+    restart: always
+    ports:
+      - '13000:3000'
+
 volumes:
   postgres_data:
   redis_data:

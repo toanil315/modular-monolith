@@ -5,6 +5,7 @@ import { Event } from 'src/modules/events/domain/events/event';
 export class CreateEventCommand extends Command<Result<Event>> {
   constructor(
     public readonly props: {
+      userId: string;
       categoryId: string;
       title: string;
       description: string;

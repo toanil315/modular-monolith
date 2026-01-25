@@ -1,0 +1,12 @@
+import "./user.schema.zed"
+
+definition event {
+    // Relationships
+    relation owner: user
+    relation viewer: user | user:*
+    
+    // Permissions
+    permission view = owner + viewer
+    permission edit = owner
+    permission delete = owner
+}

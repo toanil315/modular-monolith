@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Param, Put, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Param, Put, Query, Req, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
 import { EVENTS_END_POINT_TAGS } from '../tags';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
@@ -15,8 +15,9 @@ import { RescheduleEventCommand } from '../../application/events/reschedule-even
 import { SearchEventsDto, SearchEventsResponseDto } from './dtos/search-event.dto';
 import { SearchEventsQuery } from '../../application/events/search-event/search-event.query';
 import { ApiZodResponse } from 'src/modules/common/presentation/abstractions/api-zod-response.decorator';
-import { Permissions } from 'src/modules/common/application/authorization/permission.decorator';
 import { TriggerCancelEventWorkflowCommand } from '../../application/events/cancel-event/trigger-cancel-workflow.command';
+import { ResourceAuthorizationGuard } from 'src/modules/common/infrastructure/authorization/resource-authorization.guard';
+import { CheckPermission } from 'src/modules/common/application/authorization/check-permission.decorator';
 
 @ApiTags(EVENTS_END_POINT_TAGS.EVENTS)
 @Controller(EVENTS_END_POINT_TAGS.EVENTS)
@@ -36,9 +37,11 @@ export class EventsController {
     description: 'Create Event Successful',
     type: CreateEventResponseDto,
   })
-  async createEvent(@Body() dto: CreateEventDto) {
+  async createEvent(@Body() dto: CreateEventDto, @Req() req: any) {
+    const userId = req.custom_claim?.userId;
     return this.commandBus.execute(
       new CreateEventCommand({
+        userId: userId,
         categoryId: dto.categoryId,
         title: dto.title,
         description: dto.description,
@@ -73,7 +76,6 @@ export class EventsController {
   }
 
   @Get(':id')
-  @Permissions(['events:search'])
   @ApiOperation({
     summary: 'Get Event By ID',
     description: 'Get specific event by ID',
@@ -84,11 +86,12 @@ export class EventsController {
   })
   async getEvent(@Param() { id }: GetEventByIdDto) {
     const event = await this.queryBus.execute(new GetEventQuery({ eventId: id }));
-
     return event;
   }
 
   @Put('publish')
+  @UseGuards(ResourceAuthorizationGuard)
+  @CheckPermission({ resourceType: 'event', resourceIdParam: 'id', permission: 'edit' })
   @ApiOperation({
     summary: 'Publish An Event',
     description: 'Publish specific event',
@@ -107,6 +110,8 @@ export class EventsController {
   }
 
   @Put('cancel')
+  @UseGuards(ResourceAuthorizationGuard)
+  @CheckPermission({ resourceType: 'event', resourceIdParam: 'id', permission: 'delete' })
   @ApiOperation({
     summary: 'Cancel An Event',
     description: 'Cancel specific event',
@@ -125,6 +130,8 @@ export class EventsController {
   }
 
   @Put('reschedule')
+  @UseGuards(ResourceAuthorizationGuard)
+  @CheckPermission({ resourceType: 'event', resourceIdParam: 'id', permission: 'edit' })
   @ApiOperation({
     summary: 'Reschedule An Event',
     description: 'Reschedule specific event',
