@@ -1,0 +1,34 @@
+meta {
+  name: 01 - Add To Cart
+  type: http
+  seq: 1
+}
+
+vars {
+  customerId: 55555555-5555-5555-5555-555555555555
+  ticketTypeId: 44444444-4444-4444-4444-444444444444
+}
+
+put {
+  url: {{baseURL}}/carts/add
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: Bearer {{accessToken}}
+}
+
+body:json {
+  {
+    "customerId": "{{customerId}}",
+    "ticketTypeId": "{{ticketTypeId}}",
+    "quantity": 1
+  }
+}
+
+tests {
+  test("status is 2xx", function() {
+    expect(res.status).to.be.within(200, 299);
+    expect(res.body).to.be.an("object");
+  });
+}

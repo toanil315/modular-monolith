@@ -1,0 +1,24 @@
+meta {
+  name: 03 - Get Category
+  type: http
+  seq: 3
+}
+
+vars {
+  categoryId: 22222222-2222-2222-2222-222222222222
+}
+
+get {
+  url: {{baseURL}}/categories/{{categoryId}}
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+}
+
+tests {
+  test("status is 2xx", function() {
+    expect(res.status).to.be.within(200, 299);
+    expect(res.body).to.be.an("object");
+  });
+}

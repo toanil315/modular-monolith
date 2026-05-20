@@ -1,0 +1,32 @@
+meta {
+  name: 01 - Refund Payment
+  type: http
+  seq: 1
+}
+
+vars {
+  paymentId: 66666666-6666-6666-6666-666666666666
+}
+
+put {
+  url: {{baseURL}}/payments/refund
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: Bearer {{accessToken}}
+}
+
+body:json {
+  {
+    "paymentId": "{{paymentId}}",
+    "amount": 10
+  }
+}
+
+tests {
+  test("status is 2xx", function() {
+    expect(res.status).to.be.within(200, 299);
+    expect(res.body).to.be.an("object");
+  });
+}

@@ -1,0 +1,31 @@
+meta {
+  name: 01 - Create Order
+  type: http
+  seq: 1
+}
+
+vars {
+  customerId: 55555555-5555-5555-5555-555555555555
+}
+
+post {
+  url: {{baseURL}}/orders/create
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: Bearer {{accessToken}}
+}
+
+body:json {
+  {
+    "customerId": "{{customerId}}"
+  }
+}
+
+tests {
+  test("status is 2xx", function() {
+    expect(res.status).to.be.within(200, 299);
+    expect(res.body).to.be.an("object");
+  });
+}

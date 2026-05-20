@@ -1,0 +1,36 @@
+meta {
+  name: 01 - Create Event
+  type: http
+  seq: 1
+}
+
+vars {
+  categoryId: 22222222-2222-2222-2222-222222222222
+}
+
+post {
+  url: {{baseURL}}/events
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: Bearer {{accessToken}}
+}
+
+body:json {
+  {
+    "categoryId": "{{categoryId}}",
+    "title": "Evently Launch",
+    "description": "Launch event for Evently",
+    "location": "Main Hall",
+    "startsAt": 1750000000000,
+    "endsAt": 1750003600000
+  }
+}
+
+tests {
+  test("status is 2xx", function() {
+    expect(res.status).to.be.within(200, 299);
+    expect(res.body).to.be.an("object");
+  });
+}

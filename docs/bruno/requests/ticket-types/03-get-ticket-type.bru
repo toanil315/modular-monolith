@@ -1,0 +1,24 @@
+meta {
+  name: 03 - Get Ticket Type
+  type: http
+  seq: 3
+}
+
+vars {
+  ticketTypeId: 44444444-4444-4444-4444-444444444444
+}
+
+get {
+  url: {{baseURL}}/ticket-types/{{ticketTypeId}}
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+}
+
+tests {
+  test("status is 2xx", function() {
+    expect(res.status).to.be.within(200, 299);
+    expect(res.body).to.be.an("object");
+  });
+}

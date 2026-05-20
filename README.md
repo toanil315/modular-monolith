@@ -58,6 +58,19 @@ Swagger UI: http://localhost:3000/api
 - `npm run lint`
 - `npm run test` / `npm run test:e2e`
 
+## API Requests (Bruno)
+The API request collection lives in [docs/bruno](docs/bruno) with environment config in
+[docs/bruno/environments/local.bru](docs/bruno/environments/local.bru).
+
+- Requests use `baseURL` and `accessToken` variables.
+- `accessToken` is populated from `process.env.ACCESS_TOKEN`. Export `ACCESS_TOKEN` before running.
+- Open the collection in the Bruno app, or run it via CLI:
+
+```sh
+cd docs/bruno
+bru run . --env local
+```
+
 ## Documentation
 - [docs/project-overview-pdr.md](docs/project-overview-pdr.md)
 - [docs/codebase-summary.md](docs/codebase-summary.md)

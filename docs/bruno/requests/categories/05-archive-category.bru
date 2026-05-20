@@ -1,0 +1,31 @@
+meta {
+  name: 05 - Archive Category
+  type: http
+  seq: 5
+}
+
+vars {
+  categoryId: 22222222-2222-2222-2222-222222222222
+}
+
+put {
+  url: {{baseURL}}/categories/archive
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: Bearer {{accessToken}}
+}
+
+body:json {
+  {
+    "id": "{{categoryId}}"
+  }
+}
+
+tests {
+  test("status is 2xx", function() {
+    expect(res.status).to.be.within(200, 299);
+    expect(res.body).to.be.an("object");
+  });
+}

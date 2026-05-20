@@ -1,0 +1,33 @@
+meta {
+  name: 06 - Reschedule Event
+  type: http
+  seq: 6
+}
+
+vars {
+  eventId: 33333333-3333-3333-3333-333333333333
+}
+
+put {
+  url: {{baseURL}}/events/reschedule
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: Bearer {{accessToken}}
+}
+
+body:json {
+  {
+    "id": "{{eventId}}",
+    "startsAt": 1750007200000,
+    "endsAt": 1750010800000
+  }
+}
+
+tests {
+  test("status is 2xx", function() {
+    expect(res.status).to.be.within(200, 299);
+    expect(res.body).to.be.an("object");
+  });
+}

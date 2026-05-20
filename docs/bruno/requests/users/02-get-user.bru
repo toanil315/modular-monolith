@@ -1,0 +1,24 @@
+meta {
+  name: 02 - Get User
+  type: http
+  seq: 2
+}
+
+vars {
+  userId: 11111111-1111-1111-1111-111111111111
+}
+
+get {
+  url: {{baseURL}}/users/{{userId}}
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+}
+
+tests {
+  test("status is 2xx", function() {
+    expect(res.status).to.be.within(200, 299);
+    expect(res.body).to.be.an("object");
+  });
+}

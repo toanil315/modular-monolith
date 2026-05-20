@@ -1,0 +1,24 @@
+meta {
+  name: 03 - Get Event
+  type: http
+  seq: 3
+}
+
+vars {
+  eventId: 33333333-3333-3333-3333-333333333333
+}
+
+get {
+  url: {{baseURL}}/events/{{eventId}}
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+}
+
+tests {
+  test("status is 2xx", function() {
+    expect(res.status).to.be.within(200, 299);
+    expect(res.body).to.be.an("object");
+  });
+}

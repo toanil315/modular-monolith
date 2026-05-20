@@ -1,0 +1,27 @@
+meta {
+  name: 01 - Create Category
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseURL}}/categories
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: Bearer {{accessToken}}
+}
+
+body:json {
+  {
+    "name": "Conferences"
+  }
+}
+
+tests {
+  test("status is 2xx", function() {
+    expect(res.status).to.be.within(200, 299);
+    expect(res.body).to.be.an("object");
+  });
+}
