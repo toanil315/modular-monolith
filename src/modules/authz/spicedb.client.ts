@@ -5,9 +5,9 @@ import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class SpiceDBClient implements OnModuleInit {
   private readonly logger = new Logger(SpiceDBClient.name);
-  private client: v1.ZedPromiseClientInterface;
+  private client!: v1.ZedPromiseClientInterface;
 
-  constructor( private readonly configService: ConfigService) {}
+  constructor(private readonly configService: ConfigService) {}
 
   onModuleInit() {
     const endpoint = this.configService.getOrThrow('SPICEDB_ENDPOINT');
