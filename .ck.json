@@ -1,5 +1,5 @@
 {
-  "$schema": "./.github/schemas/ck-config.schema.json",
+  "$schema": ".github/schemas/ck-config.schema.json",
   "codingLevel": 2,
   "project": {
     "type": "api",
